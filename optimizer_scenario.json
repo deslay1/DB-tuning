@@ -1,0 +1,34 @@
+{
+    "application_name": "Throughput_benchmark",
+    "optimization_objectives": [
+        "Throughput"
+    ],
+    "optimization_iterations": 18,
+    "models": {
+        "model": "random_forest"
+    },
+    "design_of_experiment": {
+        "number_of_samples": 2
+    },
+    "input_parameters": {
+        "knob1": {
+            "parameter_default": 4096,
+            "parameter_type": "ordinal",
+            "values": [
+                640,
+                768,
+                896,
+                1024,
+                1280,
+                1536,
+                1792,
+                2048,
+                2560,
+                3072,
+                3584,
+                4096
+            ]
+        }
+    },
+    "output_data_file": "2021-04-10_11-03-32_output.csv"
+}
