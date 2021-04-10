@@ -20,6 +20,28 @@ make rocksdbjava
 ```
 which should provide a .jni file in *java/target/*.
 
+
+## BEST: Benchmarking with RocksDB tool *db_bench* (by providing options file or command line flags)
+###
+I had problems getting this to work on Ubuntu.
+Running `make all` in the main directory wasn't useful. First of you have to check that gflags is installed. I then added the following paths to my */etc/environment* file.
+```
+CPATH="/usr/include/gflags/"
+LIBRARY_PATH="/usr/local/lib"
+```
+In the main rocksdb folder (of repository) I ran `make release`, which is perhaps unnecessary.
+To compile the tools, run `make tools`
+
+Then you can run `./db_bench` command (again from the main directory)
+
+### Suboptimal alternative: With apt package (uses DB version 5.17, i.e. OLD)
+First install the necessary tools with `sudo apt install rocksdb-tools`.
+
+Example *memory workload performance* commands to fill up a database instance and run a benchmark can be found at https://github.com/facebook/rocksdb/wiki/RocksDB-In-Memory-Workload-Performance-Benchmarks
+
+For what type of benchmarks and workloads you can run see either a list at https://github.com/facebook/rocksdb/wiki/Benchmarking-tools or run `db_bench --help`.
+
+
 ## Benchmarking with YCSB (Providing an optionsfile)
 
 Follow the download command from the main page of the github repository, NOT in the rocksdb subdirectory, since it will give you errors later. Afterwards you can run the commands that you want directly. For workload A, we would do the following:
@@ -34,13 +56,6 @@ bin/ycsb.sh run rocksdb -s -P workloads/workloada -p rocksdb.dir=<path_to_databa
 Note that the options file is optional. If it is not provided it will just use its default options that can be identified by the file in the created database directory.
 
 The results are automatically printed out in the command line.
-
-## BEST: Benchmarkning with RocksDB tool *db_bench* (options file or command line flags)
-First install the necessary tools with `sudo apt install rocksdb-tools`.
-
-Example *memory workload performance* commands to fill up a database instance and run a benchmark can be found at https://github.com/facebook/rocksdb/wiki/RocksDB-In-Memory-Workload-Performance-Benchmarks
-
-For what type of benchmarks and workloads you can run see either a list at https://github.com/facebook/rocksdb/wiki/Benchmarking-tools or run `db_bench --help`.
 
 
 ## Using an editor to edit and save remote files via ssh
