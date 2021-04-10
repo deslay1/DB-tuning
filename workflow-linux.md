@@ -58,9 +58,18 @@ Note that the options file is optional. If it is not provided it will just use i
 The results are automatically printed out in the command line.
 
 
-## Using an editor to edit and save remote files via ssh
+## Using vscode to edit and save remote files via ssh
 By default, we do not have root privileges so we cannot just edit files outside of the command line however we want.
-A workaround is for every single file to transfer ownership from root to your own user and then transfer it back when you are done:
+A workaround is to transfer ownership from root to your own user and then transfer it back when you are done:
+
+Folder:
+```
+sudo chown -R <myuser>: /path/to/folder
+code /path/to/folder
+sudo chown -R root: /path/to/folder
+```
+
+Single file:
 ```
 sudo chown <myuser> /path/to/file
 code /path/to/file
