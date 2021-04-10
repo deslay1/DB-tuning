@@ -1,7 +1,6 @@
 import os
 import json
 import config
-from benchmark_commands import run_sequential_random
 from datetime import datetime
 
 def create_json(filename='example_config_hm'):

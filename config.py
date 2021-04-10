@@ -14,7 +14,7 @@ APPLICATION_NAME = f'{OPTIMIZATION_OBJECTIVE[0]}_benchmark'
 # Design_of_experiment
 NUMBER_OF_SAMPLES = 2
 # Input parameters
-INPUT_PARAMETERS = ['knob1']
+INPUT_PARAMETERS = ['block_size', 'level0_slowdown_writes_trigger', 'level0_stop_writes_trigger', 'max_background_compactions', 'max_background_flushes', 'write_buffer_size']
 # Model
 MODEL = 'random_forest'
 
@@ -29,15 +29,43 @@ BENCHMARK_COMMAND_PATH = '/home/osama_eldawebi/main/rocksdb/db_bench'
 #                     Tuning Knobs                    #
 ##########################################################
 Knobs = {}
-# Knob 1
-Knobs['knob1'] = {}
-Knobs['knob1']['parameter_default'] = 4096
-Knobs['knob1']['parameter_type'] = 'ordinal'
-Knobs['knob1']['values'] = [640, 768, 896, 1024,
-                            1280, 1536, 1792, 2048, 2560, 3072, 3584, 4096]
-Knobs['knob1']['unit'] = 'MB'
 
-# Add knobs to tune and there corresponding search space in the form same as above. Run knobs_search_space.py
+# Knob ref: from 1 to 5*10^5
+Knobs['block_size'] = {}
+Knobs['block_size']['parameter_default'] = 4096 # 2^12
+Knobs['block_size']['parameter_type'] = 'ordinal'
+Knobs['block_size']['values'] = [2**0] + [2**x for x in range(1, 20, 2)] # Highest value 2^19 = 524 288
+
+# Knob ref: from 1 to 2^10
+Knobs['level0_slowdown_writes_trigger'] = {}
+Knobs['level0_slowdown_writes_trigger']['parameter_default'] = 0
+Knobs['level0_slowdown_writes_trigger']['parameter_type'] = 'ordinal'
+Knobs['level0_slowdown_writes_trigger']['values'] = [2**x for x in range(0, 11)]
+
+# Knob ref: from 1 to 2^10
+Knobs['level0_stop_writes_trigger'] = {}
+Knobs['level0_stop_writes_trigger']['parameter_default'] = 36
+Knobs['level0_stop_writes_trigger']['parameter_type'] = 'ordinal'
+Knobs['level0_stop_writes_trigger']['values'] = [2**x for x in range(0, 11)]
+
+# Knob ref: from 1 to 2^8
+Knobs['max_background_compactions'] = {}
+Knobs['max_background_compactions']['parameter_default'] = 1
+Knobs['max_background_compactions']['parameter_type'] = 'ordinal'
+Knobs['max_background_compactions']['values'] = [2**x for x in range(0, 9)]
+
+# Knob ref: from 1 to 10
+Knobs['max_background_flushes'] = {}
+Knobs['max_background_flushes']['parameter_default'] = 1
+Knobs['max_background_flushes']['parameter_type'] = 'ordinal'
+Knobs['max_background_flushes']['values'] = [x for x in range(1, 11)]
+
+# Knob ref: from 1 to 15*10^7
+Knobs['write_buffer_size'] = {}
+Knobs['write_buffer_size']['parameter_default'] = 2**26
+Knobs['write_buffer_size']['parameter_type'] = 'ordinal'
+Knobs['write_buffer_size']['values'] = [2**0] + [2**x for x in range(1, 29, 4)]
+
 
 if __name__ == '__main__':
     with open('search_space.json', 'w') as file:

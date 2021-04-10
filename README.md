@@ -1,5 +1,5 @@
 # Database tuning project
-Running `setup_optimizer_config.py` will create the the json files that are needed. Then afterwards the optimizer should be run using `run_optimizer.py`.
+Running `config.py` and `setup_optimizer_config.py` will create the the json files that are needed. Then afterwards the optimizer should be run using `run_optimizer.py`.
 
 I used an Anaconda environment with Python3.8. 
 
