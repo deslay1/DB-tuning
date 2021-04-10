@@ -2,11 +2,6 @@ rocksdb-tuning/.vs
 rocksdb-tuning/out
 .vscode
 
-evaluate.py
-tut_bayes_opt.ipynb
-utils.py
-
-
 ############# PYTHON GITIGNORE #############
 
 # Byte-compiled / optimized / DLL files
