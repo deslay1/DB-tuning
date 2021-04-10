@@ -8,7 +8,6 @@ def create_json(filename='example_config_hm'):
     """
     Creates a json file for usage by the optimizer service
     """
-
     scenario = {}
     scenario['application_name'] = config.APPLICATION_NAME
     scenario['optimization_objectives'] = config.OPTIMIZATION_OBJECTIVE
@@ -20,10 +19,12 @@ def create_json(filename='example_config_hm'):
     scenario['input_parameters'] = {}
     scenario['output_data_file'] = '{}_output.csv'.format(
         datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
+    
+    # Load knobs
     with open('search_space.json', 'r') as fobj:
         knobs = json.load(fobj)
 
-    # scenario['input_parameters'] = {}
+    # Write knobs to file
     parameter_options = ['parameter_default', 'parameter_type', 'values']
     for para in config.INPUT_PARAMETERS:
         scenario['input_parameters'][para] = dict(
@@ -33,13 +34,5 @@ def create_json(filename='example_config_hm'):
         json.dump(scenario, scenario_file, indent=4)
 
 
-def run_benchmark():
-    """
-    Runs a benchmark test using db_bench tool for RocksDB
-    """
-    run_sequential_random()
-
-
 if __name__ == '__main__':
     create_json('optimizer_scenario.json')
-    # run_benchmark()

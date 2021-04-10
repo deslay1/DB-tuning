@@ -1,9 +1,7 @@
 """
 Configuration file optimizer parameters and tuning knobs.
 """
-
 import json
-
 # RESULT_DIR = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
 ##########################################################
@@ -25,6 +23,7 @@ MODEL = 'random_forest'
 ##########################################################
 DB_DIR = '/tmp/rocksdb-bench'
 OPTIONS_FILE = ''
+BENCHMARK_COMMAND_PATH = '/home/osama_eldawebi/main/rocksdb/db_bench'
 
 ##########################################################
 #                     Tuning Knobs                    #
@@ -40,5 +39,6 @@ Knobs['knob1']['unit'] = 'MB'
 
 # Add knobs to tune and there corresponding search space in the form same as above. Run knobs_search_space.py
 
-with open('search_space.json', 'w') as file:
-    json.dump(Knobs, file, indent=4)
+if __name__ == '__main__':
+    with open('search_space.json', 'w') as file:
+        json.dump(Knobs, file, indent=4)
