@@ -24,3 +24,33 @@ Throughput (ops/sec): 83929
 Throughput (ops/sec): 85751
 Throughput (ops/sec): 86808
 Manually calculated average: 85496
+
+# Filling and then running Mixgraph (no tuning)
+Throughput (ops/sec): 6521
+
+# Only running Mixgraph: (no tuning)
+Throughput (ops/sec): 83599
+Throughput (ops/sec): 83909
+Throughput (ops/sec): 83590
+
+Readrandom with 1M keys, (no tuning)
+Throughput (ops/sec): 91684
+Throughput (ops/sec): 90383
+Throughput (ops/sec): 90949
+
+Readrandom with 1M keys, (two knobs)
+Throughput (ops/sec): 91066
+Throughput (ops/sec): 87755
+Throughput (ops/sec): 90682
+
+Throughput (ops/sec): 90329
+Throughput (ops/sec): 91662
+Throughput (ops/sec): 89587
+Throughput (ops/sec): 91301
+Throughput (ops/sec): 91728
+Throughput (ops/sec): 90636
+Throughput (ops/sec): 93181
+Throughput (ops/sec): 91630
+Throughput (ops/sec): 93123
+Throughput (ops/sec): 91787
+Throughput (ops/sec): 94276
