@@ -34,4 +34,4 @@ def create_json(filename='example_config_hm'):
 
 
 if __name__ == '__main__':
-    create_json('optimizer_scenario.json')
+    create_json('util/optimizer_scenario.json')

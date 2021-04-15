@@ -23,8 +23,8 @@ MODEL = 'random_forest'
 ##########################################################
 DB_DIR = '/tmp/rocksdb-bench'
 # OPTIONS_FILE = '/tmp/rocksdbtest-1002/dbbench/OPTIONS-000006'
-OPTIONS_FILE = 'options_file.ini'
-OPTIONS_FILE_TEMPLATE = 'options_file_template_default.ini' # Default template caused by a fill random benchmark with 1M inserted kV-pairs
+OPTIONS_FILE = 'util/options_file.ini'
+OPTIONS_FILE_TEMPLATE = 'util/options_file_template_default.ini' # Default template caused by a fill random benchmark with 1M inserted kV-pairs
 BENCHMARK_COMMAND_PATH = '/home/osama_eldawebi/main/rocksdb/db_bench'
 YCSB_PATH = '/home/osama_eldawebi/main/ycsb-0.17.0/'
 
@@ -71,5 +71,5 @@ Knobs['write_buffer_size']['values'] = [2**0] + [2**x for x in range(1, 29, 4)]
 
 
 if __name__ == '__main__':
-    with open('search_space.json', 'w') as file:
+    with open('util/search_space.json', 'w') as file:
         json.dump(Knobs, file, indent=4)
