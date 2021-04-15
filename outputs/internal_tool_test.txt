@@ -54,3 +54,6 @@ Throughput (ops/sec): 91630
 Throughput (ops/sec): 93123
 Throughput (ops/sec): 91787
 Throughput (ops/sec): 94276
+Throughput (ops/sec): 87073
+Throughput (ops/sec): 86877
+Throughput (ops/sec): 86743
