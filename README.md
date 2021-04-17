@@ -318,9 +318,9 @@ Average (ops/sec): **28773**
 Deviation from baseline: **-14.15%**  
 
 ## Using 50M records and operations  
-This is not a good test. For my setup, testing a single configuration would take multiple hours, perhaps half a day. For many configurations and multiple returns to calculate average, we are talking about weeks of testing. It also uses 50 GB.  
+This is not a good test. For my setup, testing a single configuration would take multiple hours, perhaps half a day. For many configurations and multiple results each time for an average, we are talking about weeks of testing. Loading data also uses 50 GB.  
 
-## OLD YCSB pure testing, not changing any knobs  
+## OLD YCSB pure testing: not changing any knobs  
 A:  
 Throughput (ops/sec): 3891.0505836575876  
 Throughput (ops/sec): 3521.1267605633802  

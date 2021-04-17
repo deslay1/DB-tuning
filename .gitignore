@@ -1,6 +1,7 @@
 rocksdb-tuning/.vs
 rocksdb-tuning/out
 .vscode
+can-be-useful/
 
 ############# PYTHON GITIGNORE #############
 
