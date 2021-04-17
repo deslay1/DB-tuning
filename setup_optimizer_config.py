@@ -20,7 +20,7 @@ def create_json(filename='example_config_hm'):
         datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
     
     # Load knobs
-    with open('search_space.json', 'r') as fobj:
+    with open('util/search_space.json', 'r') as fobj:
         knobs = json.load(fobj)
 
     # Write knobs to file

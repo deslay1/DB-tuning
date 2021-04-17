@@ -21,10 +21,10 @@ class RocksdbBenchmark:
         """
         self.knobs = {}
         self.benchmarks=[]
-        self.__filling_done = False
         self.__ycsb = False
         self.__ycsb_workload = 'a'
         self.__output_file = ''
+        self.__baseline = 0
 
         # One can input multiple commands in one list if that is desired. 
         if bench_type.lower() == 'mix': self.benchmarks = ['mixgraph']
@@ -34,6 +34,7 @@ class RocksdbBenchmark:
             if 'ycsb_workload' in options: self.__ycsb_workload = options['ycsb_workload'].lower()
 
         if 'output_file' in options: self.__output_file = options['output_file']
+        if 'baseline' in options: self.__baseline = int(options['baseline'])
 
 
     def load_knob_configurations(self, knobs):
@@ -47,14 +48,16 @@ class RocksdbBenchmark:
         self.knobs = knobs
         if len(self.__output_file) > 0:
             with open(self.__output_file, 'a') as file:
-                file.write('\nBenchmark with the following knob configurations: ' + str(self.knobs) + ' \ ')
+                file.write('\n\nBenchmark with knobs: ' + str(self.knobs) + '  ')
 
 
     def add_command_options(self, options_file=False):
         result = ''
         if options_file or self.__ycsb:
+            file_path = config.YCSB_OPTIONS_FILE if self.__ycsb else config.OPTIONS_FILE
+            template_path = config.YCSB_OPTIONS_FILE_TEMPLATE if self.__ycsb else config.OPTIONS_FILE_TEMPLATE
             # Read options_file parameters and find alter coresponding knobs.
-            with open(config.OPTIONS_FILE_TEMPLATE, 'r') as file:
+            with open(template_path, 'r') as file:
                 data = file.readlines()
                 for i, line in enumerate(data):
                     if '=' in line.strip():
@@ -64,14 +67,14 @@ class RocksdbBenchmark:
                             data[i] = '  ' + key + '=' + self.knobs[key] + '\n'
 
             # Finally, write the new data
-            with open(config.OPTIONS_FILE, 'w') as file:
+            with open(file_path, 'w') as file:
                 file.writelines(data)
 
             # Add options file to command
             if self.__ycsb:
-                result += f' -p rocksdb.optionsfile={config.OPTIONS_FILE}'
+                result += f' -p rocksdb.optionsfile={file_path}'
             else:
-                result += f' options_file={config.OPTIONS_FILE}'
+                result += f' options_file={file_path}'
 
         else: # We provide command line flags instead.    
             if len(self.knobs.keys()) > 0:
@@ -90,7 +93,7 @@ class RocksdbBenchmark:
             num_million -> number of million key-value pairs to fill
         """
         if self.__ycsb:
-            command = f'{config.YCSB_PATH}bin/ycsb.sh load rocksdb -s -P {config.YCSB_PATH}workloads/workload{self.__ycsb_workload} -p rocksdb.dir={config.DB_DIR}'
+            command = f'{config.YCSB_PATH}bin/ycsb.sh load rocksdb -s -P {config.YCSB_PATH}workloads/workload{self.__ycsb_workload} -P {config.YCSB_PROPERTIES_FILE} -p rocksdb.dir={config.DB_DIR_YCSB}'
         else:
             command = f'{config.BENCHMARK_COMMAND_PATH} -db={config.DB_DIR} --benchmarks="fill{fill_type}" -num={num_million*1000000}'
 
@@ -101,19 +104,16 @@ class RocksdbBenchmark:
         except CalledProcessError:
             print('Error running the filling benchmark, please check the command format and paths given.')
 
-        self.__filling_done = True
 
-
-    def run_benchmark(self, runs=1, options_file=False):
+    def run_benchmark(self, runs=1, num_million=1, fill=False, options_file=False):
         """
         Run a benchmark and parse the throughput results.
         """
         if self.__ycsb:
-            command = f'{config.YCSB_PATH}bin/ycsb.sh run rocksdb -s -P {config.YCSB_PATH}workloads/workload{self.__ycsb_workload} -p rocksdb.dir={config.DB_DIR}'
+            command = f'{config.YCSB_PATH}bin/ycsb.sh run rocksdb -s -P {config.YCSB_PATH}workloads/workload{self.__ycsb_workload} -P {config.YCSB_PROPERTIES_FILE} -p rocksdb.dir={config.DB_DIR_YCSB}'
         else:
             benchmarks = f'"{",".join(self.benchmarks)}"'
             command = f'{config.BENCHMARK_COMMAND_PATH} -db={config.DB_DIR} --benchmarks={benchmarks}'
-            if self.__filling_done: command += ' --use_existing_db'
             if 'mixgraph' in benchmarks:
                 command += (' use_direct_io_for_flush_and_compaction=true -use_direct_reads=true ' 
                             '-cache_size=268435456 -keyrange_dist_a=14.18 -keyrange_dist_b=-2.917 ' 
@@ -127,7 +127,19 @@ class RocksdbBenchmark:
         command += self.add_command_options(options_file)
 
         try:
+            results = [] # Save to later calculate average
             for _ in range(runs):
+                print(command)
+                if self.__ycsb:
+                    try:
+                        subprocess.run(f'sudo rm -r {config.DB_DIR_YCSB}')
+                    except FileNotFoundError:
+                        pass
+                    self.run_filling(fill_type='random')
+                else:
+                    if fill:
+                        self.run_filling(fill_type='random',num_million=num_million, options_file=options_file)
+                        command += ' --use_existing_db'
                 for line in subprocess.check_output(command, shell=True, universal_newlines=True).split('\n'):
                     
                     if len(self.__output_file) > 0:
@@ -136,16 +148,31 @@ class RocksdbBenchmark:
                                 match = re.search('\d+[.]\d+', line)
                                 if match is not None:
                                     throughput = match.group(0)
+                                    print(throughput)
+                                    results.append(float(throughput))
                                     with open(self.__output_file, 'a') as file:
-                                        file.write(f'\nThroughput (ops/sec): **{throughput}** \ ')
+                                        file.write(f'\nThroughput (ops/sec): {throughput}  ')
                         else:
                             if 'ops/sec;' in str(line):
+                                print(str(line))
                                 match = re.search('((\d+)\sops)', line)
                                 throughput = match.group(2)
+                                results.append(int(throughput))
                                 with open(self.__output_file, 'a') as file:
-                                    file.write(f'\nThroughput (ops/sec): **{throughput}** \ ')
+                                    file.write(f'\nThroughput (ops/sec): {throughput}  ')
                     else:
                         print(str(line))
+
+            average = int(sum(results) / len(results))
+            if not self.knobs:
+                self.__baseline = average
+            if self.__baseline != 0:
+                deviation = ((average - self.__baseline) / self.__baseline) * 100
+            else:
+                deviation = 0
+            with open(self.__output_file, 'a') as file:
+                file.write(f'\nAverage (ops/sec): **{average}**  ')
+                file.write(f'\nDeviation from baseline: **{"{:.2f}".format(deviation)}%**  ')
 
         except CalledProcessError:
             print('Error running the benchmark, please check the command format and paths given.')

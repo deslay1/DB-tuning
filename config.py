@@ -14,22 +14,31 @@ APPLICATION_NAME = f'{OPTIMIZATION_OBJECTIVE[0]}_benchmark'
 # Design_of_experiment
 NUMBER_OF_SAMPLES = 2
 # Input parameters
-INPUT_PARAMETERS = ['block_size', 'level0_slowdown_writes_trigger', 'level0_stop_writes_trigger', 'max_background_compactions', 'max_background_flushes', 'write_buffer_size']
+INPUT_PARAMETERS = ['block_size', 'compaction_readahead_size',
+    'level0_file_num_compaction_trigger', 'level0_slowdown_writes_trigger',
+    'level0_stop_writes_trigger', 'max_background_compactions', 
+    'max_background_flushes', 'max_bytes_for_level_multiplier', 
+    'max_write_buffer_number', 'min_write_buffer_number_to_merge', 'write_buffer_size']
 # Model
 MODEL = 'random_forest'
 
 ##########################################################
-#               RocksDB Configurations                #
+#            RocksDB Benchmark Configurations            #
 ##########################################################
 DB_DIR = '/tmp/rocksdb-bench'
 # OPTIONS_FILE = '/tmp/rocksdbtest-1002/dbbench/OPTIONS-000006'
 OPTIONS_FILE = 'util/options_file.ini'
 OPTIONS_FILE_TEMPLATE = 'util/options_file_template_default.ini' # Default template caused by a fill random benchmark with 1M inserted kV-pairs
 BENCHMARK_COMMAND_PATH = '/home/osama_eldawebi/main/rocksdb/db_bench'
+DB_DIR_YCSB = '/tmp/rocksdb-bench-ycsb'
+
+YCSB_OPTIONS_FILE = 'util/ycsb_options_file.ini'
+YCSB_OPTIONS_FILE_TEMPLATE = 'util/ycsb_options_file_template_default.ini'
 YCSB_PATH = '/home/osama_eldawebi/main/ycsb-0.17.0/'
+YCSB_PROPERTIES_FILE='util/ycsb_properties.dat'
 
 ##########################################################
-#                     Tuning Knobs                    #
+#                     Tuning Knobs                       #
 ##########################################################
 Knobs = {}
 
@@ -38,6 +47,18 @@ Knobs['block_size'] = {}
 Knobs['block_size']['parameter_default'] = 4096 # 2^12
 Knobs['block_size']['parameter_type'] = 'ordinal'
 Knobs['block_size']['values'] = [2**0] + [2**x for x in range(1, 20, 2)] # Highest value 2^19 = 524 288
+
+# self-defined range: 0 to 4*10^6
+Knobs['compaction_readahead_size'] = {}
+Knobs['compaction_readahead_size']['parameter_default'] = 0 # 2^12
+Knobs['compaction_readahead_size']['parameter_type'] = 'integer'
+Knobs['compaction_readahead_size']['values'] = [40000*x for x in range(0, 11)]
+
+# Knob ref: from 1 to 2^8
+Knobs['level0_file_num_compaction_trigger'] = {}
+Knobs['level0_file_num_compaction_trigger']['parameter_default'] = 4
+Knobs['level0_file_num_compaction_trigger']['parameter_type'] = 'ordinal'
+Knobs['level0_file_num_compaction_trigger']['values'] = [2**x for x in range(0, 9)]
 
 # Knob ref: from 1 to 2^10
 Knobs['level0_slowdown_writes_trigger'] = {}
@@ -62,6 +83,24 @@ Knobs['max_background_flushes'] = {}
 Knobs['max_background_flushes']['parameter_default'] = 1
 Knobs['max_background_flushes']['parameter_type'] = 'integer'
 Knobs['max_background_flushes']['values'] = [x for x in range(1, 11)]
+
+# Knob ref: from 5 to 15
+Knobs['max_bytes_for_level_multiplier'] = {}
+Knobs['max_bytes_for_level_multiplier']['parameter_default'] = 10
+Knobs['max_bytes_for_level_multiplier']['parameter_type'] = 'integer'
+Knobs['max_bytes_for_level_multiplier']['values'] = [x for x in range(5, 16)]
+
+# Knob ref: from 1 to 2^7
+Knobs['max_write_buffer_number'] = {}
+Knobs['max_write_buffer_number']['parameter_default'] = 2
+Knobs['max_write_buffer_number']['parameter_type'] = 'ordinal'
+Knobs['max_write_buffer_number']['values'] = [2**x for x in range(0, 8)]
+
+# Knob ref: from 1 to 2^5
+Knobs['min_write_buffer_number_to_merge'] = {}
+Knobs['min_write_buffer_number_to_merge']['parameter_default'] = 1
+Knobs['min_write_buffer_number_to_merge']['parameter_type'] = 'ordinal'
+Knobs['min_write_buffer_number_to_merge']['values'] = [2**x for x in range(0, 6)]
 
 # Knob ref: from 1 to 15*10^7
 Knobs['write_buffer_size'] = {}

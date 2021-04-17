@@ -16,6 +16,38 @@
             524288
         ]
     },
+    "compaction_readahead_size": {
+        "parameter_default": 0,
+        "parameter_type": "integer",
+        "values": [
+            0,
+            40000,
+            80000,
+            120000,
+            160000,
+            200000,
+            240000,
+            280000,
+            320000,
+            360000,
+            400000
+        ]
+    },
+    "level0_file_num_compaction_trigger": {
+        "parameter_default": 4,
+        "parameter_type": "ordinal",
+        "values": [
+            1,
+            2,
+            4,
+            8,
+            16,
+            32,
+            64,
+            128,
+            256
+        ]
+    },
     "level0_slowdown_writes_trigger": {
         "parameter_default": 0,
         "parameter_type": "ordinal",
@@ -67,7 +99,7 @@
     },
     "max_background_flushes": {
         "parameter_default": 1,
-        "parameter_type": "ordinal",
+        "parameter_type": "integer",
         "values": [
             1,
             2,
@@ -79,6 +111,49 @@
             8,
             9,
             10
+        ]
+    },
+    "max_bytes_for_level_multiplier": {
+        "parameter_default": 10,
+        "parameter_type": "integer",
+        "values": [
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+        ]
+    },
+    "max_write_buffer_number": {
+        "parameter_default": 2,
+        "parameter_type": "ordinal",
+        "values": [
+            1,
+            2,
+            4,
+            8,
+            16,
+            32,
+            64,
+            128
+        ]
+    },
+    "min_write_buffer_number_to_merge": {
+        "parameter_default": 1,
+        "parameter_type": "ordinal",
+        "values": [
+            1,
+            2,
+            4,
+            8,
+            16,
+            32
         ]
     },
     "write_buffer_size": {
