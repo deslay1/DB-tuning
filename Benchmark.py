@@ -17,13 +17,17 @@ class RocksdbBenchmark:
         
         options -> Additional options can be provided:
             '{output_file: desired_file_path}' -> append throughput test results to a file. If file doesn't exist, it will be created.
-            '{ycsb_workload : workload_type}' -> workload_type: one of: <a,b,c,d,e,f>
+            '{ycsb_workload: workload_type}' -> workload_type: one of: <a,b,c,d,e,f>.
+            '{baseline: throughput_value}' -> value to use as a baseline for testing comparisons.
+            '{testing: True or False}' -> calculate averages and deviations from baseline during testing.
+
         """
         self.knobs = {}
         self.benchmarks=[]
         self.__ycsb = False
         self.__ycsb_workload = 'a'
         self.__output_file = ''
+        self.__testing = False
         self.__baseline = 0
 
         # One can input multiple commands in one list if that is desired. 
@@ -34,6 +38,7 @@ class RocksdbBenchmark:
             if 'ycsb_workload' in options: self.__ycsb_workload = options['ycsb_workload'].lower()
 
         if 'output_file' in options: self.__output_file = options['output_file']
+        if 'testing' in options: self.__testing = True
         if 'baseline' in options: self.__baseline = int(options['baseline'])
 
 
@@ -126,6 +131,8 @@ class RocksdbBenchmark:
         
         command += self.add_command_options(options_file)
 
+        throughput = 0
+
         try:
             results = [] # Save to later calculate average
             for _ in range(runs):
@@ -141,38 +148,38 @@ class RocksdbBenchmark:
                         self.run_filling(fill_type='random',num_million=num_million, options_file=options_file)
                         command += ' --use_existing_db'
                 for line in subprocess.check_output(command, shell=True, universal_newlines=True).split('\n'):
-                    
-                    if len(self.__output_file) > 0:
-                        if self.__ycsb:
-                            if 'OVERALL' in str(line):
-                                match = re.search('\d+[.]\d+', line)
-                                if match is not None:
-                                    throughput = match.group(0)
-                                    print(throughput)
-                                    results.append(float(throughput))
+                    if self.__ycsb:
+                        if 'OVERALL' in str(line):
+                            match = re.search('\d+[.]\d+', line)
+                            if match is not None:
+                                throughput = match.group(0)
+                                print(throughput)
+                                results.append(float(throughput))
+                                if len(self.__output_file) > 0:
                                     with open(self.__output_file, 'a') as file:
                                         file.write(f'\nThroughput (ops/sec): {throughput}  ')
-                        else:
-                            if 'ops/sec;' in str(line):
-                                print(str(line))
-                                match = re.search('((\d+)\sops)', line)
-                                throughput = match.group(2)
-                                results.append(int(throughput))
+                    else:
+                        if 'ops/sec;' in str(line):
+                            print(str(line))
+                            match = re.search('((\d+)\sops)', line)
+                            throughput = match.group(2)
+                            results.append(int(throughput))
+                            if len(self.__output_file) > 0:
                                 with open(self.__output_file, 'a') as file:
                                     file.write(f'\nThroughput (ops/sec): {throughput}  ')
-                    else:
-                        print(str(line))
-
-            average = int(sum(results) / len(results))
-            if not self.knobs:
-                self.__baseline = average
-            if self.__baseline != 0:
-                deviation = ((average - self.__baseline) / self.__baseline) * 100
-            else:
-                deviation = 0
-            with open(self.__output_file, 'a') as file:
-                file.write(f'\nAverage (ops/sec): **{average}**  ')
-                file.write(f'\nDeviation from baseline: **{"{:.2f}".format(deviation)}%**  ')
+            if self.__testing:
+                average = int(sum(results) / len(results))
+                if not self.knobs:
+                    self.__baseline = average
+                if self.__baseline != 0:
+                    deviation = ((average - self.__baseline) / self.__baseline) * 100
+                else:
+                    deviation = 0
+                with open(self.__output_file, 'a') as file:
+                    file.write(f'\nAverage (ops/sec): **{average}**  ')
+                    file.write(f'\nDeviation from baseline: **{"{:.2f}".format(deviation)}%**  ')
 
         except CalledProcessError:
             print('Error running the benchmark, please check the command format and paths given.')
+
+        return throughput
