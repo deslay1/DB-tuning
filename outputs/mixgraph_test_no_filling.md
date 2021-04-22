@@ -113,3 +113,14 @@ Throughput (ops/sec): 82683
 Throughput (ops/sec): 81819  
 Average (ops/sec): **82263**  
 Deviation from baseline: **-0.82%**  
+
+Benchmark with knobs: {}  
+Throughput (ops/sec): 85534  
+
+Benchmark with knobs: {}  
+Throughput (ops/sec): 105222  
+
+# Threads = 4
+Benchmark with knobs: {}  
+Throughput (ops/sec): 106188  
+Throughput (ops/sec): 106342  

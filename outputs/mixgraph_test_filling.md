@@ -126,3 +126,15 @@ Throughput (ops/sec): 933
 Throughput (ops/sec): 922  
 Average (ops/sec): **927**  
 Deviation from baseline: **-98.85%**  
+
+## Extra tests 50 M pre-filling before every run.
+
+Benchmark with knobs: {}  
+Throughput (ops/sec): 1350  
+Throughput (ops/sec): 1416  
+Throughput (ops/sec): 1351  
+
+Benchmark with knobs: {'max_background_compactions': '64'}  
+Throughput (ops/sec): 1391  
+Throughput (ops/sec): 1334  
+Throughput (ops/sec): 1362  

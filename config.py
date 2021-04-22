@@ -51,7 +51,7 @@ Knobs['block_size']['values'] = [2**0] + [2**x for x in range(1, 20, 2)] # Highe
 # self-defined range: 0 to 4*10^6
 Knobs['compaction_readahead_size'] = {}
 Knobs['compaction_readahead_size']['parameter_default'] = 0 # 2^12
-Knobs['compaction_readahead_size']['parameter_type'] = 'integer'
+Knobs['compaction_readahead_size']['parameter_type'] = 'ordinal'
 Knobs['compaction_readahead_size']['values'] = [40000*x for x in range(0, 11)]
 
 # Knob ref: from 1 to 2^8
@@ -82,13 +82,13 @@ Knobs['max_background_compactions']['values'] = [2**x for x in range(0, 9)]
 Knobs['max_background_flushes'] = {}
 Knobs['max_background_flushes']['parameter_default'] = 1
 Knobs['max_background_flushes']['parameter_type'] = 'integer'
-Knobs['max_background_flushes']['values'] = [x for x in range(1, 11)]
+Knobs['max_background_flushes']['values'] = [1, 10]
 
 # Knob ref: from 5 to 15
 Knobs['max_bytes_for_level_multiplier'] = {}
 Knobs['max_bytes_for_level_multiplier']['parameter_default'] = 10
 Knobs['max_bytes_for_level_multiplier']['parameter_type'] = 'integer'
-Knobs['max_bytes_for_level_multiplier']['values'] = [x for x in range(5, 16)]
+Knobs['max_bytes_for_level_multiplier']['values'] = [5, 15]
 
 # Knob ref: from 1 to 2^7
 Knobs['max_write_buffer_number'] = {}

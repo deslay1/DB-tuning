@@ -2,19 +2,18 @@
 Runs a benchmark test using db_bench tool for RocksDB
 """
 from Benchmark import RocksdbBenchmark
-from tests import *
 
 from ax import optimize, SimpleExperiment, ChoiceParameter, SearchSpace, ParameterType, Arm, Models
 import pandas as pd
 
     
 def run_benchmark(parameters):
-    options = {}
+    options = {'threads': 32}
     bench = RocksdbBenchmark(bench_type='mix', options=options)
     knobs = dict((k, str(v)) for k, v in parameters.items())
     bench.load_knob_configurations(knobs)
     # bench.run_filling(fill_type='random',num_million=1, fill=True, options_file=True)
-    throughput = bench.run_benchmark(runs=1, num_million=50, fill=False, options_file=True)
+    throughput = bench.run_benchmark(runs=1, num_million=10, fill=True, options_file=True)
     return {'Throughput': (throughput, 0.0)}
         
 
@@ -115,10 +114,10 @@ def run_Ax_optimizer():
                 'name': 'write_buffer_size',
                 'type': 'choice',
                 'values': [
-                    1,
-                    2,
-                    32,
-                    512,
+                    # 1,
+                    # 2,
+                    # 32,
+                    # 512,
                     8192,
                     131072,
                     2097152,
@@ -130,19 +129,17 @@ def run_Ax_optimizer():
             ],
         evaluation_function=run_benchmark,
         objective_name='Throughput',
-        total_trials=100,
+        total_trials=60,
         # minimize=True,
         )
     return best_parameters, best_values
 
 
 if __name__ == '__main__':
-    # mixgraph_test()
-    # ycsb_test()
     for _ in range(5):
         params, values = run_Ax_optimizer()
-        with open('outputs/Ax_results.md', 'a') as file:
-            file.write(f'\nBest parameters found: **{params}**  ')
+        with open('outputs/Ax_results_t1.md', 'a') as file:
+            file.write(f'\n\nBest parameters found: **{params}**  ')
             file.write(f'\nThroughput for above parameters: **{values}**  ')
     
     # param_1 = ChoiceParameter(name="block_size", values=[
