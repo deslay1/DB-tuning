@@ -25,7 +25,7 @@ MODEL = 'random_forest'
 ##########################################################
 #            RocksDB Benchmark Configurations            #
 ##########################################################
-DB_DIR = '/tmp/rocksdb-bench'
+DB_DIR = '/home/osama_eldawebi/main/db-dir'
 # OPTIONS_FILE = '/tmp/rocksdbtest-1002/dbbench/OPTIONS-000006'
 OPTIONS_FILE = 'util/options_file.ini'
 OPTIONS_FILE_TEMPLATE = 'util/options_file_template_default.ini' # Default template caused by a fill random benchmark with 1M inserted kV-pairs

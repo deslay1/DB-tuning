@@ -103,14 +103,15 @@ class RocksdbBenchmark:
             num_million -> number of million key-value pairs to fill
         """
         if self.ycsb:
-            command = f'{config.YCSB_PATH}bin/ycsb.sh load rocksdb -s -P {config.YCSB_PATH}workloads/workload{self.__ycsb_workload} -P {config.YCSB_PROPERTIES_FILE} -p rocksdb.dir={config.DB_DIR_YCSB}'
+            command = f'sudo {config.YCSB_PATH}bin/ycsb.sh load rocksdb -s -P {config.YCSB_PATH}workloads/workload{self.__ycsb_workload} -P {config.YCSB_PROPERTIES_FILE} -p rocksdb.dir={config.DB_DIR_YCSB}'
         else:
-            command = f'{config.BENCHMARK_COMMAND_PATH} -db={config.DB_DIR} --benchmarks="fill{fill_type}" -num={num_million*1000000}'
-
-        # command += self.add_command_options(options_file) # We're not tuning knobs with an options file
+            command = f'sudo {config.BENCHMARK_COMMAND_PATH} --benchmarks="fill{fill_type}" -num={num_million*1000000} -perf_level=3 -use_direct_io_for_flush_and_compaction=true -use_direct_reads=true -cache_size=268435456 -key_size=48 -value_size=43'
+            # command = f'sudo {config.BENCHMARK_COMMAND_PATH} -db={config.DB_DIR} --benchmarks="fill{fill_type}" -num={num_million*1000000} -perf_level=3 -use_direct_io_for_flush_and_compaction=true -use_direct_reads=true -cache_size=268435456 -key_size=48 -value_size=43'
+        print(command)
+        # command += self.add_command_options(options_file) # We're not tuning knobs with an options file during the filling phase
         
         try:
-            subprocess.run(f'sudo rm -r {config.DB_DIR}/', shell=True)
+            # subprocess.run(f'sudo rm -r {config.DB_DIR}/', shell=True)
             subprocess.run(command, shell=True)
         except CalledProcessError:
             print('Error running the filling benchmark, please check the command format and paths given.')
@@ -121,10 +122,11 @@ class RocksdbBenchmark:
         Run a benchmark and parse the throughput results.
         """
         if self.ycsb:
-            command = f'{config.YCSB_PATH}bin/ycsb.sh run rocksdb -s -P {config.YCSB_PATH}workloads/workload{self.__ycsb_workload} -P {config.YCSB_PROPERTIES_FILE} -p rocksdb.dir={config.DB_DIR_YCSB}'
+            command = f'sudo {config.YCSB_PATH}bin/ycsb.sh run rocksdb -s -P {config.YCSB_PATH}workloads/workload{self.__ycsb_workload} -P {config.YCSB_PROPERTIES_FILE} -p rocksdb.dir={config.DB_DIR_YCSB}'
         else:
-            benchmarks = f'"{",".join(self.benchmarks)}"'
-            command = f'{config.BENCHMARK_COMMAND_PATH} -db={config.DB_DIR} --benchmarks={benchmarks}'
+            benchmarks = f'"{",".join(self.benchmarks)},stats"'
+            command = f'sudo {config.BENCHMARK_COMMAND_PATH} --benchmarks={benchmarks} --use_existing_db'
+            # command = f'sudo {config.BENCHMARK_COMMAND_PATH} -db={config.DB_DIR} --benchmarks={benchmarks} --use_existing_db'
             if 'mixgraph' in benchmarks:
                 command += (' use_direct_io_for_flush_and_compaction=true -use_direct_reads=true ' 
                             '-cache_size=268435456 -keyrange_dist_a=14.18 -keyrange_dist_b=-2.917 ' 
@@ -133,18 +135,17 @@ class RocksdbBenchmark:
                             '-mix_get_ratio=0.85 -mix_put_ratio=0.14 -mix_seek_ratio=0.01 '
                             '-sine_mix_rate_interval_milliseconds=5000 -sine_a=1000 '
                             '-sine_b=0.000000073 -sine_d=4500000 --perf_level=1 -reads=4200000 '
-                            f'-num={num_million*1000000} -key_size=48 --statistics=1 --duration=300 '
-                            '--allow_concurrent_memtable_write=false') # this last was added for multi-threading.
+                            f'-num={num_million*1000000} -key_size=48 --statistics=1 --duration=300')
+                            # ' --allow_concurrent_memtable_write=false') # this last was added for multi-threading.
         
         command += self.add_command_options(options_file)
-        command += f' --threads={self.__threads}' 
+        # command += f' --threads={self.__threads}' 
 
         throughput = 0
 
         try:
             results = [] # Save to later calculate average
             for _ in range(runs):
-                print(command)
                 if self.ycsb:
                     try:
                         subprocess.run(f'sudo rm -r {config.DB_DIR_YCSB}')
@@ -154,7 +155,8 @@ class RocksdbBenchmark:
                 else:
                     if fill:
                         self.run_filling(fill_type='random',num_million=num_million, options_file=options_file)
-                        command += ' --use_existing_db'
+
+                print(command)
                 for line in subprocess.check_output(command, shell=True, universal_newlines=True).split('\n'):
                     if self.ycsb:
                         if 'OVERALL' in str(line):
@@ -168,6 +170,7 @@ class RocksdbBenchmark:
                                     file.write(f'\nThroughput (ops/sec): {throughput}  ')
                     else:
                         if 'ops/sec;' in str(line):
+                            print(f'RESULT: {str(line)}')
                             match = re.search('((\d+)\sops)', str(line))
                             throughput = match.group(2)
                             results.append(int(throughput))

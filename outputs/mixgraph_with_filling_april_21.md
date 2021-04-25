@@ -84,25 +84,3 @@ Benchmark with knobs: {'level0_slowdown_writes_trigger': '24'}
 Throughput (ops/sec): 96445  
 Average (ops/sec): **96445**  
 Deviation from baseline: **3.62%**  
-
-Benchmark with knobs: {}  
-Throughput (ops/sec): 244494  
-Average (ops/sec): **244494**  
-Deviation from baseline: **0.00%**  
-
-Benchmark with knobs: {'block_size': '4'}  
-Throughput (ops/sec): 237993  
-Average (ops/sec): **237993**  
-Deviation from baseline: **-2.66%**  
-
-Benchmark with knobs: {'block_size': '262144'}  
-Throughput (ops/sec): 244494  
-Average (ops/sec): **244494**  
-Deviation from baseline: **0.00%**  
-
-Benchmark with knobs: {'level0_slowdown_writes_trigger': '12'}  
-Throughput (ops/sec): 240337  
-Average (ops/sec): **240337**  
-Deviation from baseline: **-1.70%**  
-
-Benchmark with knobs: {'level0_slowdown_writes_trigger': '24'}  

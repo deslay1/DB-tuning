@@ -136,9 +136,14 @@ def run_Ax_optimizer():
 
 
 if __name__ == '__main__':
+    # 1. Get knobs using GET request to service
+    # 2. Run benchmark
+    # 3. POST throughput
+    # 4. Receive new samples by GET.
+
     for _ in range(5):
         params, values = run_Ax_optimizer()
-        with open('outputs/Ax_results_t1.md', 'a') as file:
+        with open('outputs/Ax_results.md', 'a') as file:
             file.write(f'\n\nBest parameters found: **{params}**  ')
             file.write(f'\nThroughput for above parameters: **{values}**  ')
     
