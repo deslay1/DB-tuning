@@ -7,7 +7,7 @@ def mixgraph_test(label, threads):
         'output_file': f'outputs/mixgraph_{label}.md',
         # 'output_file': f'outputs/random_{label}.md',
         'testing': True,
-        # 'baseline': '1443'
+        # 'baseline': '70229'
     }
     bench = RocksdbBenchmark(bench_type='mix', options=options)
     # knobs = {
@@ -26,11 +26,11 @@ def mixgraph_test(label, threads):
             'max_background_compactions': '64',
             'level0_file_num_compaction_trigger': '8',
         },
-        # {
-        #     'max_background_compactions': '64',
-        #     'level0_file_num_compaction_trigger': '8',
-        #     'write_buffer_size': str(2**23),
-        # },
+        {
+            'max_background_compactions': '64',
+            'level0_file_num_compaction_trigger': '8',
+            'write_buffer_size': str(2**28),
+        },
         # {'write_buffer_size': str(2**18)},
         # {'write_buffer_size': str(2**28)},
         # {'block_size': str(2**2)},
@@ -42,7 +42,7 @@ def mixgraph_test(label, threads):
     for knobs in knob_tests:
         bench.load_knob_configurations(knobs)
         # for t in threads:
-        bench.run_benchmark(runs=3, num_million=50, fill=False, options_file=False)
+        bench.run_benchmark(runs=2, num_million=50, fill=True, options_file=False)
             # bench.change_threads(t)
 
 
@@ -72,6 +72,6 @@ def ycsb_test():
         # bench.run_benchmark(runs=3)
 
 if __name__ == '__main__':
-    mixgraph_test('filling_sanity', 1)
+    mixgraph_test('filling_april_26', 1)
     # mixgraph_test('50M_threading32',32)
     # ycsb_test()

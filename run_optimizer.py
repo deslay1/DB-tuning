@@ -8,12 +8,11 @@ import pandas as pd
 
     
 def run_benchmark(parameters):
-    options = {'threads': 32}
+    options = {}
     bench = RocksdbBenchmark(bench_type='mix', options=options)
     knobs = dict((k, str(v)) for k, v in parameters.items())
     bench.load_knob_configurations(knobs)
-    # bench.run_filling(fill_type='random',num_million=1, fill=True, options_file=True)
-    throughput = bench.run_benchmark(runs=1, num_million=10, fill=True, options_file=True)
+    throughput = bench.run_benchmark(runs=1, num_million=50, fill=True, options_file=False, max_seconds=60)
     return {'Throughput': (throughput, 0.0)}
         
 
@@ -118,10 +117,10 @@ def run_Ax_optimizer():
                     # 2,
                     # 32,
                     # 512,
-                    8192,
-                    131072,
-                    2097152,
-                    33554432
+                    2**23,
+                    2**25,
+                    2**27,
+                    2**29
                 ],
                 'is_ordered': True,
                 'value_type': 'int',
@@ -129,7 +128,7 @@ def run_Ax_optimizer():
             ],
         evaluation_function=run_benchmark,
         objective_name='Throughput',
-        total_trials=60,
+        total_trials=40,
         # minimize=True,
         )
     return best_parameters, best_values
@@ -140,10 +139,9 @@ if __name__ == '__main__':
     # 2. Run benchmark
     # 3. POST throughput
     # 4. Receive new samples by GET.
-
-    for _ in range(5):
+    for _ in range(3):
         params, values = run_Ax_optimizer()
-        with open('outputs/Ax_results.md', 'a') as file:
+        with open('outputs/Ax_results_filling_april_26.md', 'a') as file:
             file.write(f'\n\nBest parameters found: **{params}**  ')
             file.write(f'\nThroughput for above parameters: **{values}**  ')
     
