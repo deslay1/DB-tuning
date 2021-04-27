@@ -9,10 +9,10 @@ import json
 ##########################################################
 # Optimization objective ('Throughput' or 'Latency')
 OPTIMIZATION_OBJECTIVE = ['Throughput']
-OPTIMIZATION_ITERATIONS = 18
+OPTIMIZATION_ITERATIONS = 15
 APPLICATION_NAME = f'{OPTIMIZATION_OBJECTIVE[0]}_benchmark'
 # Design_of_experiment
-NUMBER_OF_SAMPLES = 2
+NUMBER_OF_SAMPLES = 11
 # Input parameters
 INPUT_PARAMETERS = ['block_size', 'compaction_readahead_size',
     'level0_file_num_compaction_trigger', 'level0_slowdown_writes_trigger',
@@ -46,13 +46,13 @@ Knobs = {}
 Knobs['block_size'] = {}
 Knobs['block_size']['parameter_default'] = 4096 # 2^12
 Knobs['block_size']['parameter_type'] = 'ordinal'
-Knobs['block_size']['values'] = [2**0] + [2**x for x in range(1, 20, 2)] # Highest value 2^19 = 524 288
+Knobs['block_size']['values'] = [2**0] + [2**x for x in range(2, 20, 2)] # Highest value 2^19 = 524 288
 
 # self-defined range: 0 to 4*10^6
 Knobs['compaction_readahead_size'] = {}
 Knobs['compaction_readahead_size']['parameter_default'] = 0 # 2^12
 Knobs['compaction_readahead_size']['parameter_type'] = 'ordinal'
-Knobs['compaction_readahead_size']['values'] = [40000*x for x in range(0, 11)]
+Knobs['compaction_readahead_size']['values'] = [0] + [40000*x for x in range(0, 11)]
 
 # Knob ref: from 1 to 2^8
 Knobs['level0_file_num_compaction_trigger'] = {}
@@ -64,11 +64,11 @@ Knobs['level0_file_num_compaction_trigger']['values'] = [2**x for x in range(0, 
 Knobs['level0_slowdown_writes_trigger'] = {}
 Knobs['level0_slowdown_writes_trigger']['parameter_default'] = 0
 Knobs['level0_slowdown_writes_trigger']['parameter_type'] = 'ordinal'
-Knobs['level0_slowdown_writes_trigger']['values'] = [2**x for x in range(0, 11)]
+Knobs['level0_slowdown_writes_trigger']['values'] = [0] + [2**x for x in range(0, 11)]
 
 # Knob ref: from 1 to 2^10
 Knobs['level0_stop_writes_trigger'] = {}
-Knobs['level0_stop_writes_trigger']['parameter_default'] = 36
+Knobs['level0_stop_writes_trigger']['parameter_default'] = 32 # Actually it is 36
 Knobs['level0_stop_writes_trigger']['parameter_type'] = 'ordinal'
 Knobs['level0_stop_writes_trigger']['values'] = [2**x for x in range(0, 11)]
 
@@ -106,7 +106,7 @@ Knobs['min_write_buffer_number_to_merge']['values'] = [2**x for x in range(0, 6)
 Knobs['write_buffer_size'] = {}
 Knobs['write_buffer_size']['parameter_default'] = 2**26
 Knobs['write_buffer_size']['parameter_type'] = 'ordinal'
-Knobs['write_buffer_size']['values'] = [2**0] + [2**x for x in range(1, 29, 4)]
+Knobs['write_buffer_size']['values'] = [2**0] + [2**x for x in range(2, 31, 4)]
 
 
 if __name__ == '__main__':

@@ -3,12 +3,12 @@
     "optimization_objectives": [
         "Throughput"
     ],
-    "optimization_iterations": 18,
+    "optimization_iterations": 15,
     "models": {
         "model": "random_forest"
     },
     "design_of_experiment": {
-        "number_of_samples": 2
+        "number_of_samples": 11
     },
     "input_parameters": {
         "block_size": {
@@ -16,22 +16,22 @@
             "parameter_type": "ordinal",
             "values": [
                 1,
-                2,
-                8,
-                32,
-                128,
-                512,
-                2048,
-                8192,
-                32768,
-                131072,
-                524288
+                4,
+                16,
+                64,
+                256,
+                1024,
+                4096,
+                16384,
+                65536,
+                262144
             ]
         },
         "compaction_readahead_size": {
             "parameter_default": 0,
             "parameter_type": "ordinal",
             "values": [
+                0,
                 0,
                 40000,
                 80000,
@@ -64,6 +64,7 @@
             "parameter_default": 0,
             "parameter_type": "ordinal",
             "values": [
+                0,
                 1,
                 2,
                 4,
@@ -78,7 +79,7 @@
             ]
         },
         "level0_stop_writes_trigger": {
-            "parameter_default": 36,
+            "parameter_default": 32,
             "parameter_type": "ordinal",
             "values": [
                 1,
@@ -112,12 +113,18 @@
         "max_background_flushes": {
             "parameter_default": 1,
             "parameter_type": "integer",
-            "values": [1, 10]
+            "values": [
+                1,
+                10
+            ]
         },
         "max_bytes_for_level_multiplier": {
             "parameter_default": 10,
             "parameter_type": "integer",
-            "values": [5, 15]
+            "values": [
+                5,
+                15
+            ]
         },
         "max_write_buffer_number": {
             "parameter_default": 2,
@@ -150,15 +157,17 @@
             "parameter_type": "ordinal",
             "values": [
                 1,
-                2,
-                32,
-                512,
-                8192,
-                131072,
-                2097152,
-                33554432
+                4,
+                64,
+                1024,
+                16384,
+                262144,
+                4194304,
+                67108864,
+                1073741824
             ]
         }
     },
-    "output_data_file": "2021-04-16_19-19-25_output.csv"
+    "print_parameter_importance": true,
+    "output_data_file": "2021-04-26_23-32-33_output.csv"
 }

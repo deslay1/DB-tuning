@@ -1,4 +1,9 @@
-# Tunings knobs that could be important
+## Knobs to use -april26+
+-Categorical variables, such as those with bloom filters, integrates well with hypermapper
+- Look into cache_index and filter_block
+
+
+# Tunings knobs that could be important - pre-april-26
 ## RocksDB
 The paper *Optimization of RocksDB for Redis on Flash* by Ouaknine et al. (2017) determines the following knobs as important (excluding any Redis knobs):
 

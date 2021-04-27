@@ -16,6 +16,7 @@ def create_json(filename='example_config_hm'):
     scenario['design_of_experiment'] = {}
     scenario['design_of_experiment']['number_of_samples'] = config.NUMBER_OF_SAMPLES
     scenario['input_parameters'] = {}
+    scenario['print_parameter_importance'] = True
     scenario['output_data_file'] = '{}_output.csv'.format(
         datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
     

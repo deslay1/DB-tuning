@@ -117,7 +117,7 @@ class RocksdbBenchmark:
             print('Error running the filling benchmark, please check the command format and paths given.')
 
 
-    def run_benchmark(self, runs=1, num_million=1, fill=False, options_file=False, max_seconds=300):
+    def run_benchmark(self, runs=1, num_million=1, fill=False, options_file=False, max_seconds=300, use_existing=False):
         """
         Run a benchmark and parse the throughput results.
         """
@@ -128,7 +128,7 @@ class RocksdbBenchmark:
             # command = f'sudo {config.BENCHMARK_COMMAND_PATH} --benchmarks={benchmarks}'
             # command = f'sudo {config.BENCHMARK_COMMAND_PATH} -db={config.DB_DIR} --benchmarks={benchmarks} --use_existing_db'
             command = f'sudo {config.BENCHMARK_COMMAND_PATH} --benchmarks={benchmarks}'
-            if fill: command += ' --use_existing_db'
+            if use_existing: command += ' --use_existing_db'
             if 'mixgraph' in benchmarks:
                 command += (' -use_direct_io_for_flush_and_compaction=true -use_direct_reads=true ' 
                             '-cache_size=268435456 -keyrange_dist_a=14.18 -keyrange_dist_b=-2.917 ' 

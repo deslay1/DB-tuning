@@ -1,6 +1,6 @@
 from Benchmark import RocksdbBenchmark
 
-def mixgraph_test(label, threads):
+def mixgraph_test(label, threads=1):
     options = {
         'threads': threads,
         # 'output_file': 'outputs/mixgraph_test_no_filling.md',
@@ -42,7 +42,7 @@ def mixgraph_test(label, threads):
     for knobs in knob_tests:
         bench.load_knob_configurations(knobs)
         # for t in threads:
-        bench.run_benchmark(runs=2, num_million=50, fill=True, options_file=False)
+        bench.run_benchmark(runs=2, num_million=50, fill=False, options_file=False, use_existing=True)
             # bench.change_threads(t)
 
 
@@ -72,6 +72,6 @@ def ycsb_test():
         # bench.run_benchmark(runs=3)
 
 if __name__ == '__main__':
-    mixgraph_test('filling_april_26', 1)
+    mixgraph_test('tests_post_meeting_april_26')
     # mixgraph_test('50M_threading32',32)
     # ycsb_test()
