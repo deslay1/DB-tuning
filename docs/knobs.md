@@ -1,6 +1,13 @@
 ## Knobs to use -april26+
 -Categorical variables, such as those with bloom filters, integrates well with hypermapper
-- Look into cache_index and filter_block
+- Look into cache_index and filter_block: true or false
+
+### cache_index (bloom filters): https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide#bloom-filters
+- number of open files for bloom filters controlled by max_open_files, which is set to -1 by default (all files open in memory).
+
+### Filter policy : first in https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide#general-options
+Sets bloom filters on, default is null(?). value is number of bits per key, the higher the less false positive rate but more memoery usage and space amplification.
+
 
 
 # Tunings knobs that could be important - pre-april-26

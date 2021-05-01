@@ -2,6 +2,7 @@
 Configuration file optimizer parameters and tuning knobs.
 """
 import json
+from datetime import datetime
 # RESULT_DIR = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
 ##########################################################
@@ -9,10 +10,10 @@ import json
 ##########################################################
 # Optimization objective ('Throughput' or 'Latency')
 OPTIMIZATION_OBJECTIVE = ['Throughput']
-OPTIMIZATION_ITERATIONS = 15
+OPTIMIZATION_ITERATIONS = 30
 APPLICATION_NAME = f'{OPTIMIZATION_OBJECTIVE[0]}_benchmark'
 # Design_of_experiment
-NUMBER_OF_SAMPLES = 11
+NUMBER_OF_SAMPLES = 2
 # Input parameters
 INPUT_PARAMETERS = ['block_size', 'compaction_readahead_size',
     'level0_file_num_compaction_trigger', 'level0_slowdown_writes_trigger',
@@ -21,6 +22,7 @@ INPUT_PARAMETERS = ['block_size', 'compaction_readahead_size',
     'max_write_buffer_number', 'min_write_buffer_number_to_merge', 'write_buffer_size']
 # Model
 MODEL = 'random_forest'
+OUTPUT_IMAGE_FILE = f'image_output.pdf'
 
 ##########################################################
 #            RocksDB Benchmark Configurations            #
@@ -30,8 +32,9 @@ DB_DIR = '/home/osama_eldawebi/main/db-dir'
 OPTIONS_FILE = 'util/options_file.ini'
 OPTIONS_FILE_TEMPLATE = 'util/options_file_template_default.ini' # Default template caused by a fill random benchmark with 1M inserted kV-pairs
 BENCHMARK_COMMAND_PATH = '/home/osama_eldawebi/main/rocksdb/db_bench'
-DB_DIR_YCSB = '/tmp/rocksdb-bench-ycsb'
+BENCHMARK_TYPE = 'readrandomwriterandom'
 
+DB_DIR_YCSB = '/tmp/rocksdb-bench-ycsb'
 YCSB_OPTIONS_FILE = 'util/ycsb_options_file.ini'
 YCSB_OPTIONS_FILE_TEMPLATE = 'util/ycsb_options_file_template_default.ini'
 YCSB_PATH = '/home/osama_eldawebi/main/ycsb-0.17.0/'
@@ -46,7 +49,13 @@ Knobs = {}
 Knobs['block_size'] = {}
 Knobs['block_size']['parameter_default'] = 4096 # 2^12
 Knobs['block_size']['parameter_type'] = 'ordinal'
-Knobs['block_size']['values'] = [2**0] + [2**x for x in range(2, 20, 2)] # Highest value 2^19 = 524 288
+Knobs['block_size']['values'] = [2**0] + [2**x for x in range(2, 20, 1)] # Highest value 2^19 = 524 288
+
+# categorical, test
+Knobs['cache_index_and_filter_blocks'] = {}
+Knobs['cache_index_and_filter_blocks']['parameter_default'] = 'false'
+Knobs['cache_index_and_filter_blocks']['parameter_type'] = 'categorical'
+Knobs['cache_index_and_filter_blocks']['values'] = ['false', 'true']
 
 # self-defined range: 0 to 4*10^6
 Knobs['compaction_readahead_size'] = {}
@@ -106,7 +115,7 @@ Knobs['min_write_buffer_number_to_merge']['values'] = [2**x for x in range(0, 6)
 Knobs['write_buffer_size'] = {}
 Knobs['write_buffer_size']['parameter_default'] = 2**26
 Knobs['write_buffer_size']['parameter_type'] = 'ordinal'
-Knobs['write_buffer_size']['values'] = [2**0] + [2**x for x in range(2, 31, 4)]
+Knobs['write_buffer_size']['values'] = [2**0] + [2**x for x in range(2, 31, 1)]
 
 
 if __name__ == '__main__':

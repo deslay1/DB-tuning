@@ -17,8 +17,15 @@ def create_json(filename='example_config_hm'):
     scenario['design_of_experiment']['number_of_samples'] = config.NUMBER_OF_SAMPLES
     scenario['input_parameters'] = {}
     scenario['print_parameter_importance'] = True
-    scenario['output_data_file'] = '{}_output.csv'.format(
-        datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
+    scenario['output_data_file'] = f'optimizer-output/{config.BENCHMARK_TYPE}{config.OPTIMIZATION_ITERATIONS}.csv'
+    # scenario['output_data_file'] = '{}_output.csv'.format(
+    #     datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
+    scenario['output_image'] = {
+        'output_image_pdf_file': config.OUTPUT_IMAGE_FILE,
+        'optimization_objectives_labels_image_pdf': ['Throughput (ops/sec)'],
+        # 'image_xlog': False,
+        # 'image_ylog': True,
+    }
     
     # Load knobs
     with open('util/search_space.json', 'r') as fobj:

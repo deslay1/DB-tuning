@@ -3,12 +3,12 @@
     "optimization_objectives": [
         "Throughput"
     ],
-    "optimization_iterations": 15,
+    "optimization_iterations": 30,
     "models": {
         "model": "random_forest"
     },
     "design_of_experiment": {
-        "number_of_samples": 11
+        "number_of_samples": 2
     },
     "input_parameters": {
         "block_size": {
@@ -17,14 +17,23 @@
             "values": [
                 1,
                 4,
+                8,
                 16,
+                32,
                 64,
+                128,
                 256,
+                512,
                 1024,
+                2048,
                 4096,
+                8192,
                 16384,
+                32768,
                 65536,
-                262144
+                131072,
+                262144,
+                524288
             ]
         },
         "compaction_readahead_size": {
@@ -158,16 +167,43 @@
             "values": [
                 1,
                 4,
+                8,
+                16,
+                32,
                 64,
+                128,
+                256,
+                512,
                 1024,
+                2048,
+                4096,
+                8192,
                 16384,
+                32768,
+                65536,
+                131072,
                 262144,
+                524288,
+                1048576,
+                2097152,
                 4194304,
+                8388608,
+                16777216,
+                33554432,
                 67108864,
+                134217728,
+                268435456,
+                536870912,
                 1073741824
             ]
         }
     },
     "print_parameter_importance": true,
-    "output_data_file": "2021-04-26_23-32-33_output.csv"
+    "output_data_file": "optimizer-output/readrandomwriterandom30.csv",
+    "output_image": {
+        "output_image_pdf_file": "image_output.pdf",
+        "optimization_objectives_labels_image_pdf": [
+            "Throughput (ops/sec)"
+        ]
+    }
 }

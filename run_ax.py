@@ -1,7 +1,7 @@
 """
 Runs a benchmark test using db_bench tool for RocksDB
 """
-from Benchmark import RocksdbBenchmark
+from benchmark import RocksdbBenchmark
 
 from ax import optimize, SimpleExperiment, ChoiceParameter, SearchSpace, ParameterType, Arm, Models
 import pandas as pd

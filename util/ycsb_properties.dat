@@ -1,5 +1,5 @@
-readproportion=0.85
-updateproportion=0.10
-insertproportion=0.05
+readproportion=0.50
+updateproportion=0.50
+insertproportion=0.00
 recordcount=1000000
 operationcount=1000000
