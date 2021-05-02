@@ -32,6 +32,7 @@ class RocksdbBenchmark:
         self.__output_file = ''
         self.__testing = False
         self.__baseline = 0
+        self.__readwritepercent = None
 
         # One can input multiple commands in one list if that is desired. 
         if bench_type.lower() == 'mix': 
@@ -104,7 +105,7 @@ class RocksdbBenchmark:
         return result
 
 
-    def run_filling(self, fill_type='random', num_million=50, options_file=False):
+    def run_filling(self, fill_type='random', num_million=1, options_file=False):
         """
         Create and fill a database instance with key-value pairs
 
@@ -135,8 +136,7 @@ class RocksdbBenchmark:
             command = f'sudo {config.YCSB_PATH}bin/ycsb.sh run rocksdb -s -P {config.YCSB_PATH}workloads/workload{self.__ycsb_workload} -P {config.YCSB_PROPERTIES_FILE} -p rocksdb.dir={config.DB_DIR_YCSB} -threads 32'
         else:
             benchmarks = f'"{",".join(self.benchmarks)},stats"'
-            # command = f'sudo {config.BENCHMARK_COMMAND_PATH} --benchmarks={benchmarks}'
-            # command = f'sudo {config.BENCHMARK_COMMAND_PATH} -db={config.DB_DIR} --benchmarks={benchmarks} --use_existing_db'
+            # command = f'sudo {config.BENCHMARK_COMMAND_PATH} -db={config.DB_DIR} --benchmarks={benchmarks}'
             command = f'sudo {config.BENCHMARK_COMMAND_PATH} --benchmarks={benchmarks}'
             if use_existing: command += ' --use_existing_db'
             if 'mixgraph' in benchmarks:
@@ -146,17 +146,17 @@ class RocksdbBenchmark:
                             '-value_k=0.2615 -value_sigma=25.45 -iter_k=2.517 -iter_sigma=14.236 '
                             '-mix_get_ratio=0.85 -mix_put_ratio=0.14 -mix_seek_ratio=0.01 '
                             '-sine_mix_rate_interval_milliseconds=5000 -sine_a=1000 '
-                            # '-sine_b=0.000000073 -sine_d=4500000 --perf_level=1 -reads=4200000 '
+                            '-sine_b=0.000000073 -sine_d=4500000 --perf_level=1 -reads=4200000 '
                             # '-sine_b=0.000073 -sine_d=4500 --perf_level=1 -reads=420000000 '
-                            '-sine_b=0.000000073 -sine_d=4500000 --perf_level=2 -reads=420000000 '
+                            # '-sine_b=0.000000073 -sine_d=4500000 --perf_level=2 -reads=420000000 '
                             f'-num={num_million*1000000} -key_size=48 --statistics=1')
                             # ' --allow_concurrent_memtable_write=false') # this last was added for multi-threading.
             command += f' --duration={max_seconds}'
 
         command += self.add_command_options(options_file)
         command += f' --threads={self.__threads}' 
-        if self.__readwritepercent: command += f' -readwritepercent={self.__readwritepercent}'
-        # print(command)
+        if self.__readwritepercent is not None: command += f' -readwritepercent={self.__readwritepercent}'
+        print(command)
 
         throughput = 0
         try:

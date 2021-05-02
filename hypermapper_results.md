@@ -1,3 +1,52 @@
+# First iteration of results
+global properties:
+- number of samples before optimization: 2
+- model: random forest
+  - numer of trees: \<default:20\>
+- iterations: 50
+- threads: 32
+- runs per iteration: 1
+- key-value pairs (num): 5 million
+- max duration of benchmark: 60 seconds
+- OUTPUT FILES: \<benchmark\>50.csv; 
+## readrandomwriterandom
+**feature importances**:  
+[0.055445107303136155, 0.048877700628293136, 0.01929532842262805, 0.13084902528584758, 0.023027046103120306, 0.02813681783435002, 0.021166692624159107, 0.009288342610501783, 0.00403001343594297, 0.00670673010188481, 0.6531771956501362]
+
+**Best point found**:  
+block_size,compaction_readahead_size,level0_file_num_compaction_trigger,level0_slowdown_writes_trigger,level0_stop_writes_trigger,max_background_compactions,max_background_flushes,max_bytes_for_level_multiplier,max_write_buffer_number,min_write_buffer_number_to_merge,write_buffer_size,Throughput
+4,160000,1,1024,4,256,2,8,64,1,33554432,-119597
+
+## updaterandom
+**feature importances**: [0.15385905108085335, 0.008006894642432242, 0.00540808190366646, 0.000516770446485539, 0.0798487068106021, 0.03331838540360432, 0.003290172332434804, 0.03354940429782523, 0.03600661420363871, 0.008655696717949395, 0.6375402221605079]
+
+**Best point found**:
+block_size,compaction_readahead_size,level0_file_num_compaction_trigger,level0_slowdown_writes_trigger,level0_stop_writes_trigger,max_background_compactions,max_background_flushes,max_bytes_for_level_multiplier,max_write_buffer_number,min_write_buffer_number_to_merge,write_buffer_size,Throughput
+512,120000,2,64,512,256,1,6,8,32,536870912,-58958
+
+## readrandom
+**feature importances**: [0.3812921587681154, 0.024027374605416867, 0.11893936120198154, 0.0009652864466218999, 0.027704099012557624, 0.007727132095317659, 0.006051348600476096, 0.003353719444603654, 0.007245856209043429, 0.008801271384755359, 0.4138923922311105]
+
+**Best point found**:
+block_size,compaction_readahead_size,level0_file_num_compaction_trigger,level0_slowdown_writes_trigger,level0_stop_writes_trigger,max_background_compactions,max_background_flushes,max_bytes_for_level_multiplier,max_write_buffer_number,min_write_buffer_number_to_merge,write_buffer_size,Throughput
+1024,40000,4,128,8,4,4,8,1,2,536870912,-248288
+
+
+## readrandomwriterandom replicating workloads A,B,C in YCSB
+### A: see above, but another test was done:
+**feature importances**:
+[0.2427261065744868, 0.00872722484428371, 0.07871058636288579, 0.006044349328470506, 0.03823827186586416, 0.031168650836803775, 0.00567687162748982, 0.01761936242583223, 0.01636744173920168, 0.008792852777551355, 0.5459282816171303]
+
+**Best point found**:
+block_size,compaction_readahead_size,level0_file_num_compaction_trigger,level0_slowdown_writes_trigger,level0_stop_writes_trigger,max_background_compactions,max_background_flushes,max_bytes_for_level_multiplier,max_write_buffer_number,min_write_buffer_number_to_merge,write_buffer_size,Throughput
+1024,120000,1,8,4,4,3,0,1,1,16777216,-121801
+
+### B: 95/5 read/write
+
+
+
+
+# OLD
 # First iteration of paramters, iterations=15
 importances: [0.00027195395090342904, 0.20679833603817577, 0.0928234267591486, 0.0, 0.028109540323597172, 0.12197588228681251, 0.021976919936102447, 0.0005799713707593317, 0.004135081340103817, 0.014974478941336161, 0.5083544090530607]
 Best point found:
