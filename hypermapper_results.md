@@ -41,9 +41,36 @@ block_size,compaction_readahead_size,level0_file_num_compaction_trigger,level0_s
 block_size,compaction_readahead_size,level0_file_num_compaction_trigger,level0_slowdown_writes_trigger,level0_stop_writes_trigger,max_background_compactions,max_background_flushes,max_bytes_for_level_multiplier,max_write_buffer_number,min_write_buffer_number_to_merge,write_buffer_size,Throughput
 1024,120000,1,8,4,4,3,0,1,1,16777216,-121801
 
-### B: 95/5 read/write
+### B: 95/5 read/write  
+**feature importances**:
+[0.20279484902992875, 0.007752543941133131, 0.2610904103793222, 0.1749630376948556, 0.009403681091173448, 0.015963922350249304, 0.008356108236070211, 0.0018887666516706496, 0.005043839904741455, 0.012920309336572813, 0.29982253138428255]
+
+**Best point found**:
+block_size,compaction_readahead_size,level0_file_num_compaction_trigger,level0_slowdown_writes_trigger,level0_stop_writes_trigger,max_background_compactions,max_background_flushes,max_bytes_for_level_multiplier,max_write_buffer_number,min_write_buffer_number_to_merge,write_buffer_size,Throughput
+2048,240000,4,16,256,2,4,5,4,8,268435456,-262537
+
+### C: 100/0 read/write - INVALID
 
 
+## mixgraph 5 million
+number of reads is 4.2 million
+- rest is similar to Alabed
+
+**feature importances**:
+[0.3407670474741084, 0.01706067975979753, 0.23038264182710874, 0.002729358980699036, 0.09511747315795435, 0.08210144795297077, 0.008928392789567386, 0.016076557274410964, 0.0031041338907908974, 0.0014384009909340766, 0.2022938659016579]
+
+**Best point found**:
+block_size,compaction_readahead_size,level0_file_num_compaction_trigger,level0_slowdown_writes_trigger,level0_stop_writes_trigger,max_background_compactions,max_background_flushes,max_bytes_for_level_multiplier,max_write_buffer_number,min_write_buffer_number_to_merge,write_buffer_size,Throughput
+8192,40000,1,1024,32,256,3,5,8,4,1073741824,-15226
+
+### another try:
+**feature importances**:
+[0.2231962367872672, 0.0, 0.010535100772364086, 0.13473192973427256, 0.026541699134123683, 0.10749450799069712, 0.10648696371975243, 0.06607455667029914, 0.15313641823651222, 0.0069464874672317605, 0.16485609948747984]
+
+**Best point found**:
+Best point found:
+block_size,compaction_readahead_size,level0_file_num_compaction_trigger,level0_slowdown_writes_trigger,level0_stop_writes_trigger,max_background_compactions,max_background_flushes,max_bytes_for_level_multiplier,max_write_buffer_number,min_write_buffer_number_to_merge,write_buffer_size,Throughput
+4096,0,2,0,64,1,7,6,4,16,4194304,-13538
 
 
 # OLD

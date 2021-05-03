@@ -10,17 +10,15 @@ import config
 plt.style.use('fivethirtyeight')
 # plt.style.use('ggplot')
 
-normalize = False
-output_ops_path = 'optimizer-output/1_throughput_2.png' if not normalize else 'optimizer-output/1_throughput_2_norm.png'
-output_importance_path = 'optimizer-output/1_feature_importance_2.png'
-files = ['optimizer-output/' + file for file in ['readrandomwriterandom50_2.csv', 'updaterandom50.csv', 'readrandom50.csv']]
+normalize = True
+output_ops_path = 'optimizer-output/1_throughput_3.png' if not normalize else 'optimizer-output/1_throughput_3_norm.png'
+output_importance_path = 'optimizer-output/1_feature_importance_3.png'
+files = ['optimizer-output/' + file for file in ['1_mixgraph.csv', '1_mixgraph_2.csv']]
 
 # MANUAL WORK FOR NOW, add the vector from the printed output or log file if that is available.
 imps = [
-    [0.055445107303136155, 0.048877700628293136, 0.01929532842262805, 0.13084902528584758, 0.023027046103120306, 0.02813681783435002, 0.021166692624159107, 0.009288342610501783, 0.00403001343594297, 0.00670673010188481, 0.6531771956501362],
-    [0.15385905108085335, 0.008006894642432242, 0.00540808190366646, 0.000516770446485539, 0.0798487068106021, 0.03331838540360432, 0.003290172332434804, 0.03354940429782523, 0.03600661420363871, 0.008655696717949395, 0.6375402221605079],
-    [0.3812921587681154, 0.024027374605416867, 0.11893936120198154, 0.0009652864466218999, 0.027704099012557624, 0.007727132095317659, 0.006051348600476096, 0.003353719444603654, 0.007245856209043429, 0.008801271384755359, 0.4138923922311105]
-
+    [0.3407670474741084, 0.01706067975979753, 0.23038264182710874, 0.002729358980699036, 0.09511747315795435, 0.08210144795297077, 0.008928392789567386, 0.016076557274410964, 0.0031041338907908974, 0.0014384009909340766, 0.2022938659016579],
+    [0.2231962367872672, 0.0, 0.010535100772364086, 0.13473192973427256, 0.026541699134123683, 0.10749450799069712, 0.10648696371975243, 0.06607455667029914, 0.15313641823651222, 0.0069464874672317605, 0.16485609948747984]
 ]
 
 # Parse dataframes
@@ -45,7 +43,7 @@ for df in dfs:
     objectives.append(y)
 
 colors = ['firebrick', 'forestgreen', 'royalblue']
-labels = ['readrandomwriterandom', 'updaterandom', 'readrandom']
+labels = ['1_mixgraph', '1_mixgraph_2']
 for i, y in enumerate(objectives):
     plt.plot(x, y, color=colors[i], label=labels[i])
 plt.ylabel('Throughput (ops/sec)')

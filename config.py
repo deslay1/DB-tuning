@@ -51,7 +51,7 @@ Knobs['block_size']['parameter_default'] = 4096 # 2^12
 Knobs['block_size']['parameter_type'] = 'ordinal'
 Knobs['block_size']['values'] = [2**0] + [2**x for x in range(2, 20, 1)] # Highest value 2^19 = 524 288
 
-# categorical, test
+# categorical, may or may not have a large impact
 Knobs['cache_index_and_filter_blocks'] = {}
 Knobs['cache_index_and_filter_blocks']['parameter_default'] = 'false'
 Knobs['cache_index_and_filter_blocks']['parameter_type'] = 'categorical'
@@ -62,6 +62,15 @@ Knobs['compaction_readahead_size'] = {}
 Knobs['compaction_readahead_size']['parameter_default'] = 0 # 2^12
 Knobs['compaction_readahead_size']['parameter_type'] = 'ordinal'
 Knobs['compaction_readahead_size']['values'] = [0] + [40000*x for x in range(0, 11)]
+
+# categorical, may or may not have a large impact,
+# According to https://github.com/facebook/rocksdb/wiki/Compression, LZ4 is almost always better than default
+# NOTE: this this format when passing command line flags rather than an options file.
+# With an options file, the values are formulated differently, for exmplle 'LZ4' --> 'kLZ4Compression'
+Knobs['compression'] = {}
+Knobs['compression']['parameter_default'] = 'snappy'
+Knobs['compression']['parameter_type'] = 'categorical'
+Knobs['compression']['values'] = ['snappy', 'zstd', 'lz4'] # see link above, these are the most relevant
 
 # Knob ref: from 1 to 2^8
 Knobs['level0_file_num_compaction_trigger'] = {}
