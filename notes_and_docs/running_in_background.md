@@ -7,8 +7,14 @@ chmod +x background.sh
 nohup ./background.sh > /dev/null 2>&1&
 ```
 The last part of the nohup command is to ignore output that is automatically saved to nohup.out (since we will reach file size limit during testing)
-```
+
 
 ## Useful commands
-To check if scripts are active, use `ps aux | grep background`  
-To kill a process, run `kill -9 <id of process>`
+To check if scripts are active, use
+```
+ps aux | grep background
+```  
+To kill a process, run 
+``` 
+kill -9 <id of process>
+``` 

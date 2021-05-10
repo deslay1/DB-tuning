@@ -3,12 +3,12 @@
     "optimization_objectives": [
         "Throughput"
     ],
-    "optimization_iterations": 30,
+    "optimization_iterations": 1,
     "models": {
         "model": "random_forest"
     },
     "design_of_experiment": {
-        "number_of_samples": 2
+        "number_of_samples": 130
     },
     "input_parameters": {
         "block_size": {
@@ -36,6 +36,14 @@
                 524288
             ]
         },
+        "cache_index_and_filter_blocks": {
+            "parameter_default": "false",
+            "parameter_type": "categorical",
+            "values": [
+                "false",
+                "true"
+            ]
+        },
         "compaction_readahead_size": {
             "parameter_default": 0,
             "parameter_type": "ordinal",
@@ -52,6 +60,15 @@
                 320000,
                 360000,
                 400000
+            ]
+        },
+        "compression_type": {
+            "parameter_default": "snappy",
+            "parameter_type": "categorical",
+            "values": [
+                "snappy",
+                "zstd",
+                "lz4"
             ]
         },
         "level0_file_num_compaction_trigger": {
@@ -199,7 +216,7 @@
         }
     },
     "print_parameter_importance": true,
-    "output_data_file": "optimizer-output/2021-05-03_00-15-42_output.csv",
+    "output_data_file": "optimizer-output/2021-05-09_12-54-27_output.csv",
     "output_image": {
         "output_image_pdf_file": "image_output.pdf",
         "optimization_objectives_labels_image_pdf": [

@@ -22,19 +22,25 @@ which should provide a .jni file in *java/target/*.
 
 
 ## BEST: Benchmarking with RocksDB tool *db_bench* (by providing options file or command line flags)
-###
+
+In the main rocksdb folder (of repository) I ran `make release`, which is perhaps unnecessary.
+To compile the tools, run `make tools`
+
+Then you can run `./db_bench` command (again from the main directory)
+
+If problems occur, see first the Install file in the RocksDB repository on github.
+
+### [OLD] 
+{
+
 I had problems getting this to work on Ubuntu.
 Running `make all` in the main directory wasn't useful. First of you have to check that gflags is installed. I then added the following paths to my */etc/environment* file.
 ```
 CPATH="/usr/include/gflags/"
 LIBRARY_PATH="/usr/local/lib"
 ```
-In the main rocksdb folder (of repository) I ran `make release`, which is perhaps unnecessary.
-To compile the tools, run `make tools`
-
-Then you can run `./db_bench` command (again from the main directory)
-
-### Suboptimal alternative: With apt package (uses DB version 5.17, i.e. OLD)
+}
+### Suboptimal alternative: With apt package (uses DB version 5.17, i.e. an old version)
 First install the necessary tools with `sudo apt install rocksdb-tools`.
 
 Example *memory workload performance* commands to fill up a database instance and run a benchmark can be found at https://github.com/facebook/rocksdb/wiki/RocksDB-In-Memory-Workload-Performance-Benchmarks

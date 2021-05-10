@@ -50,6 +50,15 @@
             400000
         ]
     },
+    "compression_type": {
+        "parameter_default": "snappy",
+        "parameter_type": "categorical",
+        "values": [
+            "snappy",
+            "zstd",
+            "lz4"
+        ]
+    },
     "level0_file_num_compaction_trigger": {
         "parameter_default": 4,
         "parameter_type": "ordinal",

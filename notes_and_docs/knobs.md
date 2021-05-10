@@ -1,18 +1,21 @@
-## Knobs to use -april26+
--Categorical variables, such as those with bloom filters, integrates well with hypermapper
-- Look into cache_index and filter_block: true or false
+## Categorical variables might be interesting  - 26/4/2021
+- For example those associated with bloom filters
+- They integrate well with HyperMapper
+- Look into cache_index_and_filter_block: true or false
 
-### cache_index (bloom filters): https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide#bloom-filters
+Possibly good parameters:
+- cache_index (bloom filters): https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide#bloom-filters
 - number of open files for bloom filters controlled by max_open_files, which is set to -1 by default (all files open in memory).
-
-### Filter policy : first in https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide#general-options
-Sets bloom filters on, default is null(?). value is number of bits per key, the higher the less false positive rate but more memoery usage and space amplification.
-
+- filter policy : first in https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide#general-options
+Sets bloom filters on, default is null(?). value is number of bits per key, the higher the less false positive rate but more memory usage and space amplification.
 
 
-# Tunings knobs that could be important - pre-april-26
+# Tunings knobs that could be important - pre-26/4/2021
 ## RocksDB
-The paper *Optimization of RocksDB for Redis on Flash* by Ouaknine et al. (2017) determines the following knobs as important (excluding any Redis knobs):
+### Most relevant: paper by Sami Alabed: https://arxiv.org/pdf/2103.16267.pdf 
+Includes 10 parameters, some of which are included in the paper below. This project will use all 10 from this paper.
+
+### The paper *Optimization of RocksDB for Redis on Flash* by Ouaknine et al. (2017) determines the following knobs as important (excluding any Redis knobs):
 
 *Name-default value-value used-performance impact*
 - compaction_readahead_size-0-2MB-300%
