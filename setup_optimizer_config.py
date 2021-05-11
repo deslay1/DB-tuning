@@ -3,7 +3,8 @@ import json
 import config
 from datetime import datetime
 
-def create_json(filename='example_config_hm'):
+
+def create_json(filename='example_scenario.json'):
     """
     Creates a json file for usage by the optimizer service
     """
@@ -26,7 +27,7 @@ def create_json(filename='example_config_hm'):
         # 'image_xlog': False,
         # 'image_ylog': True,
     }
-    
+
     # Load knobs
     with open('util/search_space.json', 'r') as fobj:
         knobs = json.load(fobj)
@@ -42,4 +43,5 @@ def create_json(filename='example_config_hm'):
 
 
 if __name__ == '__main__':
+    config.update_config()
     create_json('util/optimizer_scenario.json')

@@ -139,6 +139,6 @@ Knobs['write_buffer_size']['parameter_type'] = 'ordinal'
 Knobs['write_buffer_size']['values'] = [2**0] + [2**x for x in range(2, 31, 1)]
 
 
-if __name__ == '__main__':
+def update_config():
     with open('util/search_space.json', 'w') as file:
         json.dump(Knobs, file, indent=4)
