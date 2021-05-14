@@ -4,5 +4,5 @@ I used an Anaconda environment with Python3.8. The dependencies are in the **req
 ```conda create --name <envname> --file requirements.txt```
 
 ---
-Running `python setup_optimizer_config.py` will create the the json file(s) that are needed for hypermapper. The benchmark program is located in **run_hypermapper.py** and can be run using `python run_optimizer.py`. The benchmark class for RocksDB is defined in **benchmark.py**
+Running `python setup_optimizer_config.py` will create the the json file(s) that are needed for hypermapper. The benchmark program is located in **run_hypermapper.py** and can be run using `python run_hypermapper.py`. The benchmark class for RocksDB is defined in **benchmark.py**
 

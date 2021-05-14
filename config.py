@@ -14,17 +14,26 @@ INPUT_PARAMETERS = ['block_size', 'cache_index_and_filter_blocks', 'compaction_r
                     'level0_slowdown_writes_trigger', 'level0_stop_writes_trigger',
                     'max_background_compactions',
                     'max_background_flushes', 'max_bytes_for_level_multiplier',
-                    'max_write_buffer_number', 'min_write_buffer_number_to_merge',
                     'write_buffer_size']
+# INPUT_PARAMETERS = ['block_size', 'cache_index_and_filter_blocks', 'compaction_readahead_size',
+#                     'compression_type', 'level0_file_num_compaction_trigger',
+#                     'level0_slowdown_writes_trigger', 'level0_stop_writes_trigger',
+#                     'max_background_compactions',
+#                     'max_background_flushes', 'max_bytes_for_level_multiplier',
+#                     'max_write_buffer_number', 'min_write_buffer_number_to_merge',
+#                     'write_buffer_size']
 
 OPTIMIZATION_OBJECTIVE = ['Throughput']
-# OPTIMIZATION_ITERATIONS = 50 - \
-#     (len(INPUT_PARAMETERS)+1)  # (50 - Number of samples)
-OPTIMIZATION_ITERATIONS = 1
 APPLICATION_NAME = f'{OPTIMIZATION_OBJECTIVE[0]}_benchmark'
-# Design_of_experiment
-# NUMBER_OF_SAMPLES = len(INPUT_PARAMETERS)+1  # D + 1
-NUMBER_OF_SAMPLES = len(INPUT_PARAMETERS) * 10  # 10D
+
+# 1. Feature importance
+# OPTIMIZATION_ITERATIONS = 1
+# NUMBER_OF_SAMPLES = len(INPUT_PARAMETERS) * 10  # 10D
+# 2. BO
+OPTIMIZATION_ITERATIONS = 100 - \
+    (len(INPUT_PARAMETERS)+1)  # (50 - Number of samples)
+NUMBER_OF_SAMPLES = len(INPUT_PARAMETERS)+1  # D + 1
+
 # Model
 MODEL = 'random_forest'
 OUTPUT_IMAGE_FILE = f'image_output.pdf'

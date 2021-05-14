@@ -5,7 +5,7 @@ from hypermapper import optimizer
 
 def run_benchmark(knobs):
     options = {
-        'readwritepercent': 90,
+        'readwritepercent': 50,
         'threads': 32
     }
     bench = RocksdbBenchmark(
