@@ -1,13 +1,12 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import os
 import config
 
 plt.style.use('fivethirtyeight')
 # plt.style.use('ggplot')
 
-optimization_cycle = 1
+optimization_cycle = 2
 normalize = False
 output_ops_path = f'optimizer-output/{optimization_cycle}_throughput' if not normalize else f'optimizer-output/{optimization_cycle}_throughput_norm'
 # output_importance_path = 'optimizer-output/1_feature_importance_3.png'
@@ -51,7 +50,7 @@ for df_ind, df in enumerate(dfs):
                 label=f'Baseline: {y[0]}')
     increase = int(((y.iloc[-1] - y[0]) / y[0]) * 100)
     plt.axhline(y=y.iloc[-1], linewidth=3, color=colors[1],
-                label=f'Max: {y.iloc[-1]} ≈{increase}%-increase')
+                label=f'Max: {y.iloc[-1]} ≈ {increase}%-increase')
     plt.ylabel('Throughput (ops/sec)')
     plt.xlabel('Optimizer iteration')
     plt.title('Convergence rates')
