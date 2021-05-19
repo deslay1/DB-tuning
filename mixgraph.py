@@ -29,5 +29,5 @@ knob_tests = [
 ]
 for knobs in knob_tests:
     bench.load_knob_configurations(knobs)
-    bench.run_benchmark(runs=1, num_million=5, fill=True,
+    bench.run_benchmark(runs=3, num_million=5, fill=True,
                         options_file=False, use_existing=True, max_seconds=300)

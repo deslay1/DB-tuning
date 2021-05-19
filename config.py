@@ -77,8 +77,7 @@ Knobs['cache_index_and_filter_blocks']['values'] = ['false', 'true']
 Knobs['compaction_readahead_size'] = {}
 Knobs['compaction_readahead_size']['parameter_default'] = 0  # 2^12
 Knobs['compaction_readahead_size']['parameter_type'] = 'ordinal'
-Knobs['compaction_readahead_size']['values'] = [
-    0] + [40000*x for x in range(0, 11)]
+Knobs['compaction_readahead_size']['values'] = [40000*x for x in range(0, 11)]
 
 # categorical, may or may not have a large impact,
 # According to https://github.com/facebook/rocksdb/wiki/compression_type, LZ4 is almost always better than default
