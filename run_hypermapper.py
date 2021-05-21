@@ -13,7 +13,7 @@ def run_benchmark(knobs):
     knobs = dict((k, str(v)) for k, v in knobs.items())
     bench.load_knob_configurations(knobs)
     throughput = bench.run_benchmark(
-        runs=3, num_million=5, fill=True, options_file=False, use_existing=True, max_seconds=300)
+        runs=3, num_million=5, fill=True, options_file=False, use_existing=True, max_seconds=300, calc_latency=True)
     return -int(throughput)
 
 

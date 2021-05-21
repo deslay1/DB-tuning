@@ -70,7 +70,7 @@ class RocksdbBenchmark:
             knobs -> key-value pairs of knobs to tune
         """
         self.knobs = knobs
-        if len(self.__output_file) > 0:
+        if self.__testing and len(self.__output_file) > 0:
             with open(self.__output_file, 'a') as file:
                 file.write('\n\nBenchmark with knobs: ' +
                            str(self.knobs) + '  ')
@@ -133,7 +133,7 @@ class RocksdbBenchmark:
             else:
                 command = f'sudo {config.BENCHMARK_COMMAND_PATH} --benchmarks="fill{fill_type}" -num={num_million*1000000}'
 
-        print(command)
+        # print(command)
         try:
             # subprocess.run(f'sudo rm -r {config.DB_DIR}/', shell=True)
             subprocess.run(command, shell=True)
@@ -141,7 +141,7 @@ class RocksdbBenchmark:
             print(
                 'Error running the filling benchmark, please check the command format and paths given.')
 
-    def run_benchmark(self, runs=1, num_million=1, fill=False, options_file=False, max_seconds=300, use_existing=False):
+    def run_benchmark(self, runs=1, num_million=1, fill=False, options_file=False, max_seconds=30, use_existing=False, calc_latency=False):
         """
         Run a benchmark and parse the throughput results.
         """
@@ -165,17 +165,25 @@ class RocksdbBenchmark:
                 # ' --allow_concurrent_memtable_write=false') # this last was added for multi-threading.
             else:
                 command += f' -num={num_million*1000000}'
+
             command += f' --duration={max_seconds}'
+            if calc_latency:
+                command += f' -histogram=1'
 
         command += self.add_command_options(options_file)
         command += f' --threads={self.__threads}'
         if self.__readwritepercent is not None:
             command += f' -readwritepercent={self.__readwritepercent}'
-        print(command)
+        # print(command)
 
-        throughput = 0
         try:
-            results = []  # Save to later calculate average
+            # Save to later calculate average
+            results = {
+                'throughput': [],
+                'read_latency': [],
+                'write_latency': [],
+            }
+            throughput, read_latency, write_latency = -1, -1, -1
             for _ in range(runs):
                 if self.ycsb:
                     try:
@@ -188,7 +196,7 @@ class RocksdbBenchmark:
                         self.run_filling(
                             fill_type='random', num_million=num_million, options_file=options_file)
 
-                # print(command)
+                found_read_latency, found_write_latency = False, False
                 for line in subprocess.check_output(command, shell=True, universal_newlines=True).split('\n'):
                     if self.ycsb:
                         if 'OVERALL' in str(line):
@@ -196,37 +204,57 @@ class RocksdbBenchmark:
                             if match is not None:
                                 throughput = match.group(0)
                                 results.append(float(throughput))
-                                if len(self.__output_file) > 0:
-                                    with open(self.__output_file, 'a') as file:
-                                        file.write(
-                                            f'\nThroughput (ops/sec): {throughput}  ')
                     else:
+                        # Find TPS
                         if 'ops/sec;' in str(line):
                             # print(f'RESULT: {str(line)}')
                             match = re.search('((\d+)\sops)', str(line))
                             throughput = match.group(2)
-                            results.append(int(throughput))
-                            if len(self.__output_file) > 0:
-                                with open(self.__output_file, 'a') as file:
-                                    file.write(
-                                        f'\nThroughput (ops/sec): {throughput}  ')
-            if self.__testing:
-                average = int(sum(results) / len(results))
-                if not self.knobs:
-                    self.baseline = average
-                if self.baseline != 0:
-                    deviation = ((average - self.baseline) /
-                                 self.baseline) * 100
-                else:
-                    deviation = 0
+                            results['throughput'].append(int(throughput))
+                        # Find latency
+                        if 'Microseconds per read:' in str(line):
+                            found_read_latency = True
+                        elif 'Microseconds per write:' in str(line):
+                            found_write_latency = True
+                        else:
+                            if found_read_latency:
+                                match = re.search(
+                                    'Average:\s([\d.]+)', str(line))
+                                read_latency = match.group(1)
+                                results['read_latency'].append(
+                                    float(read_latency))
+                                found_read_latency = False
+                            if found_write_latency:
+                                match = re.search(
+                                    'Average:\s([\d.]+)', str(line))
+                                write_latency = match.group(1)
+                                results['write_latency'].append(
+                                    float(write_latency))
+                                found_write_latency = False
+                        # print(f'READ LATENCY: {read_latency}')
+                        # print(f'Write LATENCY: {write_latency}')
+            average_tps = int(
+                sum(results['throughput']) / len(results['throughput']))
+            if calc_latency:
+                average_rl = float(
+                    sum(results['read_latency']) / len(results['read_latency']))
+                average_wl = float(
+                    sum(results['write_latency']) / len(results['write_latency']))
+
+            if len(self.__output_file) > 0:
                 with open(self.__output_file, 'a') as file:
-                    file.write(f'\nAverage (ops/sec): **{average}**  ')
-                    file.write(
-                        f'\nDeviation from baseline: **{"{:.2f}".format(deviation)}%**  ')
+                    if calc_latency:
+                        file.write(
+                            f'\n{average_tps},{average_rl},{average_wl}  ')
+                    else:
+                        file.write(f'\n{average_tps}  ')
 
         except CalledProcessError:
             print(
                 'Error running the benchmark, please check the command format and paths given.')
 
         # Finally, return the throughput
-        return throughput
+        if calc_latency:
+            return average_tps, average_rl, average_wl
+        else:
+            return average_tps

@@ -4,7 +4,7 @@ from benchmark import RocksdbBenchmark
 options = {
     'threads': 1,
     'output_file': 'mixgraph_1.md',
-    'testing': True,
+    # 'testing': True,
     'readwritepercent': 50,
 }
 bench = RocksdbBenchmark(bench_type='readrandomwriterandom', options=options)
@@ -29,5 +29,8 @@ knob_tests = [
 ]
 for knobs in knob_tests:
     bench.load_knob_configurations(knobs)
-    bench.run_benchmark(runs=3, num_million=5, fill=True,
-                        options_file=False, use_existing=True, max_seconds=300)
+    tps, rl, wl = bench.run_benchmark(runs=2, num_million=1, fill=True,
+                                      options_file=False, use_existing=True, calc_latency=True)
+    print(tps)
+    print(rl)
+    print(wl)
