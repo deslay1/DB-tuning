@@ -9,19 +9,19 @@ from datetime import datetime
 #               Hypermapper Configurations               #
 ##########################################################
 # Input parameters
-INPUT_PARAMETERS = ['block_size', 'cache_index_and_filter_blocks', 'compaction_readahead_size',
-                    'compression_type', 'level0_file_num_compaction_trigger',
-                    'level0_slowdown_writes_trigger', 'level0_stop_writes_trigger',
-                    'max_background_compactions',
-                    'max_background_flushes', 'max_bytes_for_level_multiplier',
-                    'write_buffer_size']
 # INPUT_PARAMETERS = ['block_size', 'cache_index_and_filter_blocks', 'compaction_readahead_size',
 #                     'compression_type', 'level0_file_num_compaction_trigger',
 #                     'level0_slowdown_writes_trigger', 'level0_stop_writes_trigger',
 #                     'max_background_compactions',
 #                     'max_background_flushes', 'max_bytes_for_level_multiplier',
-#                     'max_write_buffer_number', 'min_write_buffer_number_to_merge',
 #                     'write_buffer_size']
+INPUT_PARAMETERS = ['block_size', 'cache_index_and_filter_blocks', 'compaction_readahead_size',
+                    'compression_type', 'level0_file_num_compaction_trigger',
+                    'level0_slowdown_writes_trigger', 'level0_stop_writes_trigger',
+                    'max_background_compactions',
+                    'max_background_flushes', 'max_bytes_for_level_multiplier',
+                    'max_write_buffer_number', 'min_write_buffer_number_to_merge',
+                    'write_buffer_size']
 
 OPTIMIZATION_OBJECTIVE = ['Throughput']
 APPLICATION_NAME = f'{OPTIMIZATION_OBJECTIVE[0]}_benchmark'

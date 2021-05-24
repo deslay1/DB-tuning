@@ -3,12 +3,12 @@
     "optimization_objectives": [
         "Throughput"
     ],
-    "optimization_iterations": 88,
+    "optimization_iterations": 86,
     "models": {
         "model": "random_forest"
     },
     "design_of_experiment": {
-        "number_of_samples": 12
+        "number_of_samples": 14
     },
     "input_parameters": {
         "block_size": {
@@ -151,6 +151,32 @@
                 15
             ]
         },
+        "max_write_buffer_number": {
+            "parameter_default": 2,
+            "parameter_type": "ordinal",
+            "values": [
+                1,
+                2,
+                4,
+                8,
+                16,
+                32,
+                64,
+                128
+            ]
+        },
+        "min_write_buffer_number_to_merge": {
+            "parameter_default": 1,
+            "parameter_type": "ordinal",
+            "values": [
+                1,
+                2,
+                4,
+                8,
+                16,
+                32
+            ]
+        },
         "write_buffer_size": {
             "parameter_default": 67108864,
             "parameter_type": "ordinal",
@@ -189,7 +215,7 @@
         }
     },
     "print_parameter_importance": true,
-    "output_data_file": "optimizer-output/2021-05-21_22-01-35_output.csv",
+    "output_data_file": "optimizer-output/2021-05-23_07-51-56_output.csv",
     "output_image": {
         "output_image_pdf_file": "image_output.pdf",
         "optimization_objectives_labels_image_pdf": [

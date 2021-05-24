@@ -5,6 +5,7 @@ from hypermapper import optimizer
 
 def run_benchmark(knobs):
     options = {
+        'output_file': 'optimizer-output/latencies_normal_1_50-50.md',
         'readwritepercent': 50,
         'threads': 32
     }
@@ -12,7 +13,7 @@ def run_benchmark(knobs):
         bench_type='readrandomwriterandom', options=options)
     knobs = dict((k, str(v)) for k, v in knobs.items())
     bench.load_knob_configurations(knobs)
-    throughput = bench.run_benchmark(
+    throughput, _, _ = bench.run_benchmark(
         runs=3, num_million=5, fill=True, options_file=False, use_existing=True, max_seconds=300, calc_latency=True)
     return -int(throughput)
 
