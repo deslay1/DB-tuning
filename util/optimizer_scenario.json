@@ -1,4 +1,6 @@
 {
+    "resume_optimization": true,
+    "resume_optimization_data": "/home/osama_eldawebi/main/DB-tuning/optimizer-output/2021-05-24_15-38-11_output.csv",
     "application_name": "Throughput_benchmark",
     "optimization_objectives": [
         "Throughput"

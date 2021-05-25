@@ -10,6 +10,7 @@ options = {
 bench = RocksdbBenchmark(bench_type='readrandomwriterandom', options=options)
 
 knob_tests = [
+    {},
     {
         'block_size': '4096',
         'cache_index_and_filter_blocks': 'false',
