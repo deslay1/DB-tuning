@@ -1,5 +1,5 @@
 block_size,cache_index_and_filter_blocks,compaction_readahead_size,compression_type,level0_file_num_compaction_trigger,level0_slowdown_writes_trigger,level0_stop_writes_trigger,max_background_compactions,max_background_flushes,max_bytes_for_level_multiplier,write_buffer_size,Throughput,Timestamp
-4096,false,0,snappy,4,0,32,1,1,10,67108864,-61668,1003033
+4096,false,0,snappy,4,0,32,1,1,10,67108864,-65668,1003033
 128,false,40000,lz4,2,1024,256,4,9,9,16777216,-53719,2002509
 32,false,0,lz4,128,512,128,1,6,1,33554432,-45371,3004305
 262144,false,40000,snappy,4,8,64,32,3,10,134217728,-24742,4006802
