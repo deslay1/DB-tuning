@@ -31,12 +31,15 @@ additional = {
 # Parse TPS from csv files
 y_store = []
 means_with_errors = []
-best_workload_indices = [[0], [0], [0]]
+indices_max = [[], [], []]
+# best_workload_indices = [[0], [0], [0]]
 for workload_ind, file in enumerate(files):
     y = []
     df = pd.read_csv(file)
     tps = -1 * df.loc[:, 'Throughput']
     y.append(tps.values)
+    # save index of max for latency plot in plot_latency.py
+    indices_max[workload_ind].append(np.argmax(tps)+1)
 
     # additional throughput columns
     if additional:
@@ -44,20 +47,21 @@ for workload_ind, file in enumerate(files):
             add_df = pd.read_csv(sequence[1][workload_ind])
             tps = -1 * add_df.loc[:, 'Throughput']
             y.append(tps.values)
-            # df = df.join(add_df['Throughput'], how='right',
-            #  rsuffix=f'_{sequence[0]}')
+            # save index of max for latency plot in plot_latency.py
+            indices_max[workload_ind].append(np.argmax(tps)+1)
 
     # We want to see the convergence, so we transform the throughput values to show only BEST SO FAR
+    best_index = 0
     for iter_1, y_i in enumerate(y):
         for i in range(1, len(y_i)):
             if y_i[i-1] > y_i[i]:
-                if iter_1 == 2:
-                    best_workload_indices[workload_ind].append(
-                        best_workload_indices[workload_ind][-1])
+                # if iter_1 == 2:
+                #     best_workload_indices[workload_ind].append(
+                #         best_workload_indices[workload_ind][-1])
                 y_i[i] = y_i[i-1]
-            else:
-                if iter_1 == 2:
-                    best_workload_indices[workload_ind].append(i)
+            # else:
+                # if iter_1 == 2:
+                #     best_workload_indices[workload_ind].append(i)
 
     # add mean with error bars
     res = []
@@ -67,33 +71,44 @@ for workload_ind, file in enumerate(files):
     res.append(means)
     res.append(maxs)
     res.append(mins)
-    # 95% confidence interval
-    # error = 1.96 * np.std(means) / np.mean(means)
-    # res.append(error)
-    # print(res)
     means_with_errors.append(res)
+
+    # Print interesting stuff
+    max_def = np.max([x[0] for x in y])
+    min_def = np.min([x[0] for x in y])
+    variation = (max_def-min_def) / min_def
+    perf_incr = (means[-1] - means[0]) / means[0]
+    print(f'Variation of default in workload {workload_ind}: {variation}')
+    print(
+        f'Performance increase in mean curve in workload {workload_ind}: {perf_incr}')
+    print(
+        f'Best TPS values in workload {workload_ind}: {y[0][-1]}, {y[1][-1]}, {y[2][-1]}\n')
 
     # store workload throughputs
     y_store.append(y)
 
 
 # Parse Latency values from MD files
-l_workloads = []
-for w_ind, file in enumerate(latency_files):
-    l = []
-    with open(file) as f:
-        for line_ind, line in enumerate(f.readlines()):
-            values = line.split(',')
-            if len(values) > 1:
-                read_latency = float(np.round(float(values[1]), 2))
-                l.append(read_latency)
+# l_workloads = []
+# for w_ind, file in enumerate(latency_files):
+#     l = []
+#     with open(file) as f:
+#         for line_ind, line in enumerate(f.readlines()):
+#             values = line.split(',')
+#             if len(values) > 1:
+#                 read_latency = float(np.round(float(values[1]), 2))
+#                 l.append(read_latency)
 
-    # save latencies correponding to best TPS so far
-    for i in range(1, len(l)):
-        l[i] = l[best_workload_indices[w_ind][i]]
+#     # save latencies correponding to best TPS so far
+#     for i in range(1, len(l)):
+#         l[i] = l[best_workload_indices[w_ind][i]]
 
-    # Add latencies for plotting
-    l_workloads.append(l)
+#     # Add latencies for plotting
+#     l_workloads.append(l)
+
+# Save indices of max to file
+with open('optimizer-output/max_indices.log', 'a') as file:
+    file.write(f'\n{indices_max}')
 
 
 #################### PLOT THROUGHPUTS ####################
@@ -103,7 +118,7 @@ colors = ['firebrick', 'forestgreen', 'royalblue', 'lightgray']
 labels = ['10/90', '50/50', '90/10']
 legend_locs = [7, 1, 7]
 fig, ax1 = plt.subplots()
-ax2 = ax1.twinx()
+# ax2 = ax1.twinx()
 
 for workload_ind, workload_y in enumerate(y_store):
     workload_y = [y_i for y_i in workload_y]
@@ -132,12 +147,12 @@ for workload_ind, workload_y in enumerate(y_store):
     ax1.plot(np.nan, '-r', color=colors[2], label='Read latency')
     ax1.legend(loc=legend_locs[workload_ind])
 
-    ax2.plot(x, l_workloads[workload_ind],
-             color=colors[2], label='Read latency')
-    ax2.set_ylabel(r'Read latency ($\mu$s)')
+    # ax2.plot(x, l_workloads[workload_ind],
+    #          color=colors[2], label='Read latency')
+    # ax2.set_ylabel(r'Read latency ($\mu$s)')
     # ax2.legend()
-    fig.savefig(f'{output_ops_path}_{workload_ind+1}_test.png',
+    fig.savefig(f'{output_ops_path}_{workload_ind+1}_test.pdf',
                 bbox_inches='tight')
     # ax1.close()
     ax1.cla()
-    ax2.cla()
+    # ax2.cla()
