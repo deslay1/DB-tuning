@@ -1,16 +1,14 @@
 {
-    "resume_optimization": true,
-    "resume_optimization_data": "/home/osama_eldawebi/main/DB-tuning/optimizer-output/2021-05-24_15-38-11_output.csv",
     "application_name": "Throughput_benchmark",
     "optimization_objectives": [
         "Throughput"
     ],
-    "optimization_iterations": 88,
+    "optimization_iterations": 92,
     "models": {
         "model": "random_forest"
     },
     "design_of_experiment": {
-        "number_of_samples": 12
+        "number_of_samples": 8
     },
     "input_parameters": {
         "block_size": {
@@ -72,56 +70,6 @@
                 "lz4"
             ]
         },
-        "level0_file_num_compaction_trigger": {
-            "parameter_default": 4,
-            "parameter_type": "ordinal",
-            "values": [
-                1,
-                2,
-                4,
-                8,
-                16,
-                32,
-                64,
-                128,
-                256
-            ]
-        },
-        "level0_slowdown_writes_trigger": {
-            "parameter_default": 0,
-            "parameter_type": "ordinal",
-            "values": [
-                0,
-                1,
-                2,
-                4,
-                8,
-                16,
-                32,
-                64,
-                128,
-                256,
-                512,
-                1024
-            ]
-        },
-        "level0_stop_writes_trigger": {
-            "parameter_default": 32,
-            "parameter_type": "ordinal",
-            "values": [
-                1,
-                2,
-                4,
-                8,
-                16,
-                32,
-                64,
-                128,
-                256,
-                512,
-                1024
-            ]
-        },
         "max_background_compactions": {
             "parameter_default": 1,
             "parameter_type": "ordinal",
@@ -152,46 +100,10 @@
                 5,
                 15
             ]
-        },
-        "write_buffer_size": {
-            "parameter_default": 67108864,
-            "parameter_type": "ordinal",
-            "values": [
-                1,
-                4,
-                8,
-                16,
-                32,
-                64,
-                128,
-                256,
-                512,
-                1024,
-                2048,
-                4096,
-                8192,
-                16384,
-                32768,
-                65536,
-                131072,
-                262144,
-                524288,
-                1048576,
-                2097152,
-                4194304,
-                8388608,
-                16777216,
-                33554432,
-                67108864,
-                134217728,
-                268435456,
-                536870912,
-                1073741824
-            ]
         }
     },
     "print_parameter_importance": true,
-    "output_data_file": "optimizer-output/2021-05-24_15-38-11_output.csv",
+    "output_data_file": "optimizer-output/2021-05-30_09-00-48_output.csv",
     "output_image": {
         "output_image_pdf_file": "image_output.pdf",
         "optimization_objectives_labels_image_pdf": [

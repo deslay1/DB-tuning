@@ -167,8 +167,6 @@ class RocksdbBenchmark:
                 command += f' -num={num_million*1000000}'
 
             command += f' --duration={max_seconds}'
-            if calc_latency:
-                command += f' -histogram=1'
 
         command += self.add_command_options(options_file)
         command += f' --threads={self.__threads}'
@@ -180,10 +178,9 @@ class RocksdbBenchmark:
             # Save to later calculate average
             results = {
                 'throughput': [],
-                'read_latency': [],
-                'write_latency': [],
+                'latency': [],
             }
-            throughput, read_latency, write_latency = -1, -1, -1
+            throughput, latency = -1, -1
             for _ in range(runs):
                 if self.ycsb:
                     try:
@@ -196,7 +193,6 @@ class RocksdbBenchmark:
                         self.run_filling(
                             fill_type='random', num_million=num_million, options_file=options_file)
 
-                found_read_latency, found_write_latency = False, False
                 for line in subprocess.check_output(command, shell=True, universal_newlines=True).split('\n'):
                     if self.ycsb:
                         if 'OVERALL' in str(line):
@@ -205,47 +201,27 @@ class RocksdbBenchmark:
                                 throughput = match.group(0)
                                 results.append(float(throughput))
                     else:
-                        # Find TPS
+                        # Find TPS and latency
                         if 'ops/sec;' in str(line):
-                            # print(f'RESULT: {str(line)}')
                             match = re.search('((\d+)\sops)', str(line))
                             throughput = match.group(2)
                             results['throughput'].append(int(throughput))
-                        # Find latency
-                        if 'Microseconds per read:' in str(line):
-                            found_read_latency = True
-                        elif 'Microseconds per write:' in str(line):
-                            found_write_latency = True
-                        else:
-                            if found_read_latency:
-                                match = re.search(
-                                    'Average:\s([\d.]+)', str(line))
-                                read_latency = match.group(1)
-                                results['read_latency'].append(
-                                    float(read_latency))
-                                found_read_latency = False
-                            if found_write_latency:
-                                match = re.search(
-                                    'Average:\s([\d.]+)', str(line))
-                                write_latency = match.group(1)
-                                results['write_latency'].append(
-                                    float(write_latency))
-                                found_write_latency = False
-                        # print(f'READ LATENCY: {read_latency}')
-                        # print(f'Write LATENCY: {write_latency}')
+
+                            match = re.search('(([.\d]+)\smicros)', str(line))
+                            latency = match.group(2)
+                            results['latency'].append(float(latency))
+
             average_tps = int(
                 sum(results['throughput']) / len(results['throughput']))
             if calc_latency:
-                average_rl = float(
-                    sum(results['read_latency']) / len(results['read_latency']))
-                average_wl = float(
-                    sum(results['write_latency']) / len(results['write_latency']))
+                average_l = float(
+                    sum(results['latency']) / len(results['latency']))
 
             if len(self.__output_file) > 0:
                 with open(self.__output_file, 'a') as file:
                     if calc_latency:
                         file.write(
-                            f'\n{average_tps},{average_rl},{average_wl}  ')
+                            f'\n{average_tps},{average_l}  ')
                     else:
                         file.write(f'\n{average_tps}  ')
 
@@ -255,6 +231,6 @@ class RocksdbBenchmark:
 
         # Finally, return the throughput
         if calc_latency:
-            return average_tps, average_rl, average_wl
+            return average_tps, average_l
         else:
-            return average_tps
+            return average_tps, -1
