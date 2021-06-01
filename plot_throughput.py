@@ -7,7 +7,7 @@ import sys
 plt.style.use('ggplot')
 
 optimization_cycle = 2
-output_ops_path = f'optimizer-output/{optimization_cycle}_throughput_ver2'
+output_ops_path = f'optimizer-output/{optimization_cycle}_throughput_'
 # output_importance_path = 'optimizer-output/1_feature_importance_3.png'
 files = [f'optimizer-output/{optimization_cycle}_' +
          file for file in ['optimizer_3_10-90.csv', 'optimizer_3_50-50.csv', 'optimizer_3_90-10.csv']]
@@ -82,6 +82,10 @@ for workload_ind, file in enumerate(files):
     print(
         f'Performance increase in mean curve in workload {workload_ind}: {perf_incr}')
     print(
+        f'Mean Default in workload {workload_ind}: {means[0]}')
+    print(
+        f'Mean Best in workload {workload_ind}: {means[-1]}')
+    print(
         f'Best TPS values in workload {workload_ind}: {y[0][-1]}, {y[1][-1]}, {y[2][-1]}\n')
 
     # store workload throughputs
@@ -136,7 +140,7 @@ for workload_ind, workload_y in enumerate(y_store):
     # plt.errorbar(x, means_with_errors[workload_ind]
     #              [0], yerr=[lower_error, upper_error], color=colors[0], label='HyperMapper', ecolor='lightsteelblue')
     ax1.plot(x, means_with_errors[workload_ind]
-             [0], color=colors[0], label='HyperMapper')
+             [0], color=colors[0], label='DBtune')
     ax1.fill_between(x, lower_bound, upper_bound, color='b', alpha=.1)
     ax1.axhline(y=means_with_errors[workload_ind][0][0], linewidth=1, color='k',
                 label='Default')
@@ -144,14 +148,14 @@ for workload_ind, workload_y in enumerate(y_store):
     ax1.set_xlabel('Optimizer iteration')
     ax1.set_title(f'RRWR - {labels[workload_ind]}')
     # Legend for hidden plot for latency so we get one legend
-    ax1.plot(np.nan, '-r', color=colors[2], label='Read latency')
+    # ax1.plot(np.nan, '-r', color=colors[2], label='Read latency')
     ax1.legend(loc=legend_locs[workload_ind])
 
     # ax2.plot(x, l_workloads[workload_ind],
     #          color=colors[2], label='Read latency')
     # ax2.set_ylabel(r'Read latency ($\mu$s)')
     # ax2.legend()
-    fig.savefig(f'{output_ops_path}_{workload_ind+1}_test.pdf',
+    fig.savefig(f'{output_ops_path}_{workload_ind+1}_db_tune.png',
                 bbox_inches='tight')
     # ax1.close()
     ax1.cla()
