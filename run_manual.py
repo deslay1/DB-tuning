@@ -10,7 +10,6 @@ options = {
 bench = RocksdbBenchmark(bench_type='readrandomwriterandom', options=options)
 
 knob_tests = [
-    {},
     {
         'block_size': '4096',
         'cache_index_and_filter_blocks': 'false',
@@ -27,8 +26,7 @@ knob_tests = [
 ]
 for knobs in knob_tests:
     bench.load_knob_configurations(knobs)
-    tps, rl, wl = bench.run_benchmark(runs=3, num_million=5, fill=True,
-                                      options_file=False, use_existing=True, calc_latency=True)
+    tps, l = bench.run_benchmark(runs=3, num_million=5, fill=True,
+                                 options_file=False, use_existing=True, max_seconds=300, calc_latency=True)
     print(tps)
-    print(rl)
-    print(wl)
+    print(l)
