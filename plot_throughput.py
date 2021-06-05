@@ -7,10 +7,10 @@ import sys
 plt.style.use('ggplot')
 
 optimization_cycle = 2
-output_ops_path = f'optimizer-output/{optimization_cycle}_throughput_'
+output_ops_path = f'optimizer-output/{optimization_cycle}_throughput'
 # output_importance_path = 'optimizer-output/1_feature_importance_3.png'
 files = [f'optimizer-output/{optimization_cycle}_' +
-         file for file in ['optimizer_3_10-90.csv', 'optimizer_3_50-50.csv', 'optimizer_3_90-10.csv']]
+         file for file in ['optimizer_5_10-90.csv', 'optimizer_5_50-50.csv', 'optimizer_5_90-10.csv']]
 
 latency_cycle = 1
 latency_files = [f'optimizer-output/latencies_pruned_{latency_cycle}_' + file for file in [
@@ -18,14 +18,14 @@ latency_files = [f'optimizer-output/latencies_pruned_{latency_cycle}_' + file fo
 
 additional = True
 additional = {
-    # 2: [f'optimizer-output/{optimization_cycle}_' +
-    #     file for file in ['optimizer_2_10-90.csv', 'optimizer_2_50-50.csv', 'optimizer_2_90-10.csv']],
-    # 3: [f'optimizer-output/{optimization_cycle}_' +
-    #     file for file in ['optimizer_3_10-90.csv', 'optimizer_3_50-50.csv', 'optimizer_3_90-10.csv']],
-    4: [f'optimizer-output/{optimization_cycle}_' +
-        file for file in ['optimizer_4_10-90.csv', 'optimizer_4_50-50.csv', 'optimizer_4_90-10.csv']],
-    5: [f'optimizer-output/{optimization_cycle}_' +
-        file for file in ['optimizer_5_10-90.csv', 'optimizer_5_50-50.csv', 'optimizer_5_90-10.csv']],
+    2: [f'optimizer-output/{optimization_cycle}_' +
+        file for file in ['optimizer_6_10-90.csv', 'optimizer_6_50-50.csv', 'optimizer_7_90-10.csv']],
+    3: [f'optimizer-output/{optimization_cycle}_' +
+        file for file in ['optimizer_7_10-90.csv', 'optimizer_7_50-50.csv', 'optimizer_7_90-10.csv']],
+    # 4: [f'optimizer-output/{optimization_cycle}_' +
+    #     file for file in ['optimizer_4_10-90.csv', 'optimizer_4_50-50.csv', 'optimizer_4_90-10.csv']],
+    # 5: [f'optimizer-output/{optimization_cycle}_' +
+    #     file for file in ['optimizer_5_10-90.csv', 'optimizer_5_50-50.csv', 'optimizer_5_90-10.csv']],
 }
 
 # Parse TPS from csv files
@@ -92,29 +92,6 @@ for workload_ind, file in enumerate(files):
     y_store.append(y)
 
 
-# Parse Latency values from MD files
-# l_workloads = []
-# for w_ind, file in enumerate(latency_files):
-#     l = []
-#     with open(file) as f:
-#         for line_ind, line in enumerate(f.readlines()):
-#             values = line.split(',')
-#             if len(values) > 1:
-#                 read_latency = float(np.round(float(values[1]), 2))
-#                 l.append(read_latency)
-
-#     # save latencies correponding to best TPS so far
-#     for i in range(1, len(l)):
-#         l[i] = l[best_workload_indices[w_ind][i]]
-
-#     # Add latencies for plotting
-#     l_workloads.append(l)
-
-# Save indices of max to file
-with open('optimizer-output/max_indices.log', 'a') as file:
-    file.write(f'\n{indices_max}')
-
-
 #################### PLOT THROUGHPUTS ####################
 iterations = len(y_store[0][0])
 x = np.linspace(0, iterations, num=iterations)
@@ -146,7 +123,7 @@ for workload_ind, workload_y in enumerate(y_store):
                 label='Default')
     ax1.set_ylabel('Throughput (ops/s)')
     ax1.set_xlabel('Optimizer iteration')
-    ax1.set_title(f'RRWR - {labels[workload_ind]}')
+    ax1.set_title(fr'RRWR - {labels[workload_ind]} at $\alpha = 2\%$')
     # Legend for hidden plot for latency so we get one legend
     # ax1.plot(np.nan, '-r', color=colors[2], label='Read latency')
     ax1.legend(loc=legend_locs[workload_ind])
@@ -155,7 +132,7 @@ for workload_ind, workload_y in enumerate(y_store):
     #          color=colors[2], label='Read latency')
     # ax2.set_ylabel(r'Read latency ($\mu$s)')
     # ax2.legend()
-    fig.savefig(f'{output_ops_path}_{workload_ind+1}_db_tune.png',
+    fig.savefig(f'{output_ops_path}_{workload_ind+1}_db_tune.pdf',
                 bbox_inches='tight')
     # ax1.close()
     ax1.cla()
