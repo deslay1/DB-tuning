@@ -15,11 +15,11 @@ def create_json(filename='example_scenario.json'):
     scenario['models'] = {}
     scenario['models']['model'] = config.MODEL
     scenario['design_of_experiment'] = {}
+    scenario['design_of_experiment']['doe_type'] = 'standard latin hypercube'
     scenario['design_of_experiment']['number_of_samples'] = config.NUMBER_OF_SAMPLES
     scenario['input_parameters'] = {}
     scenario['print_parameter_importance'] = True
-    # scenario['output_data_file'] = f'optimizer-output/{config.BENCHMARK_TYPE}{config.OPTIMIZATION_ITERATIONS}.csv'
-    scenario['output_data_file'] = 'optimizer-output/{}_output.csv'.format(
+    scenario['output_data_file'] = 'snic-test/{}_output.csv'.format(
         datetime.now().strftime('%Y-%m-%d_%H-%M-%S'))
     scenario['output_image'] = {
         'output_image_pdf_file': config.OUTPUT_IMAGE_FILE,

@@ -1,4 +1,4 @@
 #!/bin/bash
-source /home/osama.eldawebi/anaconda3/etc/profile.d/conda.sh
-conda activate tuner
-python run_hypermapper.py
+source /home/ubuntu/anaconda3/etc/profile.d/conda.sh
+conda activate base
+python main.py

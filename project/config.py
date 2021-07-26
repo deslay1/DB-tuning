@@ -9,27 +9,28 @@ from datetime import datetime
 #               Hypermapper Configurations               #
 ##########################################################
 # Input parameters
-INPUT_PARAMETERS = ['block_size', 'cache_index_and_filter_blocks', 'compaction_readahead_size',
-                    'compression_type', 'max_background_compactions',
-                    'max_background_flushes', 'max_bytes_for_level_multiplier']
 # INPUT_PARAMETERS = ['block_size', 'cache_index_and_filter_blocks', 'compaction_readahead_size',
-#                     'compression_type', 'level0_file_num_compaction_trigger',
-#                     'level0_slowdown_writes_trigger', 'level0_stop_writes_trigger',
-#                     'max_background_compactions',
-#                     'max_background_flushes', 'max_bytes_for_level_multiplier',
-#                     'max_write_buffer_number', 'min_write_buffer_number_to_merge',
-#                     'write_buffer_size']
+#                     'compression_type', 'max_background_compactions',
+#                     'max_background_flushes', 'max_bytes_for_level_multiplier']
+INPUT_PARAMETERS = ['block_size', 'cache_index_and_filter_blocks', 'compaction_readahead_size',
+                    'compression_type', 'level0_file_num_compaction_trigger',
+                    'level0_slowdown_writes_trigger', 'level0_stop_writes_trigger',
+                    'max_background_compactions',
+                    'max_background_flushes', 'max_bytes_for_level_multiplier',
+                    'max_write_buffer_number', 'min_write_buffer_number_to_merge',
+                    'write_buffer_size']
 
 OPTIMIZATION_OBJECTIVE = ['Throughput']
 APPLICATION_NAME = f'{OPTIMIZATION_OBJECTIVE[0]}_benchmark'
 
 # 1. Feature importance
-# OPTIMIZATION_ITERATIONS = 1
+OPTIMIZATION_ITERATIONS = 1
+NUMBER_OF_SAMPLES = 100
 # NUMBER_OF_SAMPLES = len(INPUT_PARAMETERS) * 10  # 10D
 # 2. BO
-OPTIMIZATION_ITERATIONS = 100 - \
-    (len(INPUT_PARAMETERS)+1)  # (50 - Number of samples)
-NUMBER_OF_SAMPLES = len(INPUT_PARAMETERS)+1  # D + 1
+# OPTIMIZATION_ITERATIONS = 100 - \
+#     (len(INPUT_PARAMETERS)+1)  # (50 - Number of samples)
+# NUMBER_OF_SAMPLES = len(INPUT_PARAMETERS)+1  # D + 1
 
 # Model
 MODEL = 'random_forest'
@@ -38,12 +39,15 @@ OUTPUT_IMAGE_FILE = f'image_output.pdf'
 ##########################################################
 #            RocksDB Benchmark Configurations            #
 ##########################################################
-DB_DIR = '/home/osama_eldawebi/main/db-dir'
+DB_DIR = '/home/ubuntu/db-dir'
+
 # OPTIONS_FILE = '/tmp/rocksdbtest-1002/dbbench/OPTIONS-000006'
 OPTIONS_FILE = 'util/options_file.ini'
+
 # Default template caused by a fill random benchmark with 1M inserted kV-pairs
 OPTIONS_FILE_TEMPLATE = 'util/options_file_template_default.ini'
-BENCHMARK_COMMAND_PATH = '/home/osama_eldawebi/main/rocksdb/db_bench'
+
+BENCHMARK_COMMAND_PATH = '/home/ubuntu/rocksdb/db_bench'
 BENCHMARK_TYPE = 'readrandomwriterandom'
 
 DB_DIR_YCSB = '/tmp/rocksdb-bench-ycsb'

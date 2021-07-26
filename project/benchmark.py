@@ -3,9 +3,8 @@ Benchmarking class for RocksDB.
 """
 import subprocess
 import re
-import config
 import pdb
-
+import project.config as config
 
 class RocksdbBenchmark:
     def __init__(self, bench_type=None, options={}):
