@@ -1,167 +1,188 @@
+from project.plotters import throughput
 from hypermapper import optimizer
 from project.benchmark import RocksdbBenchmark
+from datetime import datetime
 import project.config as config
 import subprocess
 import pandas as pd
 import pdb
+import sys
+import os
+import json
 
-def run_default():
-    options = {
-        'output_file': 'test.md',
-        # 'testing': True,
-        'threads': 32
+ROOT = os.getcwd()
+
+
+def setup_optimizer(db_parameters, num_samples, optimization_iterations, file_name):
+    """
+    Creates a json file for the optimizer to use.
+    """
+    # Update search space file
+    with open(f"{ROOT}/util/search_space.json", "w") as file:
+        json.dump(config.Knobs, file, indent=4)
+
+    scenario_file = f"{ROOT}/util/optimizer_scenario.json"
+    scenario = {}
+    scenario["application_name"] = config.APPLICATION_NAME
+    scenario["optimization_objectives"] = config.OPTIMIZATION_OBJECTIVE
+    scenario["optimization_iterations"] = optimization_iterations
+    scenario["models"] = {}
+    scenario["models"]["model"] = config.MODEL
+    scenario["design_of_experiment"] = {}
+    scenario["design_of_experiment"]["doe_type"] = "standard latin hypercube"
+    scenario["design_of_experiment"]["number_of_samples"] = num_samples
+    scenario["input_parameters"] = {}
+    scenario["print_parameter_importance"] = True
+    scenario["output_data_file"] = f"{ROOT}/output/{file_name}.csv"
+    scenario["output_image"] = {
+        "output_image_pdf_file": config.OUTPUT_IMAGE_FILE,
+        "optimization_objectives_labels_image_pdf": ["Throughput (ops/sec)"],
+        # 'image_xlog': False,
+        # 'image_ylog': True,
     }
-    bench = RocksdbBenchmark(bench_type='readrandomwriterandom', options=options)
 
-    for _ in range(1):
-        tps, l = bench.run_benchmark(runs=3, num_million=5, fill=True,
-                                    options_file=False, use_existing=True, max_seconds=300, calc_latency=True)
-        print(tps)
-        print(l)
+    # Load knobs into scenario file
+    with open(f"{ROOT}/util/search_space.json", "r") as fobj:
+        knobs = json.load(fobj)
+        parameter_options = ["parameter_default", "parameter_type", "values"]
+        for para in db_parameters:
+            scenario["input_parameters"][para] = dict(
+                zip(parameter_options, [knobs[para][k] for k in parameter_options])
+            )
 
-
-def run_from_configs():
-    options = {
-        'output_file': 'manual-results/latencies.md',
-        'readwritepercent': 50,
-        'threads': 32
-    }
-    bench = RocksdbBenchmark(bench_type='readrandomwriterandom', options=options)
+    with open(scenario_file, "w") as sf:
+        json.dump(scenario, sf, indent=4)
 
 
-    # Parameters
-    keys = ['block_size', 'cache_index_and_filter_blocks', 'compaction_readahead_size',
-            'compression_type', 'level0_file_num_compaction_trigger',
-            'level0_slowdown_writes_trigger', 'level0_stop_writes_trigger',
-            'max_background_compactions',
-            'max_background_flushes', 'max_bytes_for_level_multiplier',
-            'write_buffer_size']
-
-    # Configurations
-    workload_configs = [
-        # 10-90
-        # [
-        #     '1024,false,360000,snappy,1,8,16,8,0,0,1073741824',
-        #     '4096,false,320000,lz4,2,2,64,128,6,3,1073741824',
-        #     '2048,false,240000,lz4,2,1024,8,8,5,2,1073741824',
-        # ],
-        # 50-50
-        [
-            '8,false,360000,snappy,1,512,16,256,4,4,134217728',
-            '32,false,400000,zstd,16,8,4,2,0,4,268435456',
-            '512,false,40000,lz4,1,2,32,64,5,10,67108864',
-        ],
-        # 90-10
-        # [
-        #     '1024,false,360000,snappy,1,32,16,64,8,13,268435456',
-        #     '16,false,120000,snappy,1,2,128,1,10,4,1073741824',
-        #     '512,false,240000,snappy,1,4,256,32,5,0,1073741824',
-        # ]
-    ]
-    knob_tests = []
-    for w in workload_configs:
-        for config in w:
-            values = config.split(',')
-            knobs = {}
-            for i, key in enumerate(keys):
-                knobs[key] = values[i]
-            knob_tests.append(knobs)
-
-    for knobs in knob_tests:
+def run_benchmark(
+    bench_type, knobs, options, runs=3,
+):
+    bench = RocksdbBenchmark(bench_type=bench_type, options=options)
+    if knobs:
+        knobs = dict((k, str(v)) for k, v in knobs.items())
         bench.load_knob_configurations(knobs)
-        tps, rl, wl = bench.run_benchmark(
-            runs=3, num_million=5, fill=True, options_file=False, use_existing=True, max_seconds=300, calc_latency=True)
+    throughput, _ = bench.run_benchmark(
+        runs=runs,
+        num_million=5,
+        fill=True,
+        options_file=False,
+        use_existing=True,
+        max_seconds=300,
+        calc_latency=True,
+    )
+    return throughput
+
+
+def run_default(
+    bench_type="readrandomwriterandom",
+    read_write_percent=50,
+    simple_file_name="simple_test",
+    file_name="test",
+    runs=3,
+):
+    options = {
+        "output_file": f"{simple_file_name}.csv",
+        "readwritepercent": read_write_percent,
+        "threads": 32,
+    }
+    for _ in range(1):
+        tps = run_benchmark(bench_type, {}, options, runs=runs)
         print(tps)
-        print(rl)
-        print(wl)
 
 
-def run_hypermapper_from_configs():
+def run_hypermapper(
+    bench_type="readrandomwriterandom",
+    read_write_percent=50,
+    simple_file_name="simple_test",
+    file_name="test",
+    repetitions=1,
+    optimizer_options={},
+):
+    run_ind = 1
 
-    run_ind = 0
+    def objective_function(knobs):
+        options = {
+            "output_file": f"{simple_file_name}_{run_ind}.csv",
+            "readwritepercent": read_write_percent,
+            "threads": 32,
+        }
+        throughput = run_benchmark(bench_type, knobs, options)
+        return -int(throughput)
+
+    for _ in range(repetitions):
+        run_ind += 1
+        if optimizer_options:
+            setup_optimizer(
+                optimizer_options["db_parameters"],
+                optimizer_options["num_samples"],
+                optimizer_options["optimization_iterations"],
+                f"{file_name}_{run_ind}",
+            )
+        optimizer.optimize("util/optimizer_scenario.json", objective_function)
+        # Get feat importance
+        symbol = "feature importances: "
+        with open(f"{ROOT}/hypermapper_logfile.log") as hm_file:
+            for line in hm_file.readlines():
+                if symbol in line:
+                    feat_imps = line[
+                        line.find(symbol) + len(symbol) : line.rfind("]") + 1
+                    ]
+                    with open(f"{simple_file_name}_{run_ind}.csv", "a") as custom_file:
+                        custom_file.append(feat_imps)
+        subprocess.run("sudo rm hypermapper_logfile.log", shell=True)
+
+
+def run_hypermapper_from_configs(
+    config_csv_file_path, simple_file_name="simple_test", file_name="test"
+):
     config_index = 0
 
-    def run_benchmark(knobs):
+    def run_benchmark(knobs, config_index):
         options = {
-            'output_file': f'snic-test/RUN_1_{run_ind}.csv',
-            'readwritepercent': 50,
-            'threads': 32
+            "output_file": f"{simple_file_name}.csv",
+            "readwritepercent": 50,
+            "threads": 32,
         }
-        bench = RocksdbBenchmark(
-            bench_type='readrandomwriterandom', options=options)
         # knobs are input from hypermapper optimizer - but ignore and change them since we are going to get them from a file for RUN_1
-        df = pd.read_csv('snic-test/2021-07-04_20-57-17_output.csv', sep=',')
+        df = pd.read_csv(config_csv_file_path, sep=",")
         knob_configs = df[config.INPUT_PARAMETERS]
         knobs = knob_configs.iloc[config_index].to_dict()
-        if config_index == 100: 
+        if config_index == 100:
             config_index = 0
         else:
             config_index += 1
-        knobs = dict((k, str(v)) for k, v in knobs.items())
-        bench.load_knob_configurations(knobs)
-        throughput, _ = bench.run_benchmark(
-            runs=3, num_million=5, fill=True, options_file=False, use_existing=True, max_seconds=300, calc_latency=True)
+        throughput = run_benchmark(knobs, options, file_name)
         return -int(throughput)
 
-    for _ in range(10):
-        run_ind += 1
-        config_index = 0
-        subprocess.run('python setup_optimizer_config.py', shell=True)
-        optimizer.optimize("util/optimizer_scenario.json", run_benchmark)
+    subprocess.run("python setup_optimizer_config.py", shell=True)
+    optimizer.optimize(
+        "util/optimizer_scenario.json", run_benchmark, args=(config_index)
+    )
 
 
-def run_hypermapper():
-    run_ind = 0
-
-    def run_benchmark(knobs):
-        options = {
-            'output_file': f'snic-test/RUN_{run_ind}.csv',
-            'readwritepercent': 50,
-            'threads': 32
-        }
-        bench = RocksdbBenchmark(
-            bench_type='readrandomwriterandom', options=options)
-        knobs = dict((k, str(v)) for k, v in knobs.items())
-        bench.load_knob_configurations(knobs)
-        throughput, _ = bench.run_benchmark(
-            runs=3, num_million=5, fill=True, options_file=False, use_existing=True, max_seconds=300, calc_latency=True)
-        return -int(throughput)
-
-
-    # subprocess.run('sudo rm hypermapper_logfile.log', shell=True)
-    for _ in range(10):
-        run_ind += 1
-        subprocess.run('python setup_optimizer_config.py', shell=True)
-        optimizer.optimize("util/optimizer_scenario.json", run_benchmark)
-
-
-def run_manual():
+def run_manual(simple_file_name="simple_test", file_name="test"):
     options = {
-        'output_file': 'latencies.md',
+        "output_file": f"{simple_file_name}.csv",
         # 'testing': True,
-        'readwritepercent': 50,
-        'threads': 32
+        "readwritepercent": 50,
+        "threads": 32,
     }
-    bench = RocksdbBenchmark(bench_type='readrandomwriterandom', options=options)
 
     knob_tests = [
         {
-            'block_size': '4096',
-            'cache_index_and_filter_blocks': 'false',
-            'compaction_readahead_size': '0',
-            'compression_type': 'snappy',
-            'level0_file_num_compaction_trigger': '4',
-            'level0_slowdown_writes_trigger': '0',
-            'level0_stop_writes_trigger': '32',
-            'max_background_compactions': '1',
-            'max_background_flushes': '1',
-            'max_bytes_for_level_multiplier': '10',
-            'write_buffer_size': '67108864',
+            "block_size": "4096",
+            "cache_index_and_filter_blocks": "false",
+            "compaction_readahead_size": "0",
+            "compression_type": "snappy",
+            "level0_file_num_compaction_trigger": "4",
+            "level0_slowdown_writes_trigger": "0",
+            "level0_stop_writes_trigger": "32",
+            "max_background_compactions": "1",
+            "max_background_flushes": "1",
+            "max_bytes_for_level_multiplier": "10",
+            "write_buffer_size": "67108864",
         },
     ]
     for knobs in knob_tests:
-        bench.load_knob_configurations(knobs)
-        tps, l = bench.run_benchmark(runs=3, num_million=5, fill=True,
-                                    options_file=False, use_existing=True, max_seconds=300, calc_latency=True)
+        tps = run_benchmark(knobs, options, file_name)
         print(tps)
-        print(l)

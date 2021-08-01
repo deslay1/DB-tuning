@@ -9,7 +9,7 @@
     },
     "design_of_experiment": {
         "doe_type": "standard latin hypercube",
-        "number_of_samples": 100
+        "number_of_samples": 130
     },
     "input_parameters": {
         "block_size": {
@@ -87,7 +87,7 @@
             ]
         },
         "level0_slowdown_writes_trigger": {
-            "parameter_default": 0,
+            "parameter_default": 20,
             "parameter_type": "ordinal",
             "values": [
                 0,
@@ -105,7 +105,7 @@
             ]
         },
         "level0_stop_writes_trigger": {
-            "parameter_default": 32,
+            "parameter_default": 36,
             "parameter_type": "ordinal",
             "values": [
                 1,
@@ -122,7 +122,7 @@
             ]
         },
         "max_background_compactions": {
-            "parameter_default": 1,
+            "parameter_default": -1,
             "parameter_type": "ordinal",
             "values": [
                 1,
@@ -137,7 +137,7 @@
             ]
         },
         "max_background_flushes": {
-            "parameter_default": 1,
+            "parameter_default": -1,
             "parameter_type": "integer",
             "values": [
                 1,
@@ -216,7 +216,7 @@
         }
     },
     "print_parameter_importance": true,
-    "output_data_file": "snic-test/2021-07-22_07-01-30_output.csv",
+    "output_data_file": "/home/ubuntu/DB-tuning/output/full_space_rw10_2.csv",
     "output_image": {
         "output_image_pdf_file": "image_output.pdf",
         "optimization_objectives_labels_image_pdf": [

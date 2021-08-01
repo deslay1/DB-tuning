@@ -74,7 +74,7 @@
         ]
     },
     "level0_slowdown_writes_trigger": {
-        "parameter_default": 0,
+        "parameter_default": 20,
         "parameter_type": "ordinal",
         "values": [
             0,
@@ -92,7 +92,7 @@
         ]
     },
     "level0_stop_writes_trigger": {
-        "parameter_default": 32,
+        "parameter_default": 36,
         "parameter_type": "ordinal",
         "values": [
             1,
@@ -109,7 +109,7 @@
         ]
     },
     "max_background_compactions": {
-        "parameter_default": 1,
+        "parameter_default": -1,
         "parameter_type": "ordinal",
         "values": [
             1,
@@ -124,7 +124,7 @@
         ]
     },
     "max_background_flushes": {
-        "parameter_default": 1,
+        "parameter_default": -1,
         "parameter_type": "integer",
         "values": [
             1,

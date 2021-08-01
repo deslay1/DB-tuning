@@ -1,4 +1,4 @@
 #!/bin/bash
-source /home/ubuntu/anaconda3/etc/profile.d/conda.sh
-conda activate base
+source $HOME/ubuntu/anaconda3/etc/profile.d/conda.sh
+conda activate tuner
 python main.py
