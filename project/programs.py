@@ -33,7 +33,7 @@ def setup_optimizer(db_parameters, num_samples, optimization_iterations, file_na
     scenario["design_of_experiment"]["number_of_samples"] = num_samples
     scenario["input_parameters"] = {}
     scenario["print_parameter_importance"] = True
-    scenario["output_data_file"] = f"{ROOT}/output/{file_name}.csv"
+    scenario["output_data_file"] = f"{ROOT}/{file_name}.csv"
     scenario["output_image"] = {
         "output_image_pdf_file": config.OUTPUT_IMAGE_FILE,
         "optimization_objectives_labels_image_pdf": ["Throughput (ops/sec)"],
