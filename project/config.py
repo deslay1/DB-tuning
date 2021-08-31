@@ -97,25 +97,31 @@ Knobs["level0_file_num_compaction_trigger"]["values"] = [2 ** x for x in range(0
 Knobs["level0_slowdown_writes_trigger"] = {}
 Knobs["level0_slowdown_writes_trigger"]["parameter_default"] = 20  # old: 0
 Knobs["level0_slowdown_writes_trigger"]["parameter_type"] = "ordinal"
-Knobs["level0_slowdown_writes_trigger"]["values"] = [0] + [2 ** x for x in range(0, 11)]
+Knobs["level0_slowdown_writes_trigger"]["values"] = sorted(
+    [0, 20] + [2 ** x for x in range(0, 11)]
+)
 
 # Knob ref: from 1 to 2^10
 Knobs["level0_stop_writes_trigger"] = {}
 Knobs["level0_stop_writes_trigger"]["parameter_default"] = 36  # old: 32
 Knobs["level0_stop_writes_trigger"]["parameter_type"] = "ordinal"
-Knobs["level0_stop_writes_trigger"]["values"] = [2 ** x for x in range(0, 11)]
+Knobs["level0_stop_writes_trigger"]["values"] = sorted(
+    [36] + [2 ** x for x in range(0, 11)]
+)
 
 # Knob ref: from 1 to 2^8
 Knobs["max_background_compactions"] = {}
 Knobs["max_background_compactions"]["parameter_default"] = -1  # old: 1
 Knobs["max_background_compactions"]["parameter_type"] = "ordinal"
-Knobs["max_background_compactions"]["values"] = [2 ** x for x in range(0, 9)]
+Knobs["max_background_compactions"]["values"] = sorted(
+    [-1] + [2 ** x for x in range(0, 9)]
+)
 
 # Knob ref: from 1 to 10
 Knobs["max_background_flushes"] = {}
 Knobs["max_background_flushes"]["parameter_default"] = -1  # old: 1
 Knobs["max_background_flushes"]["parameter_type"] = "integer"
-Knobs["max_background_flushes"]["values"] = [1, 10]
+Knobs["max_background_flushes"]["values"] = [-1, 10]
 
 # Knob ref: from 5 to 15
 Knobs["max_bytes_for_level_multiplier"] = {}

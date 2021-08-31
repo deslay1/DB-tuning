@@ -35,7 +35,7 @@ if __name__ == "__main__":
         read_write_percent=rwpercent,
         simple_file_name=f"output/custom/full_space_rw{rwpercent}",
         file_name=f"full_space_rw{rwpercent}",
-        repetitions=5,
+        repetitions=3,
     )
 
     # pp.run_default(

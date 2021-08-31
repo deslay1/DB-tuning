@@ -98,7 +98,7 @@ def run_hypermapper(
     repetitions=1,
     optimizer_options={},
 ):
-    run_ind = 1
+    run_ind = 0
 
     def objective_function(knobs):
         options = {
@@ -128,7 +128,7 @@ def run_hypermapper(
                         line.find(symbol) + len(symbol) : line.rfind("]") + 1
                     ]
                     with open(f"{simple_file_name}_{run_ind}.csv", "a") as custom_file:
-                        custom_file.append(feat_imps)
+                        custom_file.write("\n" + feat_imps)
         subprocess.run("sudo rm hypermapper_logfile.log", shell=True)
 
 
