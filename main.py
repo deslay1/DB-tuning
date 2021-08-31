@@ -22,7 +22,7 @@ if __name__ == "__main__":
     # Use 10D scheme
     samples = len(INPUT_PARAMETERS) * 10
     bench_type = "readrandomwriterandom"
-    rwpercent = 10
+    rwpercent = 50
 
     optimizer_options = {
         "db_parameters": INPUT_PARAMETERS,
@@ -35,7 +35,7 @@ if __name__ == "__main__":
         read_write_percent=rwpercent,
         simple_file_name=f"output/custom/full_space_rw{rwpercent}",
         file_name=f"full_space_rw{rwpercent}",
-        repetitions=5,
+        repetitions=2,
     )
 
     # pp.run_default(
