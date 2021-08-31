@@ -96,6 +96,7 @@
                 4,
                 8,
                 16,
+                20,
                 32,
                 64,
                 128,
@@ -114,6 +115,7 @@
                 8,
                 16,
                 32,
+                36,
                 64,
                 128,
                 256,
@@ -125,6 +127,7 @@
             "parameter_default": -1,
             "parameter_type": "ordinal",
             "values": [
+                -1,
                 1,
                 2,
                 4,
@@ -140,7 +143,7 @@
             "parameter_default": -1,
             "parameter_type": "integer",
             "values": [
-                1,
+                -1,
                 10
             ]
         },
@@ -216,7 +219,7 @@
         }
     },
     "print_parameter_importance": true,
-    "output_data_file": "/home/ubuntu/DB-tuning/output/full_space_rw10_2.csv",
+    "output_data_file": "/home/ubuntu/DB-tuning/output/full_space_rw90_3.csv",
     "output_image": {
         "output_image_pdf_file": "image_output.pdf",
         "optimization_objectives_labels_image_pdf": [
