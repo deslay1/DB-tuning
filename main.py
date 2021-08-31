@@ -1,5 +1,8 @@
 from project.config import NUMBER_OF_SAMPLES
-import project.programs as pp
+import project.programs as program
+import project.plotters as plot
+import numpy as np
+import os
 
 INPUT_PARAMETERS = [
     "block_size",
@@ -20,28 +23,57 @@ INPUT_PARAMETERS = [
 
 if __name__ == "__main__":
     # Use 10D scheme
-    samples = len(INPUT_PARAMETERS) * 10
+    # samples = len(INPUT_PARAMETERS) * 10
+    samples = len(INPUT_PARAMETERS) + 1
+    # optimization_iterations = 1
+    optimization_iterations = 100
     bench_type = "mixgraph"
     rwpercent = -1
 
     optimizer_options = {
         "db_parameters": INPUT_PARAMETERS,
         "num_samples": samples,
-        "optimization_iterations": 1,
+        "optimization_iterations": optimization_iterations,
     }
-    pp.run_hypermapper(
+    program.run_hypermapper(
         optimizer_options=optimizer_options,
         bench_type=bench_type,
         read_write_percent=rwpercent,
-        simple_file_name=f"output/custom/full_space_mixgraph",
-        file_name=f"full_space_mixgraph",
+        simple_file_name="output/optimization/custom/full_space_mixgraph",
+        file_name="full_space_mixgraph",
         repetitions=3,
     )
 
-    # pp.run_default(
+    # program.run_default(
     #     bench_type=bench_type,
     #     read_write_percent=rwpercent,
     #     simple_file_name=f"output/custom/test_rw{rwpercent}",
     #     file_name=f"test_rw{rwpercent}",
     #     runs=1,
+    # )
+
+    # selected_parameters = INPUT_PARAMETERS
+    # results_type = "mixgraph"
+    # results_folder = "output/feature_importance/custom/"
+
+    # imps = []
+    # for name in os.listdir(results_folder):
+    #     if results_type in name:
+    #         with open(results_folder + name, "r") as f:
+    #             lines = f.read().splitlines()
+    #             weights = lines[-1][1:-1]  # ignore the brackets
+    #             weights = weights.split(",")
+    #             weights = [
+    #                 float(x) for x in [weights[ind] for ind in range(len(weights))]
+    #             ]  # change strings to integers
+    #             imps.append(weights)
+
+    # # Calculate the mean of the feature importance experiment results
+    # imps = [np.mean(imps, axis=0)]
+
+    # plot.feature_importance(
+    #     imps,
+    #     selected_parameters,
+    #     "output/feature_importance/plots/feature_imps_mixgraph.png",
+    #     base_label="mixgraph",
     # )
