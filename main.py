@@ -28,7 +28,7 @@ if __name__ == "__main__":
     # optimization_iterations = 1
     optimization_iterations = 100
     bench_type = "readrandomwriterandom"
-    rwpercent = 50
+    rwpercent = 10
 
     optimizer_options = {
         "db_parameters": INPUT_PARAMETERS,
