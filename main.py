@@ -27,8 +27,8 @@ if __name__ == "__main__":
     samples = len(INPUT_PARAMETERS) + 1
     # optimization_iterations = 1
     optimization_iterations = 100
-    bench_type = "readrandomwriterandom"
-    rwpercent = 50
+    bench_type = "mixgraph"
+    rwpercent = -1
 
     optimizer_options = {
         "db_parameters": INPUT_PARAMETERS,
@@ -39,8 +39,8 @@ if __name__ == "__main__":
         optimizer_options=optimizer_options,
         bench_type=bench_type,
         read_write_percent=rwpercent,
-        simple_file_name=f"output/optimization/custom/full_space_rw{rwpercent}",
-        file_name=f"output/optimization/full_space_rw{rwpercent}",
+        simple_file_name=f"output/optimization/custom/full_space_mixgraph",
+        file_name=f"output/optimization/full_space_mixgraph",
         repetitions=3,
     )
 
