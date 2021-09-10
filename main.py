@@ -36,6 +36,9 @@ if __name__ == "__main__":
     custom_output_path = os.getenv("CUSTOM_OUTPUT_PATH")
     hm_output_path = os.getenv("HM_OUTPUT_PATH")
 
+    print(custom_output_path)
+    print(hm_output_path)
+
     optimizer_options = {
         "db_parameters": INPUT_PARAMETERS,
         "num_samples": samples,
