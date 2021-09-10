@@ -3,13 +3,13 @@
     "optimization_objectives": [
         "Throughput"
     ],
-    "optimization_iterations": 100,
+    "optimization_iterations": 1,
     "models": {
         "model": "random_forest"
     },
     "design_of_experiment": {
-        "doe_type": "standard latin hypercube",
-        "number_of_samples": 14
+        "doe_type": "random sampling",
+        "number_of_samples": 130
     },
     "input_parameters": {
         "block_size": {
@@ -219,7 +219,7 @@
         }
     },
     "print_parameter_importance": true,
-    "output_data_file": "/home/ubuntu/DB-tuning/output/optimization/full_space_rw90_3.csv",
+    "output_data_file": "/home/ubuntu/DB-tuning/output/feature_importance/rs_full_space_rw90_1.csv",
     "output_image": {
         "output_image_pdf_file": "image_output.pdf",
         "optimization_objectives_labels_image_pdf": [
