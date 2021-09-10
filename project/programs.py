@@ -13,7 +13,9 @@ import json
 ROOT = os.getcwd()
 
 
-def setup_optimizer(db_parameters, num_samples, optimization_iterations, file_name):
+def setup_optimizer(
+    db_parameters, num_samples, optimization_iterations, doe_type, file_name
+):
     """
     Creates a json file for the optimizer to use.
     """
@@ -29,7 +31,7 @@ def setup_optimizer(db_parameters, num_samples, optimization_iterations, file_na
     scenario["models"] = {}
     scenario["models"]["model"] = config.MODEL
     scenario["design_of_experiment"] = {}
-    scenario["design_of_experiment"]["doe_type"] = "standard latin hypercube"
+    scenario["design_of_experiment"]["doe_type"] = doe_type
     scenario["design_of_experiment"]["number_of_samples"] = num_samples
     scenario["input_parameters"] = {}
     scenario["print_parameter_importance"] = True
@@ -116,6 +118,7 @@ def run_hypermapper(
                 optimizer_options["db_parameters"],
                 optimizer_options["num_samples"],
                 optimizer_options["optimization_iterations"],
+                optimizer_options["doe_type"],
                 f"{file_name}_{run_ind}",
             )
         optimizer.optimize("util/optimizer_scenario.json", objective_function)
