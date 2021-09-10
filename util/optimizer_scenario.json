@@ -219,7 +219,7 @@
         }
     },
     "print_parameter_importance": true,
-    "output_data_file": "/home/ubuntu/DB-tuning/output/optimization/full_space_rw50_1.csv",
+    "output_data_file": "/home/ubuntu/DB-tuning/output/optimization/full_space_rw50_2.csv",
     "output_image": {
         "output_image_pdf_file": "image_output.pdf",
         "optimization_objectives_labels_image_pdf": [

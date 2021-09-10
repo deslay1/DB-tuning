@@ -36,20 +36,24 @@ if __name__ == "__main__":
     custom_output_path = os.getenv("CUSTOM_OUTPUT_PATH")
     hm_output_path = os.getenv("HM_OUTPUT_PATH")
 
+    print(custom_output_path)
+    print(hm_output_path)
+
     optimizer_options = {
         "db_parameters": INPUT_PARAMETERS,
         "num_samples": samples,
         "optimization_iterations": optimization_iterations,
         "doe_type": "random sampling",
     }
-    program.run_hypermapper(
-        optimizer_options=optimizer_options,
-        bench_type=bench_type,
-        read_write_percent=rwpercent,
-        simple_file_name=custom_output_path,
-        file_name=hm_output_path,
-        repetitions=3,
-    )
+
+    # program.run_hypermapper(
+    #     optimizer_options=optimizer_options,
+    #     bench_type=bench_type,
+    #     read_write_percent=rwpercent,
+    #     simple_file_name=custom_output_path,
+    #     file_name=hm_output_path,
+    #     repetitions=1,
+    # )
 
     # program.run_default(
     #     bench_type=bench_type,
