@@ -3,6 +3,9 @@ import project.programs as program
 import project.plotters as plot
 import numpy as np
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 INPUT_PARAMETERS = [
     "block_size",
@@ -23,25 +26,32 @@ INPUT_PARAMETERS = [
 
 if __name__ == "__main__":
     # Use 10D scheme
-    # samples = len(INPUT_PARAMETERS) * 10
-    samples = len(INPUT_PARAMETERS) + 1
-    # optimization_iterations = 1
-    optimization_iterations = 100
-    bench_type = "mixgraph"
-    rwpercent = -1
+    samples = len(INPUT_PARAMETERS) * 10
+    # samples = len(INPUT_PARAMETERS) + 1
+    optimization_iterations = 1
+    # optimization_iterations = 100
+    bench_type = os.getenv("BENCH_TYPE")
+    rwpercent = int(os.getenv("READ_WRITE_RATIO_PERCENT", "-1"))
+
+    custom_output_path = os.getenv("CUSTOM_OUTPUT_PATH")
+    hm_output_path = os.getenv("HM_OUTPUT_PATH")
+
+    print(custom_output_path)
+    print(hm_output_path)
 
     optimizer_options = {
         "db_parameters": INPUT_PARAMETERS,
         "num_samples": samples,
         "optimization_iterations": optimization_iterations,
+        "doe_type": "random sampling",
     }
     program.run_hypermapper(
         optimizer_options=optimizer_options,
         bench_type=bench_type,
         read_write_percent=rwpercent,
-        simple_file_name="output/optimization/custom/full_space_mixgraph",
-        file_name="full_space_mixgraph",
-        repetitions=3,
+        simple_file_name=custom_output_path,
+        file_name=hm_output_path,
+        repetitions=1,
     )
 
     # program.run_default(
