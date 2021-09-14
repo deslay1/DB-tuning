@@ -54,26 +54,37 @@ def setup_optimizer(db_parameters, num_samples, optimization_iterations, file_na
         json.dump(scenario, sf, indent=4)
 
 
-def run_benchmark(
-    bench_type, knobs, options, runs=3,
-):
-    bench = RocksdbBenchmark(bench_type=bench_type, options=options)
+def run_benchmark(bench_type, knobs, options, runs=3, database="rocksdb"):
+    """
+    Calls the appropriate benchmark class and runs the benchmark.
+    """
+    if database == "rocksdb":
+        bench = RocksdbBenchmark(bench_type=bench_type, options=options)
+    else:
+        bench = RocksdbBenchmark(bench_type=bench_type, options=options)
+
+    # Load if we have specific configurations - otherwise default will be used.
     if knobs:
         knobs = dict((k, str(v)) for k, v in knobs.items())
         bench.load_knob_configurations(knobs)
-    throughput, _ = bench.run_benchmark(
-        runs=runs,
-        num_million=5,
-        fill=True,
-        options_file=False,
-        use_existing=True,
-        max_seconds=300,
-        calc_latency=True,
-    )
+
+    if database == "rocksdb":
+        throughput, latency = bench.run_benchmark(
+            runs=runs,
+            num_million=5,
+            fill=True,
+            options_file=False,
+            use_existing=True,
+            max_seconds=300,
+            calc_latency=True,
+        )
+    else:
+        throughput = 0
+
     return throughput
 
 
-def run_default(
+def rocksdb_default(
     bench_type="readrandomwriterandom",
     read_write_percent=50,
     simple_file_name="simple_test",
@@ -90,7 +101,7 @@ def run_default(
         print(tps)
 
 
-def run_hypermapper(
+def rocksdb_hypermapper(
     bench_type="readrandomwriterandom",
     read_write_percent=50,
     simple_file_name="simple_test",
@@ -135,6 +146,9 @@ def run_hypermapper(
 def run_hypermapper_from_configs(
     config_csv_file_path, simple_file_name="simple_test", file_name="test"
 ):
+    """
+    Runs hypermapper that repeats the configurations specificed by a previous run
+    """
     config_index = 0
 
     def run_benchmark(knobs, config_index):

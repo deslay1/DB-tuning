@@ -3,6 +3,9 @@ rocksdb-tuning/out
 .vscode
 can-be-useful/
 
+cave-test/
+CAVE/
+
 ############# PYTHON GITIGNORE #############
 
 # Byte-compiled / optimized / DLL files
