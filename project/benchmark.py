@@ -5,7 +5,9 @@ import subprocess
 import sys
 import re
 import pdb
-import project.config as config
+import project.rocksdb_config as rocksconfig
+import project.neo4j_config as neoconfig
+import numpy as np
 
 
 class RocksdbBenchmark:
@@ -84,11 +86,13 @@ class RocksdbBenchmark:
         """
         result = ""
         if options_file or self.ycsb:
-            file_path = config.YCSB_OPTIONS_FILE if self.ycsb else config.OPTIONS_FILE
+            file_path = (
+                rocksconfig.YCSB_OPTIONS_FILE if self.ycsb else rocksconfig.OPTIONS_FILE
+            )
             template_path = (
-                config.YCSB_OPTIONS_FILE_TEMPLATE
+                rocksconfig.YCSB_OPTIONS_FILE_TEMPLATE
                 if self.ycsb
-                else config.OPTIONS_FILE_TEMPLATE
+                else rocksconfig.OPTIONS_FILE_TEMPLATE
             )
             # Read options_file parameters and find alter coresponding knobs.
             with open(template_path, "r") as file:
@@ -130,16 +134,16 @@ class RocksdbBenchmark:
             num_million -> number of million key-value pairs to fill
         """
         if self.ycsb:
-            command = f"sudo {config.YCSB_PATH}bin/ycsb.sh load rocksdb -s -P {config.YCSB_PATH}workloads/workload{self.__ycsb_workload} -P {config.YCSB_PROPERTIES_FILE} -p rocksdb.dir={config.DB_DIR_YCSB}"
+            command = f"sudo {rocksconfig.YCSB_PATH}bin/ycsb.sh load rocksdb -s -P {rocksconfig.YCSB_PATH}workloads/workload{self.__ycsb_workload} -P {rocksconfig.YCSB_PROPERTIES_FILE} -p rocksdb.dir={rocksconfig.DB_DIR_YCSB}"
         else:
             if "mixgraph" in self.benchmarks:
-                command = f'sudo {config.BENCHMARK_COMMAND_PATH} --benchmarks="fill{fill_type}" -num={num_million*1000000} -perf_level=3 -use_direct_io_for_flush_and_compaction=true -use_direct_reads=true -cache_size=268435456 -key_size=48 -value_size=43'
+                command = f'sudo {rocksconfig.BENCHMARK_COMMAND_PATH} --benchmarks="fill{fill_type}" -num={num_million*1000000} -perf_level=3 -use_direct_io_for_flush_and_compaction=true -use_direct_reads=true -cache_size=268435456 -key_size=48 -value_size=43'
             else:
-                command = f'sudo {config.BENCHMARK_COMMAND_PATH} --benchmarks="fill{fill_type}" -num={num_million*1000000}'
+                command = f'sudo {rocksconfig.BENCHMARK_COMMAND_PATH} --benchmarks="fill{fill_type}" -num={num_million*1000000}'
 
         # print(command)
         try:
-            # subprocess.run(f'sudo rm -r {config.DB_DIR}/', shell=True)
+            # subprocess.run(f'sudo rm -r {rocksconfig.DB_DIR}/', shell=True)
             subprocess.run(command, shell=True)
         except subprocess.CalledProcessError:
             print(
@@ -162,10 +166,12 @@ class RocksdbBenchmark:
         """
         benchmarks = f'"{",".join(self.benchmarks)}"'
         if self.ycsb:
-            command = f"sudo {config.YCSB_PATH}bin/ycsb.sh run rocksdb -s -P {config.YCSB_PATH}workloads/workload{self.__ycsb_workload} -P {config.YCSB_PROPERTIES_FILE} -p rocksdb.dir={config.DB_DIR_YCSB} -threads 32"
+            command = f"sudo {rocksconfig.YCSB_PATH}bin/ycsb.sh run rocksdb -s -P {rocksconfig.YCSB_PATH}workloads/workload{self.__ycsb_workload} -P {rocksconfig.YCSB_PROPERTIES_FILE} -p rocksdb.dir={rocksconfig.DB_DIR_YCSB} -threads 32"
         else:
-            # command = f'sudo {config.BENCHMARK_COMMAND_PATH} -db={config.DB_DIR} --benchmarks={benchmarks}'
-            command = f"sudo {config.BENCHMARK_COMMAND_PATH} --benchmarks={benchmarks}"
+            # command = f'sudo {rocksconfig.BENCHMARK_COMMAND_PATH} -db={rocksconfig.DB_DIR} --benchmarks={benchmarks}'
+            command = (
+                f"sudo {rocksconfig.BENCHMARK_COMMAND_PATH} --benchmarks={benchmarks}"
+            )
             if use_existing:
                 command += " --use_existing_db"
             if "mixgraph" in benchmarks:
@@ -202,7 +208,7 @@ class RocksdbBenchmark:
             for _ in range(runs):
                 if self.ycsb:
                     try:
-                        subprocess.run(f"sudo rm -r {config.DB_DIR_YCSB}")
+                        subprocess.run(f"sudo rm -r {rocksconfig.DB_DIR_YCSB}")
                     except FileNotFoundError:
                         pass
                     self.run_filling(fill_type="random")
@@ -256,3 +262,28 @@ class RocksdbBenchmark:
             return average_tps, average_l
         else:
             return average_tps, -1
+
+
+class Neo4jBenchmark:
+    def load_knob_configurations(self, knobs):
+        # Write to configuration file
+        with open(neoconfig.CONFIGURATION_FILE, "w") as file:
+            for key, value in knobs.items():
+                file.write(f"{key}={value}\n")
+
+    def run_benchmark(self, runs=1):
+        # Run benchmark command and parse output, return thoughput.
+        throughput = []
+        command = (
+            f". {neoconfig.CYPHER_DIR}scripts/environment-variables-default.sh; "
+            + f"{neoconfig.CYPHER_DIR}scripts/load-in-one-step.sh; "
+            + f"{neoconfig.CYPHER_DIR}driver/benchmark.sh"
+        )
+        for line in subprocess.check_output(
+            command, shell=True, universal_newlines=True, executable="/bin/bash"
+        ).split("\n"):
+            if "op/s" in str(line):
+                match = re.search("(([\d.]+)\s[(])", str(line))
+                throughput = float(match.group(2))
+
+        return np.mean(throughput)

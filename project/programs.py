@@ -1,8 +1,9 @@
 from project.plotters import throughput
 from hypermapper import optimizer
-from project.benchmark import RocksdbBenchmark
+from project.benchmark import RocksdbBenchmark, Neo4jBenchmark
 from datetime import datetime
-import project.config as config
+import project.rocksdb_config as rocksconfig
+import project.neo4j_config as neoconfig
 import subprocess
 import pandas as pd
 import pdb
@@ -14,14 +15,25 @@ ROOT = os.getcwd()
 
 
 def setup_optimizer(
-    db_parameters, num_samples, optimization_iterations, doe_type, file_name
+    db_parameters,
+    num_samples,
+    optimization_iterations,
+    doe_type,
+    file_name,
+    database="rocksdb",
 ):
     """
     Creates a json file for the optimizer to use.
     """
+
+    if database == "rocksdb":
+        config = rocksconfig
+    else:
+        config = neoconfig
+
     # Update search space file
     with open(f"{ROOT}/util/search_space.json", "w") as file:
-        json.dump(config.Knobs, file, indent=4)
+        json.dump(config.knobs, file, indent=4)
 
     scenario_file = f"{ROOT}/util/optimizer_scenario.json"
     scenario = {}
@@ -63,7 +75,7 @@ def run_benchmark(bench_type, knobs, options, runs=3, database="rocksdb"):
     if database == "rocksdb":
         bench = RocksdbBenchmark(bench_type=bench_type, options=options)
     else:
-        bench = RocksdbBenchmark(bench_type=bench_type, options=options)
+        bench = Neo4jBenchmark()
 
     # Load if we have specific configurations - otherwise default will be used.
     if knobs:
@@ -81,7 +93,7 @@ def run_benchmark(bench_type, knobs, options, runs=3, database="rocksdb"):
             calc_latency=True,
         )
     else:
-        throughput = 0
+        throughput = bench.run_benchmark(runs=runs)
 
     return throughput
 

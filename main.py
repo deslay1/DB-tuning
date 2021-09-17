@@ -1,4 +1,3 @@
-from project.config import NUMBER_OF_SAMPLES
 import project.programs as program
 import project.plotters as plot
 import numpy as np
@@ -36,16 +35,13 @@ if __name__ == "__main__":
     custom_output_path = os.getenv("CUSTOM_OUTPUT_PATH")
     hm_output_path = os.getenv("HM_OUTPUT_PATH")
 
-    print(custom_output_path)
-    print(hm_output_path)
-
     optimizer_options = {
         "db_parameters": INPUT_PARAMETERS,
         "num_samples": samples,
         "optimization_iterations": optimization_iterations,
         "doe_type": "random sampling",
     }
-    program.run_hypermapper(
+    program.rocksdb_hypermapper(
         optimizer_options=optimizer_options,
         bench_type=bench_type,
         read_write_percent=rwpercent,
@@ -54,13 +50,15 @@ if __name__ == "__main__":
         repetitions=1,
     )
 
-    # program.run_default(
+    # program.rocksdb_default(
     #     bench_type=bench_type,
     #     read_write_percent=rwpercent,
     #     simple_file_name=f"output/custom/test_rw{rwpercent}",
     #     file_name=f"test_rw{rwpercent}",
     #     runs=1,
     # )
+
+    ######################## PLOT FEATURE_IMPORTANCE ########################
 
     # selected_parameters = INPUT_PARAMETERS
     # results_type = "mixgraph"
