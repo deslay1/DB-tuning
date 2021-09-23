@@ -98,11 +98,21 @@ def run_benchmark(bench_type, knobs, options, runs=3, database="rocksdb"):
     return throughput
 
 
+def neo4j_default(
+    bench_type="r50", runs=3,
+):
+    options = {
+        "threads": 32,
+    }
+    for _ in range(1):
+        tps = run_benchmark(bench_type, {}, options, runs=runs, database="neo4j")
+        print(tps)
+
+
 def rocksdb_default(
     bench_type="readrandomwriterandom",
     read_write_percent=50,
     simple_file_name="simple_test",
-    file_name="test",
     runs=3,
 ):
     options = {
