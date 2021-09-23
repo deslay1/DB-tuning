@@ -9,28 +9,54 @@ Script that formats the results and scenario of a HyperMapper optimization seque
 
 import os
 import pandas as pd
+import json
+import pathlib
 
-results_dir = "output/feature_importance/"
-cave_dir = "output/feature_importance/CAVE/"
+results_dir = "parameter-importance-study/CAVE/results/"
+cave_dir = "parameter-importance-study/CAVE/"
 
 # Convert all first-run files that end in 1.csv
-for file in [x for x in os.listdir(results_dir) if x.endswith("1.csv")]:
+for instance_ind, file in enumerate(
+    [x for x in os.listdir(results_dir) if x.endswith("1.csv")]
+):
     hm_df = pd.read_csv(results_dir + file)
+    hm_df = hm_df.drop(columns=["Timestamp"])
+    hm_df = hm_df.rename(columns={"Throughput": "cost"})
     cave_df = pd.DataFrame(data=hm_df)
-    cave_df = cave_df.rename(columns={"Throughput": "cost"})
+    trajectory_df = cave_df.copy()
     cave_df["time"] = [0.1] * len(hm_df)
     cave_df["status"] = ["SUCCESS"] * len(hm_df)
     cave_df["seed"] = [1] * len(hm_df)
-    cave_df = cave_df.drop(columns=["Timestamp"])
     # cave_df = cave_df.reset_index()
 
-    cave_df.to_csv(cave_dir + file, index=False)
+    # Create trajectory file
+    trajectory_df["cup_time"] = [0.1] * len(hm_df)
+    trajectory_df["wallclock_time"] = [0.1] * len(hm_df)
+    trajectory_df["evaluations"] = [0] * len(hm_df)
+    cost_array = trajectory_df["cost"].tolist()
+    prev_best = cost_array[0]
+    prev_best_index = 0
+    drop_indices = []
+    for ind, cost in enumerate(cost_array):
+        if cost < prev_best:
+            # update trajectory row
+            trajectory_df.iloc[ind]["evaluations"] = ind
+            prev_best = cost
+            prev_best_index = ind
+        else:
+            if ind > 0:
+                drop_indices.append(ind)
+    trajectory_df = trajectory_df.drop(drop_indices)
+    print(trajectory_df)
+
+    instance_path = cave_dir + "instance_" + str(instance_ind) + "/"
+    pathlib.Path(instance_path).mkdir(parents=True, exist_ok=True)
+    cave_df.to_csv(instance_path + "runhistory.csv", index=False)
+    trajectory_df.to_csv(instance_path + "trajectory.csv", index=False)
 
 
 # 2. Format configuration space
 # {hyperparameters: [ {param1}, {param2} ]}
-
-import json
 
 configspace = {"hyperparameters": []}
 with open("util/search_space.json") as f:
