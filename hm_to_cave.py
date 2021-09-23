@@ -11,9 +11,11 @@ import os
 import pandas as pd
 import json
 import pathlib
+from shutil import copyfile
 
 results_dir = "parameter-importance-study/CAVE/results/"
 cave_dir = "parameter-importance-study/CAVE/"
+search_space_file = "parameter-importance-study/search_space_improper.json"
 
 # Convert all first-run files that end in 1.csv
 for instance_ind, file in enumerate(
@@ -30,7 +32,7 @@ for instance_ind, file in enumerate(
     # cave_df = cave_df.reset_index()
 
     # Create trajectory file
-    trajectory_df["cup_time"] = [0.1] * len(hm_df)
+    trajectory_df["cpu_time"] = [0.1] * len(hm_df)
     trajectory_df["wallclock_time"] = [0.1] * len(hm_df)
     trajectory_df["evaluations"] = [0] * len(hm_df)
     cost_array = trajectory_df["cost"].tolist()
@@ -47,19 +49,21 @@ for instance_ind, file in enumerate(
             if ind > 0:
                 drop_indices.append(ind)
     trajectory_df = trajectory_df.drop(drop_indices)
-    print(trajectory_df)
 
-    instance_path = cave_dir + "instance_" + str(instance_ind) + "/"
+    instance_path = cave_dir + file[:-6] + "/"
     pathlib.Path(instance_path).mkdir(parents=True, exist_ok=True)
     cave_df.to_csv(instance_path + "runhistory.csv", index=False)
     trajectory_df.to_csv(instance_path + "trajectory.csv", index=False)
+
+    # copy over scneario file
+    copyfile(cave_dir + 'scenario.txt', instance_path + 'scenario.txt')
 
 
 # 2. Format configuration space
 # {hyperparameters: [ {param1}, {param2} ]}
 
 configspace = {"hyperparameters": []}
-with open("util/search_space.json") as f:
+with open(search_space_file) as f:
     data = json.load(f)  #  dict
     for param in data.items():
         entry = {}
