@@ -61,13 +61,12 @@ knobs["dbms.checkpoint.interval.time"]["parameter_type"] = "integer"
 knobs["dbms.checkpoint.interval.time"]["values"] = [5, 25]
 knobs["dbms.checkpoint.interval.time"]["unit"] = "m"
 
-knobs["dbms.checkpoint.interval.time"] = {}
-knobs["dbms.checkpoint.interval.time"]["parameter_default"] = 100000
-knobs["dbms.checkpoint.interval.time"]["parameter_type"] = "ordinal"
-knobs["dbms.checkpoint.interval.time"]["values"] = [
+knobs["dbms.checkpoint.interval.tx"] = {}
+knobs["dbms.checkpoint.interval.tx"]["parameter_default"] = 100000
+knobs["dbms.checkpoint.interval.tx"]["parameter_type"] = "ordinal"
+knobs["dbms.checkpoint.interval.tx"]["values"] = [
     x * 1000 for x in range(10, 200, 10)
 ]
-knobs["dbms.checkpoint.interval.time"]["unit"] = "m"
 
 
 # T153, e.g. -XX:+UseCompressedOops (incl in https://neo4j.com/docs/operations-manual/current/performance/gc-tuning/#gc-tuning),
