@@ -1,0 +1,233 @@
+{
+  "hyperparameters": [
+    {
+      "name": "block_size",
+      "type": "categorical",
+      "choices": [
+        "1",
+        "4",
+        "8",
+        "16",
+        "32",
+        "64",
+        "128",
+        "256",
+        "512",
+        "1024",
+        "2048",
+        "4096",
+        "8192",
+        "16384",
+        "32768",
+        "65536",
+        "131072",
+        "262144",
+        "524288"
+      ],
+      "default": "4096",
+      "probabilities": null
+    },
+    {
+      "name": "cache_index_and_filter_blocks",
+      "type": "categorical",
+      "choices": [
+        "False",
+        "True"
+      ],
+      "default": "False",
+      "probabilities": null
+    },
+    {
+      "name": "compaction_readahead_size",
+      "type": "categorical",
+      "choices": [
+        "0",
+        "40000",
+        "80000",
+        "120000",
+        "160000",
+        "200000",
+        "240000",
+        "280000",
+        "320000",
+        "360000",
+        "400000"
+      ],
+      "default": "0",
+      "probabilities": null
+    },
+    {
+      "name": "compression_type",
+      "type": "categorical",
+      "choices": [
+        "snappy",
+        "zstd",
+        "lz4"
+      ],
+      "default": "snappy",
+      "probabilities": null
+    },
+    {
+      "name": "level0_file_num_compaction_trigger",
+      "type": "categorical",
+      "choices": [
+        "1",
+        "2",
+        "4",
+        "8",
+        "16",
+        "32",
+        "64",
+        "128",
+        "256"
+      ],
+      "default": "4",
+      "probabilities": null
+    },
+    {
+      "name": "level0_slowdown_writes_trigger",
+      "type": "categorical",
+      "choices": [
+        "0",
+        "1",
+        "2",
+        "4",
+        "8",
+        "16",
+        "20",
+        "32",
+        "64",
+        "128",
+        "256",
+        "512",
+        "1024"
+      ],
+      "default": "20",
+      "probabilities": null
+    },
+    {
+      "name": "level0_stop_writes_trigger",
+      "type": "categorical",
+      "choices": [
+        "1",
+        "2",
+        "4",
+        "8",
+        "16",
+        "32",
+        "36",
+        "64",
+        "128",
+        "256",
+        "512",
+        "1024"
+      ],
+      "default": "36",
+      "probabilities": null
+    },
+    {
+      "name": "max_background_compactions",
+      "type": "categorical",
+      "choices": [
+        "-1",
+        "1",
+        "2",
+        "4",
+        "8",
+        "16",
+        "32",
+        "64",
+        "128",
+        "256"
+      ],
+      "default": "-1",
+      "probabilities": null
+    },
+    {
+      "name": "max_background_flushes",
+      "type": "uniform_int",
+      "log": false,
+      "lower": -1,
+      "upper": 11,
+      "default": -1
+    },
+    {
+      "name": "max_bytes_for_level_multiplier",
+      "type": "uniform_int",
+      "log": false,
+      "lower": 0,
+      "upper": 15,
+      "default": 10
+    },
+    {
+      "name": "max_write_buffer_number",
+      "type": "categorical",
+      "choices": [
+        "1",
+        "2",
+        "4",
+        "8",
+        "16",
+        "32",
+        "64",
+        "128"
+      ],
+      "default": "2",
+      "probabilities": null
+    },
+    {
+      "name": "min_write_buffer_number_to_merge",
+      "type": "categorical",
+      "choices": [
+        "1",
+        "2",
+        "4",
+        "8",
+        "16",
+        "32"
+      ],
+      "default": "1",
+      "probabilities": null
+    },
+    {
+      "name": "write_buffer_size",
+      "type": "categorical",
+      "choices": [
+        "1",
+        "4",
+        "8",
+        "16",
+        "32",
+        "64",
+        "128",
+        "256",
+        "512",
+        "1024",
+        "2048",
+        "4096",
+        "8192",
+        "16384",
+        "32768",
+        "65536",
+        "131072",
+        "262144",
+        "524288",
+        "1048576",
+        "2097152",
+        "4194304",
+        "8388608",
+        "16777216",
+        "33554432",
+        "67108864",
+        "134217728",
+        "268435456",
+        "536870912",
+        "1073741824"
+      ],
+      "default": "67108864",
+      "probabilities": null
+    }
+  ],
+  "conditions": [],
+  "forbiddens": []
+}
