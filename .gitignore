@@ -3,9 +3,7 @@ rocksdb-tuning/out
 .vscode
 can-be-useful/
 util/optimizer_scenario.json
-
 cave-test/
-CAVE/
 
 ############# PYTHON GITIGNORE #############
 
