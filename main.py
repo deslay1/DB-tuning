@@ -41,16 +41,20 @@ if __name__ == "__main__":
         "optimization_iterations": optimization_iterations,
         "doe_type": "random sampling",
     }
-    program.rocksdb_hypermapper(
-        optimizer_options=optimizer_options,
-        bench_type=bench_type,
-        read_write_percent=rwpercent,
-        simple_file_name=custom_output_path,
-        file_name=hm_output_path,
-        repetitions=1,
-    )
+    # program.rocksdb_hypermapper(
+    #     optimizer_options=optimizer_options,
+    #     bench_type=bench_type,
+    #     read_write_percent=rwpercent,
+    #     simple_file_name=custom_output_path,
+    #     file_name=hm_output_path,
+    #     repetitions=1,
+    # )
 
     # program.neo4j_default(bench_type=bench_type)
+    program.neo4j_explore(bench_type=bench_type, runs=5) 
+    # run using sudo env "PATH=$PATH" python main.py OR 
+    # sudo ~/anaconda3/envs/tuner/bin/python main.py OR
+    # sudo -E ~/anaconda3/envs/tuner/bin/python main.py
 
     # program.rocksdb_default(
     #     bench_type=bench_type,

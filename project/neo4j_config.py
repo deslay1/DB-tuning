@@ -19,9 +19,10 @@ OUTPUT_IMAGE_FILE = f"image_output.pdf"
 ##########################################################
 #                Benchmark Configurations                #
 ##########################################################
-CYPHER_DIR = "/home/ubuntu//ldbc/ldbc_snb_interactive/cypher/"
+CYPHER_DIR = "/home/os5222el/ldbc/ldbc_snb_interactive/cypher/"
 DB_DIR = CYPHER_DIR + "scratch"
 CONFIGURATION_FILE = CYPHER_DIR + "scratch/conf/neo4j.conf"
+TEMPLATE_FILE = ROOT +"/util/neo4j_template2.conf"
 
 ##########################################################
 #                     Tuning knobs                       #
@@ -30,10 +31,10 @@ knobs = {}
 
 # T203, default: 3.7(?)
 knobs["dbms.memory.heap.max_size"] = {}
-knobs["dbms.memory.heap.max_size"]["parameter_default"] = 3.7
+knobs["dbms.memory.heap.max_size"]["parameter_default"] = 24100
 knobs["dbms.memory.heap.max_size"]["parameter_type"] = "ordinal"
-knobs["dbms.memory.heap.max_size"]["values"] = [x / 1000 for x in range(100, 6000, 250)]
-knobs["dbms.memory.heap.max_size"]["unit"] = "GB"
+knobs["dbms.memory.heap.max_size"]["values"] = range(12050, 36150, 1205)
+knobs["dbms.memory.heap.max_size"]["unit"] = "m"
 
 
 # T211, default: 512M(?). Default is 50% of the RAM available.

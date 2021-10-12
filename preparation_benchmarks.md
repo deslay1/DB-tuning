@@ -16,9 +16,9 @@ git clone --branch 0.3.5 https://github.com/ldbc/ldbc_snb_driver
 git clone https://github.com/ldbc/ldbc_snb_datagen_hadoop
 ``` 
 
-According to the driver, you need Java 8 and maven, so:
+According to the driver, you need Java 8 and maven. You also need python2 to generate datasets.
 ``` 
-sudo apt install openjdk-8-jdk openjdk-8-jre maven
+sudo apt install openjdk-8-jdk openjdk-8-jre maven python2
 ``` 
 We also need Docker19+: https://docs.docker.com/engine/install/ubuntu/
 

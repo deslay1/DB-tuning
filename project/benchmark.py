@@ -267,23 +267,48 @@ class RocksdbBenchmark:
 class Neo4jBenchmark:
     def load_knob_configurations(self, knobs):
         # Write to configuration file
-        with open(neoconfig.CONFIGURATION_FILE, "w") as file:
+        with open(neoconfig.TEMPLATE_FILE, "r") as template:
+            with open(neoconfig.CONFIGURATION_FILE, "w") as file:
+
+                for key, value in knobs.items():
+                    file.write(f"{key}={value}\n")
+
+                for line in template:
+                    file.write(line)
+
+        # temporary write configurations
+        with open(neoconfig.CYPHER_DIR + "results.txt", "a") as file:
             for key, value in knobs.items():
                 file.write(f"{key}={value}\n")
+
 
     def run_benchmark(self, runs=1):
         # Run benchmark command and parse output, return thoughput.
         throughput = []
-        command = (
-            f". {neoconfig.CYPHER_DIR}scripts/environment-variables-default.sh; "
-            + f"{neoconfig.CYPHER_DIR}scripts/load-in-one-step.sh; "
-            + f"{neoconfig.CYPHER_DIR}driver/benchmark.sh"
-        )
-        for line in subprocess.check_output(
-            command, shell=True, universal_newlines=True, executable="/bin/bash"
-        ).split("\n"):
-            if "op/s" in str(line):
-                match = re.search("(([\d.]+)\s[(])", str(line))
-                throughput = float(match.group(2))
+        # command = (
+        #     f". {neoconfig.CYPHER_DIR}scripts/environment-variables-default.sh; "
+        #     + f"{neoconfig.CYPHER_DIR}scripts/load-in-one-step.sh; "
+        #     + f"{neoconfig.CYPHER_DIR}driver/benchmark.sh"
+        # )
+        for _ in range(runs):
+            # command = (
+            #     f". {neoconfig.CYPHER_DIR}scripts/environment-variables-default.sh; "
+            #     + f"{neoconfig.CYPHER_DIR}scripts/snapshot-load.sh; "
+            #     + f"{neoconfig.CYPHER_DIR}driver/benchmark.sh; "
+            #     + f"{neoconfig.CYPHER_DIR}python3 parse.py; "
+            # )
+            command = f" bash {neoconfig.CYPHER_DIR}program.sh; "
+            try:
+                for line in subprocess.check_output(
+                    command, shell=True, universal_newlines=True, executable="/bin/bash", timeout=400
+                ).split("\n"):
+                    print(line)
+                    # NOTE: better method is to grab the results from the benchmark results JSON file
+                    # if "op/s" in str(line):
+                    #     match = re.search("(([\d.]+)\s[(])", str(line))
+                    #     throughput = float(match.group(2))
+            except subprocess.SubprocessError:
+                pass
 
-        return np.mean(throughput)
+        # return np.mean(throughput)
+        return 0

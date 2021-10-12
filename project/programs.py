@@ -108,6 +108,54 @@ def neo4j_default(
         tps = run_benchmark(bench_type, {}, options, runs=runs, database="neo4j")
         print(tps)
 
+def neo4j_explore(
+    bench_type="r50", runs=1,
+):
+    options = {
+        "threads": 32,
+    }
+    
+    configs = [
+        # {
+        #     "dbms.memory.heap.max_size": "24100m",
+        #     "dbms.memory.pagecache.size": "28000m",
+        #     "dbms.memory.pagecache.flush.buffer.enabled": "true",
+        #     "dbms.memory.pagecache.flush.buffer.size_in_pages": "1"
+        # },
+        # {
+        #     "dbms.memory.heap.max_size": "24100m",
+        #     "dbms.memory.pagecache.size": "28000m",
+        #     "dbms.memory.pagecache.flush.buffer.enabled": "true",
+        #     "dbms.memory.pagecache.flush.buffer.size_in_pages": "256"
+        # },
+        {
+            "dbms.memory.heap.max_size": "24100m",
+            "dbms.memory.pagecache.size": "28000m",
+            "dbms.memory.pagecache.flush.buffer.enabled": "true",
+            "dbms.memory.pagecache.flush.buffer.size_in_pages": "512"
+        },
+        # {
+        #     "dbms.memory.heap.max_size": "24100m",
+        #     "dbms.memory.pagecache.size": "14000m",
+        # },
+        # {
+        #     "dbms.memory.heap.max_size": "24100m",
+        #     "dbms.memory.pagecache.size": "36300m", # *1.2
+        # },
+        # {
+        #     "dbms.memory.heap.max_size": "36150m",
+        #     "dbms.memory.pagecache.size": "36300m", # causes problems
+        # },
+        # {
+        #     "dbms.memory.heap.max_size": "12050m",
+        #     "dbms.memory.pagecache.size": "14000m",
+        # },
+    ]
+
+    for knobs in configs:
+        tps = run_benchmark(bench_type, knobs, options, runs=runs, database="neo4j")
+        print(tps)
+
 
 def rocksdb_default(
     bench_type="readrandomwriterandom",

@@ -1,0 +1,48 @@
+14GB [wrong]
+64.97, 92.28, 85.15, 93.84, 75.62
+
+Default: 24100m
+62.41, 61.02, 65.96, 62.67, 57.76, 63.23, 65.62, 65.04, 67.66, 63.29, 66.0, 62.5, 62.52, 64.15, 59.98, 59.55, 63.1, 64.58, 63.87, 64.73, 
+
+24100m*1.5 
+63.39, 64.87, 60.4, 66.45, 69.79, 
+
+24100m*0.5
+ 60.86, 59.14, 63.71, 67.57, 58.25, 
+
+Automated
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=28000m
+dbms.memory.pagecache.flush.buffer.enabled=true
+dbms.memory.pagecache.flush.buffer.size_in_pages=1
+59.26, 65.88, 52.92, 54.91, 54.07, 53.03, 51.48, 55.79, 58.42, 61.09, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=28000m
+dbms.memory.pagecache.flush.buffer.enabled=true
+dbms.memory.pagecache.flush.buffer.size_in_pages=256
+58.11, 62.0, 61.41, 54.85, 60.11, 57.88, 50.28, 45.03, 54.59, 44.19, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=28000m
+dbms.memory.pagecache.flush.buffer.enabled=true
+dbms.memory.pagecache.flush.buffer.size_in_pages=512
+48.93, 50.4, 50.4, 50.13, 50.17, 47.56, 50.65, 50.65, 47.15, 52.7, 43.71, 53.18, 
+67.4, 71.08, 69.54, 66.35, 71.94, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=14000m
+53.18, 48.1, 55.04, 48.17, 57.83, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=36300m
+62.5, 61.47, 56.64, 61.74, 66.52, 
+
+dbms.memory.heap.max_size=36150m
+dbms.memory.pagecache.size=36300m
+PROBLEM, "Error: no such container: <name_of_container> - mst likely memory error
+
+dbms.memory.heap.max_size=12050m
+dbms.memory.pagecache.size=14000m
+61.23, 61.64, 83.25, 81.06, 75.9, 
+94.48, 97.01, 94.88, 96.38, 77.5, 
