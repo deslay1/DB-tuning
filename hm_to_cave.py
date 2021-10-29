@@ -13,13 +13,13 @@ import json
 import pathlib
 from shutil import copyfile
 
-results_dir = "parameter-importance-study/CAVE/results/"
-cave_dir = "parameter-importance-study/CAVE/"
-search_space_file = "parameter-importance-study/search_space_improper.json"
+results_dir = "parameter-importance-study/CAVE/branin/results/"
+cave_dir = "parameter-importance-study/CAVE/branin/"
+search_space_file = "parameter-importance-study/CAVE/branin/search_space_branin.json"
 
 # Convert all first-run files that end in 1.csv
 for instance_ind, file in enumerate(
-    [x for x in os.listdir(results_dir) if x.endswith("1.csv")]
+    [x for x in os.listdir(results_dir) if "branin" in x]
 ):
     hm_df = pd.read_csv(results_dir + file)
     hm_df = hm_df.drop(columns=["Timestamp"])
@@ -68,8 +68,12 @@ with open(search_space_file) as f:
     for param in data.items():
         entry = {}
         entry["name"] = param[0]
-        if param[1]["parameter_type"] == "integer":
-            entry["type"] = "uniform_int"
+        print(param)
+        if param[1]["parameter_type"] in ("integer", "real"):
+            if param[1]["parameter_type"] == "integer":
+                entry["type"] = "uniform_int"
+            else:
+                entry["type"] = "uniform_float"
             entry["log"] = False
             values = param[1]["values"]
             entry["lower"] = values[0]

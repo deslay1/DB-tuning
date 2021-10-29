@@ -128,27 +128,27 @@ def neo4j_explore(
         #     "dbms.memory.pagecache.flush.buffer.enabled": "true",
         #     "dbms.memory.pagecache.flush.buffer.size_in_pages": "256"
         # },
+        # {
+        #     "dbms.memory.heap.max_size": "24100m",
+        #     "dbms.memory.pagecache.size": "28000m",
+        #     "dbms.memory.pagecache.flush.buffer.enabled": "true",
+        #     "dbms.memory.pagecache.flush.buffer.size_in_pages": "512"
+        # },
         {
             "dbms.memory.heap.max_size": "24100m",
-            "dbms.memory.pagecache.size": "28000m",
-            "dbms.memory.pagecache.flush.buffer.enabled": "true",
-            "dbms.memory.pagecache.flush.buffer.size_in_pages": "512"
+            "dbms.memory.pagecache.size": "14000m",
         },
-        # {
-        #     "dbms.memory.heap.max_size": "24100m",
-        #     "dbms.memory.pagecache.size": "14000m",
-        # },
-        # {
-        #     "dbms.memory.heap.max_size": "24100m",
-        #     "dbms.memory.pagecache.size": "36300m", # *1.2
-        # },
+        {
+            "dbms.memory.heap.max_size": "24100m",
+            "dbms.memory.pagecache.size": "36300m", # *1.2
+        },
+        {
+            "dbms.memory.heap.max_size": "12050m",
+            "dbms.memory.pagecache.size": "14000m",
+        },
         # {
         #     "dbms.memory.heap.max_size": "36150m",
         #     "dbms.memory.pagecache.size": "36300m", # causes problems
-        # },
-        # {
-        #     "dbms.memory.heap.max_size": "12050m",
-        #     "dbms.memory.pagecache.size": "14000m",
         # },
     ]
 

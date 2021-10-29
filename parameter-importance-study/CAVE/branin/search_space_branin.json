@@ -1,0 +1,18 @@
+{
+  "x1": {
+    "parameter_type": "real",
+    "values": [-5, 10],
+    "parameter_default": 0,
+    "prior": "uniform",
+    "custom_gaussian_prior_means": false,
+    "custom_gaussian_prior_stds": false
+  },
+  "x2": {
+    "parameter_type": "real",
+    "values": [0, 15],
+    "parameter_default": 0,
+    "prior": "uniform",
+    "custom_gaussian_prior_means": false,
+    "custom_gaussian_prior_stds": false
+  }
+}

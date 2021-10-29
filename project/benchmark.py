@@ -300,7 +300,7 @@ class Neo4jBenchmark:
             command = f" bash {neoconfig.CYPHER_DIR}program.sh; "
             try:
                 for line in subprocess.check_output(
-                    command, shell=True, universal_newlines=True, executable="/bin/bash", timeout=400
+                    command, shell=True, universal_newlines=True, executable="/bin/bash", timeout=3000
                 ).split("\n"):
                     print(line)
                     # NOTE: better method is to grab the results from the benchmark results JSON file

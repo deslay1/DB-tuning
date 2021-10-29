@@ -1,8 +1,7 @@
 import numpy as np
 
 # from fanova import fANOVA
-import fanova.fanova
-# import fanova.fANOVA
+import fanova.fanova as ff
 # import fanova.visualizer
 
 import ConfigSpace
@@ -27,7 +26,7 @@ for i in range(len(pcs)):
 
 
 # create an instance of fanova with trained forest and ConfigSpace
-f = fanova.fANOVA(X = features, Y = responses, config_space=cs)
+f = ff.fANOVA(X = features, Y = responses, config_space=cs)
 
 # marginal of particular parameter:
 dims = (1, )
@@ -40,7 +39,7 @@ print(best_margs)
 
 # visualizations:
 # first create an instance of the visualizer with fanova object and configspace
-vis = fanova.visualizer.Visualizer(f, cs, 'example_output')
+vis = ff.visualizer.Visualizer(f, cs, 'example_output')
 # creating the plot of pairwise marginal:
 vis.plot_pairwise_marginal((0,2), resolution=20)
 # creating all plots in the directory
