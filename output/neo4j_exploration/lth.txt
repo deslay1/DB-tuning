@@ -1,0 +1,170 @@
+14GB [wrong]
+64.97, 92.28, 85.15, 93.84, 75.62
+
+Default: 24100m
+62.41, 61.02, 65.96, 62.67, 57.76, 63.23, 65.62, 65.04, 67.66, 63.29, 66.0, 62.5, 62.52, 64.15, 59.98, 59.55, 63.1, 64.58, 63.87, 64.73, 
+
+24100m*1.5 
+63.39, 64.87, 60.4, 66.45, 69.79, 
+
+24100m*0.5
+ 60.86, 59.14, 63.71, 67.57, 58.25, 
+
+Automated
+-------SF3 using default properties----------
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=28000m
+dbms.memory.pagecache.flush.buffer.enabled=true
+dbms.memory.pagecache.flush.buffer.size_in_pages=1
+59.26, 65.88, 52.92, 54.91, 54.07, 53.03, 51.48, 55.79, 58.42, 61.09, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=28000m
+dbms.memory.pagecache.flush.buffer.enabled=true
+dbms.memory.pagecache.flush.buffer.size_in_pages=256
+58.11, 62.0, 61.41, 54.85, 60.11, 57.88, 50.28, 45.03, 54.59, 44.19, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=28000m
+dbms.memory.pagecache.flush.buffer.enabled=true
+dbms.memory.pagecache.flush.buffer.size_in_pages=512
+48.93, 50.4, 50.4, 50.13, 50.17, 47.56, 50.65, 50.65, 47.15, 52.7, 43.71, 53.18, 
+67.4, 71.08, 69.54, 66.35, 71.94, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=14000m
+53.18, 48.1, 55.04, 48.17, 57.83, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=36300m
+62.5, 61.47, 56.64, 61.74, 66.52, 
+
+dbms.memory.heap.max_size=36150m
+dbms.memory.pagecache.size=36300m
+PROBLEM, "Error: no such container: <name_of_container> - mst likely memory error
+
+dbms.memory.heap.max_size=12050m
+dbms.memory.pagecache.size=14000m
+61.23, 61.64, 83.25, 81.06, 75.9, 
+94.48, 97.01, 94.88, 96.38, 77.5, 
+
+-------SF3 using CSVComposite serializer----------
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=28000m
+dbms.memory.pagecache.flush.buffer.enabled=true
+dbms.memory.pagecache.flush.buffer.size_in_pages=1
+24.11, 24.69, 24.11, 24.41, 24.02, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=28000m
+dbms.memory.pagecache.flush.buffer.enabled=true
+dbms.memory.pagecache.flush.buffer.size_in_pages=256
+24.15, 24.0, 24.27, 24.37, 24.15, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=28000m
+dbms.memory.pagecache.flush.buffer.enabled=true
+dbms.memory.pagecache.flush.buffer.size_in_pages=512
+24.44, 24.12, 24.32, 24.47, 24.33, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=14000m
+24.31, 24.19, 24.15, 23.97, 23.89, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=36300m
+24.23, 24.17, 24.05, 24.32, 23.92, 
+
+dbms.memory.heap.max_size=12050m
+dbms.memory.pagecache.size=14000m
+24.47, 24.06, 24.69, 24.31, 24.04, 
+
+Bad...
+dbms.memory.heap.max_size=1205m
+dbms.memory.pagecache.size=1400m
+24.05,
+
+-------SF3 using CSVBasic serializer----------
+
+24.05, dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=28000m
+dbms.memory.pagecache.flush.buffer.enabled=true
+dbms.memory.pagecache.flush.buffer.size_in_pages=1
+24.6, 24.47, 24.04, 24.39, 24.21, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=28000m
+dbms.memory.pagecache.flush.buffer.enabled=true
+dbms.memory.pagecache.flush.buffer.size_in_pages=256
+24.35, 24.15, 24.18, 24.25, 24.27, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=28000m
+dbms.memory.pagecache.flush.buffer.enabled=true
+dbms.memory.pagecache.flush.buffer.size_in_pages=512
+24.24, 24.2, 24.4, 24.4, 24.18, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=14000m
+24.18, 24.41, 24.29, 24.77, 24.27, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=36300m
+24.31, 24.43, 24.2, 24.27, 24.6, 
+
+dbms.memory.heap.max_size=12050m
+dbms.memory.pagecache.size=14000m
+24.44, 24.91, 24.34, 24.17, 24.57, 24.57, 24.57, 24.57, 
+
+
+-------SF30 using CSVComposite serializer----------
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=28000m
+dbms.memory.pagecache.flush.buffer.enabled=true
+dbms.memory.pagecache.flush.buffer.size_in_pages=1
+5.57, 5.75, 5.75, 5.63, 5.61, dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=28000m
+dbms.memory.pagecache.flush.buffer.enabled=true
+dbms.memory.pagecache.flush.buffer.size_in_pages=256
+5.6, 5.71, 5.75, 5.65, 5.77, dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=28000m
+dbms.memory.pagecache.flush.buffer.enabled=true
+dbms.memory.pagecache.flush.buffer.size_in_pages=512
+5.8, 5.6, 5.67, 5.58, 5.71, 
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=14000m
+4.78, 5.12, 4.9, 4.86, 5.02, 
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=36300m
+5.02, 5.02, 5.02, 5.02, 5.02, 
+dbms.memory.heap.max_size=12050m
+dbms.memory.pagecache.size=14000m
+5.45, 5.44, 5.3, 5.38, 5.36,
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=28000m
+dbms.memory.pagecache.flush.buffer.enabled=true
+dbms.memory.pagecache.flush.buffer.size_in_pages=1
+8.06, 8.06, 8.22, 8.24, 8.21, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=28000m
+dbms.memory.pagecache.flush.buffer.enabled=true
+dbms.memory.pagecache.flush.buffer.size_in_pages=256
+8.26, 8.24, 8.3, 8.22, 8.04, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=28000m
+dbms.memory.pagecache.flush.buffer.enabled=true
+dbms.memory.pagecache.flush.buffer.size_in_pages=512
+8.03, 8.34, 8.21, 8.19, 8.2, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=14000m
+8.12, 
+
+dbms.memory.heap.max_size=24100m
+dbms.memory.pagecache.size=14000m
+8.18, 8.2, 
