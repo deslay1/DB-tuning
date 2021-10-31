@@ -5,10 +5,13 @@ import subprocess
 import sys
 import re
 import pdb
+import os
+import json
 import project.rocksdb_config as rocksconfig
 import project.neo4j_config as neoconfig
 import numpy as np
 
+ROOT = os.getcwd()
 
 class RocksdbBenchmark:
     def __init__(self, bench_type=None, options={}):
@@ -266,12 +269,25 @@ class RocksdbBenchmark:
 
 class Neo4jBenchmark:
     def load_knob_configurations(self, knobs):
+
+        # Replace notations that were required for validated JSON with original dots.
+        knobs = {k.replace("-", "."): v for k, v in knobs.items()}
+
+        # Get search space information to retrieve units
+        search_space = {}
+        with open(f"{ROOT}/util/search_space.json", "r") as fobj:
+            search_space = json.load(fobj)
+
         # Write to configuration file
         with open(neoconfig.TEMPLATE_FILE, "r") as template:
             with open(neoconfig.CONFIGURATION_FILE, "w") as file:
 
                 for key, value in knobs.items():
-                    file.write(f"{key}={value}\n")
+                    if "unit" in search_space[key]:
+                        unit = search_space[key]["unit"]
+                        file.write(f"{key}={value}{unit}\n")
+                    else:
+                        file.write(f"{key}={value}\n")
 
                 for line in template:
                     file.write(line)
@@ -279,7 +295,11 @@ class Neo4jBenchmark:
         # temporary write configurations
         with open(neoconfig.CYPHER_DIR + "results.txt", "a") as file:
             for key, value in knobs.items():
-                file.write(f"{key}={value}\n")
+                if "unit" in search_space[key]:
+                    unit = search_space[key]["unit"]
+                    file.write(f"{key}={value}{unit}\n")
+                else:
+                    file.write(f"{key}={value}\n")
 
 
     def run_benchmark(self, runs=1):
@@ -290,6 +310,7 @@ class Neo4jBenchmark:
         #     + f"{neoconfig.CYPHER_DIR}scripts/load-in-one-step.sh; "
         #     + f"{neoconfig.CYPHER_DIR}driver/benchmark.sh"
         # )
+        tps_results = []
         for _ in range(runs):
             # command = (
             #     f". {neoconfig.CYPHER_DIR}scripts/environment-variables-default.sh; "
@@ -300,15 +321,18 @@ class Neo4jBenchmark:
             command = f" bash {neoconfig.CYPHER_DIR}program.sh; "
             try:
                 for line in subprocess.check_output(
-                    command, shell=True, universal_newlines=True, executable="/bin/bash", timeout=3000
+                    command, shell=True, universal_newlines=True, executable="/bin/bash", timeout=2000
                 ).split("\n"):
-                    print(line)
+                    # print(line)
+                    pass
                     # NOTE: better method is to grab the results from the benchmark results JSON file
                     # if "op/s" in str(line):
                     #     match = re.search("(([\d.]+)\s[(])", str(line))
                     #     throughput = float(match.group(2))
+                with open(neoconfig.CYPHER_DIR + "results/LDBC-SNB-results.json", "r") as rf:
+                    results = json.load(rf)
+                    tps_results.append(round(results["throughput"],2))
             except subprocess.SubprocessError:
                 pass
 
-        # return np.mean(throughput)
-        return 0
+        return np.mean(np.asarray(tps_results))

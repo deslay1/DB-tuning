@@ -59,9 +59,11 @@ def setup_optimizer(
     with open(f"{ROOT}/util/search_space.json", "r") as fobj:
         knobs = json.load(fobj)
         parameter_options = ["parameter_default", "parameter_type", "values"]
-        for para in db_parameters:
-            scenario["input_parameters"][para] = dict(
-                zip(parameter_options, [knobs[para][k] for k in parameter_options])
+        for param in db_parameters:
+            # Need to replace dots for hypermapper to validate JSON correctly. They are then put back in the benchmark class.
+            valid_param = param.replace(".", "-")
+            scenario["input_parameters"][valid_param] = dict(
+                zip(parameter_options, [knobs[param][k] for k in parameter_options])
             )
 
     with open(scenario_file, "w") as sf:
@@ -109,7 +111,7 @@ def neo4j_default(
         print(tps)
 
 def neo4j_explore(
-    bench_type="r50", runs=1,
+    bench_type="rw50", runs=1,
 ):
     options = {
         "threads": 32,
@@ -155,6 +157,49 @@ def neo4j_explore(
     for knobs in configs:
         tps = run_benchmark(bench_type, knobs, options, runs=runs, database="neo4j")
         print(tps)
+
+
+def neo4j_hypermapper(
+    bench_type="rw50",
+    simple_file_name="simple_test",
+    file_name="test",
+    repetitions=1,
+    runs=3,
+    optimizer_options={},
+):
+    run_ind = 0
+
+    def objective_function(knobs):
+        options = {
+            "threads": 32,
+        }
+        tps = run_benchmark(bench_type, knobs, options, runs=runs, database="neo4j")
+        # print(tps)
+        return -1*tps
+
+    for _ in range(repetitions):
+        run_ind += 1
+        if optimizer_options:
+            setup_optimizer(
+                optimizer_options["db_parameters"],
+                optimizer_options["num_samples"],
+                optimizer_options["optimization_iterations"],
+                optimizer_options["doe_type"],
+                f"{file_name}_{run_ind}",
+                database="neo4j"
+            )
+        optimizer.optimize("util/optimizer_scenario.json", objective_function)
+        # Get feat importance
+        symbol = "feature importances: "
+        with open(f"{ROOT}/hypermapper_logfile.log") as hm_file:
+            for line in hm_file.readlines():
+                if symbol in line:
+                    feat_imps = line[
+                        line.find(symbol) + len(symbol) : line.rfind("]") + 1
+                    ]
+                    with open(f"{simple_file_name}_{run_ind}.csv", "a") as custom_file:
+                        custom_file.write("\n" + feat_imps)
+        subprocess.run("sudo rm hypermapper_logfile.log", shell=True)
 
 
 def rocksdb_default(

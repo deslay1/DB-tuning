@@ -19,7 +19,7 @@ OUTPUT_IMAGE_FILE = f"image_output.pdf"
 ##########################################################
 #                Benchmark Configurations                #
 ##########################################################
-CYPHER_DIR = "/home/os5222el/ldbc/ldbc_snb_interactive/cypher/"
+CYPHER_DIR = "/home/osama/ldbc/ldbc_snb_interactive/cypher/"
 DB_DIR = CYPHER_DIR + "scratch"
 CONFIGURATION_FILE = CYPHER_DIR + "scratch/conf/neo4j.conf"
 TEMPLATE_FILE = ROOT +"/util/neo4j_template2.conf"
@@ -29,30 +29,34 @@ TEMPLATE_FILE = ROOT +"/util/neo4j_template2.conf"
 ##########################################################
 knobs = {}
 
-# T203, default: 3.7(?)
+# T203, default: use memrec command in docker container to find out for the machine that is being used
 knobs["dbms.memory.heap.max_size"] = {}
-knobs["dbms.memory.heap.max_size"]["parameter_default"] = 24100
+knobs["dbms.memory.heap.max_size"]["parameter_default"] = 5000
 knobs["dbms.memory.heap.max_size"]["parameter_type"] = "ordinal"
-knobs["dbms.memory.heap.max_size"]["values"] = range(12050, 36150, 1205)
+knobs["dbms.memory.heap.max_size"]["values"] = [5000] + [x for x in range(int(5000/10), 5000*2, 1000)]
 knobs["dbms.memory.heap.max_size"]["unit"] = "m"
 
 
-# T211, default: 512M(?). Default is 50% of the RAM available.
+# T211, default: use memrec. Default is 50% of the RAM available.
 knobs["dbms.memory.pagecache.size"] = {}
-knobs["dbms.memory.pagecache.size"]["parameter_default"] = 512
+knobs["dbms.memory.pagecache.size"]["parameter_default"] = 6400
 knobs["dbms.memory.pagecache.size"]["parameter_type"] = "ordinal"
-knobs["dbms.memory.pagecache.size"]["values"] = sorted(
-    [512] + [x / 1000 for x in range(50, 2000, 200)]
-)
-knobs["dbms.memory.heap.max_size"]["unit"] = "M"
+knobs["dbms.memory.pagecache.size"]["values"] = [6400] + [x for x in range(int(6400/10), 6400*2, 1000)]
+knobs["dbms.memory.pagecache.size"]["unit"] = "m"
 
 
 # T206, probably need to set dbms.tx_state.memory_allocation=OFF_HEAP, default 2.00GiB
 knobs["dbms.memory.off_heap.max_size"] = {}
-knobs["dbms.memory.off_heap.max_size"]["parameter_default"] = 0
+knobs["dbms.memory.off_heap.max_size"]["parameter_default"] = 2.00
 knobs["dbms.memory.off_heap.max_size"]["parameter_type"] = "ordinal"
-knobs["dbms.memory.off_heap.max_size"]["values"] = [x for x in range(100, 1000, 100)]
+knobs["dbms.memory.off_heap.max_size"]["values"] = [x/10 for x in range(5, 50, 5)]
 knobs["dbms.memory.off_heap.max_size"]["unit"] = "GiB"
+
+# T302: Defines whether memory for transaction state should be allocated on- or off-heap
+knobs["dbms.tx_state.memory_allocation"] = {}
+knobs["dbms.tx_state.memory_allocation"]["parameter_default"] = "OFF_HEAP"
+knobs["dbms.tx_state.memory_allocation"]["parameter_type"] = "categorical"
+knobs["dbms.tx_state.memory_allocation"]["values"] = ["ON_HEAP", "OFF_HEAP"]
 
 
 # T99-100, used if have a PERIODIC checkpoint in T98, default: [time: 15m, tx: 100000]
@@ -92,5 +96,5 @@ knobs["dbms.memory.pagecache.flush.buffer.enabled"]["values"] = ["false", "true"
 
 knobs["dbms.memory.pagecache.flush.buffer.size_in_pages"] = {}
 knobs["dbms.memory.pagecache.flush.buffer.size_in_pages"]["parameter_default"] = 16
-knobs["dbms.memory.pagecache.flush.buffer.size_in_pages"]["parameter_type"] = "integer"
-knobs["dbms.memory.pagecache.flush.buffer.size_in_pages"]["values"] = [10, 20]
+knobs["dbms.memory.pagecache.flush.buffer.size_in_pages"]["parameter_type"] = "ordinal"
+knobs["dbms.memory.pagecache.flush.buffer.size_in_pages"]["values"] = [2**x for x in range(0, 10)]

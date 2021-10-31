@@ -6,26 +6,37 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# INPUT_PARAMETERS = [
+#     "block_size",
+#     "cache_index_and_filter_blocks",
+#     "compaction_readahead_size",
+#     "compression_type",
+#     "level0_file_num_compaction_trigger",
+#     "level0_slowdown_writes_trigger",
+#     "level0_stop_writes_trigger",
+#     "max_background_compactions",
+#     "max_background_flushes",
+#     "max_bytes_for_level_multiplier",
+#     "max_write_buffer_number",
+#     "min_write_buffer_number_to_merge",
+#     "write_buffer_size",
+# ]
+
 INPUT_PARAMETERS = [
-    "block_size",
-    "cache_index_and_filter_blocks",
-    "compaction_readahead_size",
-    "compression_type",
-    "level0_file_num_compaction_trigger",
-    "level0_slowdown_writes_trigger",
-    "level0_stop_writes_trigger",
-    "max_background_compactions",
-    "max_background_flushes",
-    "max_bytes_for_level_multiplier",
-    "max_write_buffer_number",
-    "min_write_buffer_number_to_merge",
-    "write_buffer_size",
+    'dbms.memory.heap.max_size',
+    "dbms.memory.pagecache.size",
+    "dbms.memory.off_heap.max_size",
+    "dbms.memory.pagecache.flush.buffer.enabled",
+    "dbms.memory.pagecache.flush.buffer.size_in_pages",
+    # "dbms.jvm.additional",
+    # "dbms.checkpoint.interval.time",
+    # "dbms.checkpoint.interval.tx",
 ]
 
 
 if __name__ == "__main__":
     # Use 10D scheme
-    samples = len(INPUT_PARAMETERS) * 10
+    samples = len(INPUT_PARAMETERS) * 20
     # samples = len(INPUT_PARAMETERS) + 1
     optimization_iterations = 1
     # optimization_iterations = 100
@@ -51,10 +62,12 @@ if __name__ == "__main__":
     # )
 
     # program.neo4j_default(bench_type=bench_type)
-    program.neo4j_explore(bench_type=bench_type, runs=5) 
+    # program.neo4j_explore(bench_type=bench_type, runs=5)
+
+    program.neo4j_hypermapper(optimizer_options=optimizer_options, bench_type=bench_type)
+
     # run using sudo env "PATH=$PATH" python main.py OR 
-    # sudo ~/anaconda3/envs/tuner/bin/python main.py OR
-    # sudo -E ~/anaconda3/envs/tuner/bin/python main.py
+    # sudo ~/anaconda3/envs/tuner/bin/python main.py
 
     # program.rocksdb_default(
     #     bench_type=bench_type,
