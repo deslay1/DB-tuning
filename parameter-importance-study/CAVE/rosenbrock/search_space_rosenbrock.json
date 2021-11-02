@@ -1,0 +1,14 @@
+{
+  "x0": {
+    "parameter_type": "real",
+    "parameter_default": -4.184124336816659,
+    "values": [-30, 30],
+    "prior": "uniform"
+  },
+  "x1": {
+    "parameter_type": "real",
+    "parameter_default": -17.05247187812783,
+    "values": [-30, 30],
+    "prior": "uniform"
+  }
+}

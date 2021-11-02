@@ -13,14 +13,13 @@ import json
 import pathlib
 from shutil import copyfile
 
-results_dir = "parameter-importance-study/CAVE/branin/results/"
-cave_dir = "parameter-importance-study/CAVE/branin/"
-search_space_file = "parameter-importance-study/CAVE/branin/search_space_branin.json"
+key = "rosenbrock"
+results_dir = f"CAVE/{key}/results/"
+cave_dir = f"CAVE/{key}/"
+search_space_file = f"CAVE/{key}/search_space_{key}.json"
 
 # Convert all first-run files that end in 1.csv
-for instance_ind, file in enumerate(
-    [x for x in os.listdir(results_dir) if "branin" in x]
-):
+for instance_ind, file in enumerate([x for x in os.listdir(results_dir) if key in x]):
     hm_df = pd.read_csv(results_dir + file)
     hm_df = hm_df.drop(columns=["Timestamp"])
     hm_df = hm_df.rename(columns={"Throughput": "cost"})
@@ -50,13 +49,13 @@ for instance_ind, file in enumerate(
                 drop_indices.append(ind)
     trajectory_df = trajectory_df.drop(drop_indices)
 
-    instance_path = cave_dir + file[:-6] + "/"
+    instance_path = cave_dir + file[:-4] + "/"
     pathlib.Path(instance_path).mkdir(parents=True, exist_ok=True)
     cave_df.to_csv(instance_path + "runhistory.csv", index=False)
     trajectory_df.to_csv(instance_path + "trajectory.csv", index=False)
 
     # copy over scneario file
-    copyfile(cave_dir + 'scenario.txt', instance_path + 'scenario.txt')
+    copyfile(cave_dir + "scenario.txt", instance_path + "scenario.txt")
 
 
 # 2. Format configuration space

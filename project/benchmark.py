@@ -1,6 +1,7 @@
 """
 Benchmarking class for RocksDB.
 """
+from logging import error
 import subprocess
 import sys
 import re
@@ -12,6 +13,7 @@ import project.neo4j_config as neoconfig
 import numpy as np
 
 ROOT = os.getcwd()
+
 
 class RocksdbBenchmark:
     def __init__(self, bench_type=None, options={}):
@@ -287,7 +289,12 @@ class Neo4jBenchmark:
                         unit = search_space[key]["unit"]
                         file.write(f"{key}={value}{unit}\n")
                     else:
-                        file.write(f"{key}={value}\n")
+                        # special case: jvm.additional parameter
+                        if "jvm.additional" in key:
+                            if len(value) > 0:  # do not write if we have an empty value
+                                file.write(f"dbms.jvm.additional={value}\n")
+                        else:
+                            file.write(f"{key}={value}\n")
 
                 for line in template:
                     file.write(line)
@@ -301,7 +308,6 @@ class Neo4jBenchmark:
                 else:
                     file.write(f"{key}={value}\n")
 
-
     def run_benchmark(self, runs=1):
         # Run benchmark command and parse output, return thoughput.
         throughput = []
@@ -311,28 +317,48 @@ class Neo4jBenchmark:
         #     + f"{neoconfig.CYPHER_DIR}driver/benchmark.sh"
         # )
         tps_results = []
+        # command = (
+        #     'sh -c "echo 3 > /proc/sys/vm/drop_caches"; '
+        #     + f". {neoconfig.CYPHER_DIR}scripts/environment-variables-default.sh; "
+        #     + f"{neoconfig.CYPHER_DIR}scripts/snapshot-load.sh; "
+        #     + f"{neoconfig.CYPHER_DIR}driver/benchmark.sh; "
+        #     + f"{neoconfig.CYPHER_DIR}python3 parse.py; "
+        # )
+        command1 = (
+            f". {neoconfig.CYPHER_DIR}scripts/environment-variables-default.sh; "
+            + f"timeout -s SIGTERM --foreground 5m {neoconfig.CYPHER_DIR}scripts/snapshot-load.sh"
+        )
+        command2 = f" bash {neoconfig.CYPHER_DIR}driver/benchmark.sh"
+        # command = f" bash {neoconfig.CYPHER_DIR}program.sh; "
+        # try:
         for _ in range(runs):
-            # command = (
-            #     f". {neoconfig.CYPHER_DIR}scripts/environment-variables-default.sh; "
-            #     + f"{neoconfig.CYPHER_DIR}scripts/snapshot-load.sh; "
-            #     + f"{neoconfig.CYPHER_DIR}driver/benchmark.sh; "
-            #     + f"{neoconfig.CYPHER_DIR}python3 parse.py; "
-            # )
-            command = f" bash {neoconfig.CYPHER_DIR}program.sh; "
-            try:
-                for line in subprocess.check_output(
-                    command, shell=True, universal_newlines=True, executable="/bin/bash", timeout=2000
-                ).split("\n"):
-                    # print(line)
-                    pass
-                    # NOTE: better method is to grab the results from the benchmark results JSON file
-                    # if "op/s" in str(line):
-                    #     match = re.search("(([\d.]+)\s[(])", str(line))
-                    #     throughput = float(match.group(2))
-                with open(neoconfig.CYPHER_DIR + "results/LDBC-SNB-results.json", "r") as rf:
-                    results = json.load(rf)
-                    tps_results.append(round(results["throughput"],2))
-            except subprocess.SubprocessError:
-                pass
+            code = subprocess.call(command1, executable="/bin/bash", shell=True)
+            if code > 1:
+                break
+            code = subprocess.call(command2, executable="/bin/bash", shell=True)
+            if code > 1:
+                break
+            # for line in subprocess.check_output(
+            #     command,
+            #     shell=True,
+            #     universal_newlines=True,
+            #     executable="/bin/bash",
+            #     timeout=2000,
+            # ).split("\n"):
+            #     pass
+            # NOTE: better method is to grab the results from the benchmark results JSON file
+            # if "op/s" in str(line):
+            #     match = re.search("(([\d.]+)\s[(])", str(line))
+            #     throughput = float(match.group(2))
+            with open(
+                neoconfig.CYPHER_DIR + "results/LDBC-SNB-results.json", "r"
+            ) as rf:
+                results = json.load(rf)
+                tps_results.append(round(results["throughput"], 2))
+        # except subprocess.SubprocessError or subprocess.CalledProcessError:
+        # print("Neo4j configuration is bad, cannot start docker container.")
 
-        return np.mean(np.asarray(tps_results))
+        if len(tps_results) == runs:
+            return np.mean(np.asarray(tps_results))
+        else:
+            return 0

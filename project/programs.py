@@ -20,6 +20,7 @@ def setup_optimizer(
     optimization_iterations,
     doe_type,
     file_name,
+    resume=False,
     database="rocksdb",
 ):
     """
@@ -40,6 +41,9 @@ def setup_optimizer(
     scenario["application_name"] = config.APPLICATION_NAME
     scenario["optimization_objectives"] = config.OPTIMIZATION_OBJECTIVE
     scenario["optimization_iterations"] = optimization_iterations
+    if resume:
+        scenario["resume_optimization"] = True
+        scenario["resume_optimization_data"] = f"{ROOT}/{file_name}.csv"
     scenario["models"] = {}
     scenario["models"]["model"] = config.MODEL
     scenario["design_of_experiment"] = {}
@@ -110,13 +114,14 @@ def neo4j_default(
         tps = run_benchmark(bench_type, {}, options, runs=runs, database="neo4j")
         print(tps)
 
+
 def neo4j_explore(
     bench_type="rw50", runs=1,
 ):
     options = {
         "threads": 32,
     }
-    
+
     configs = [
         # {
         #     "dbms.memory.heap.max_size": "24100m",
@@ -142,7 +147,7 @@ def neo4j_explore(
         },
         {
             "dbms.memory.heap.max_size": "24100m",
-            "dbms.memory.pagecache.size": "36300m", # *1.2
+            "dbms.memory.pagecache.size": "36300m",  # *1.2
         },
         {
             "dbms.memory.heap.max_size": "12050m",
@@ -175,7 +180,7 @@ def neo4j_hypermapper(
         }
         tps = run_benchmark(bench_type, knobs, options, runs=runs, database="neo4j")
         # print(tps)
-        return -1*tps
+        return -1 * round(tps, 2)
 
     for _ in range(repetitions):
         run_ind += 1
@@ -186,7 +191,8 @@ def neo4j_hypermapper(
                 optimizer_options["optimization_iterations"],
                 optimizer_options["doe_type"],
                 f"{file_name}_{run_ind}",
-                database="neo4j"
+                resume=optimizer_options["resume"],
+                database="neo4j",
             )
         optimizer.optimize("util/optimizer_scenario.json", objective_function)
         # Get feat importance
@@ -245,6 +251,7 @@ def rocksdb_hypermapper(
                 optimizer_options["num_samples"],
                 optimizer_options["optimization_iterations"],
                 optimizer_options["doe_type"],
+                optimizer_options["resume"],
                 f"{file_name}_{run_ind}",
             )
         optimizer.optimize("util/optimizer_scenario.json", objective_function)

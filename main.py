@@ -23,12 +23,14 @@ load_dotenv()
 # ]
 
 INPUT_PARAMETERS = [
-    'dbms.memory.heap.max_size',
+    "dbms.memory.heap.max_size",
     "dbms.memory.pagecache.size",
     "dbms.memory.off_heap.max_size",
+    "dbms.tx_state.memory_allocation",
     "dbms.memory.pagecache.flush.buffer.enabled",
     "dbms.memory.pagecache.flush.buffer.size_in_pages",
-    # "dbms.jvm.additional",
+    "dbms.jvm.additional.1",
+    "dbms.jvm.additional.2",
     # "dbms.checkpoint.interval.time",
     # "dbms.checkpoint.interval.tx",
 ]
@@ -38,7 +40,7 @@ if __name__ == "__main__":
     # Use 10D scheme
     samples = len(INPUT_PARAMETERS) * 20
     # samples = len(INPUT_PARAMETERS) + 1
-    optimization_iterations = 1
+    optimization_iterations = 0
     # optimization_iterations = 100
     bench_type = os.getenv("BENCH_TYPE")
     rwpercent = int(os.getenv("READ_WRITE_RATIO_PERCENT", "-1"))
@@ -51,6 +53,7 @@ if __name__ == "__main__":
         "num_samples": samples,
         "optimization_iterations": optimization_iterations,
         "doe_type": "random sampling",
+        "resume": True,
     }
     # program.rocksdb_hypermapper(
     #     optimizer_options=optimizer_options,
@@ -64,9 +67,11 @@ if __name__ == "__main__":
     # program.neo4j_default(bench_type=bench_type)
     # program.neo4j_explore(bench_type=bench_type, runs=5)
 
-    program.neo4j_hypermapper(optimizer_options=optimizer_options, bench_type=bench_type)
+    program.neo4j_hypermapper(
+        optimizer_options=optimizer_options, bench_type=bench_type
+    )
 
-    # run using sudo env "PATH=$PATH" python main.py OR 
+    # run using sudo env "PATH=$PATH" python main.py OR
     # sudo ~/anaconda3/envs/tuner/bin/python main.py
 
     # program.rocksdb_default(
