@@ -13,13 +13,12 @@ import json
 import pathlib
 from shutil import copyfile
 
-key = "rosenbrock"
+key = "branin"
 results_dir = f"CAVE/{key}/results/"
 cave_dir = f"CAVE/{key}/"
 search_space_file = f"CAVE/{key}/search_space_{key}.json"
 
-# Convert all first-run files that end in 1.csv
-for instance_ind, file in enumerate([x for x in os.listdir(results_dir) if key in x]):
+for instance_ind, file in enumerate([x for x in os.listdir(results_dir) if key in x and x.endswith(".csv")]):
     hm_df = pd.read_csv(results_dir + file)
     hm_df = hm_df.drop(columns=["Timestamp"])
     hm_df = hm_df.rename(columns={"Throughput": "cost"})
