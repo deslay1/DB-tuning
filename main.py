@@ -6,34 +6,34 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# INPUT_PARAMETERS = [
-#     "block_size",
-#     "cache_index_and_filter_blocks",
-#     "compaction_readahead_size",
-#     "compression_type",
-#     "level0_file_num_compaction_trigger",
-#     "level0_slowdown_writes_trigger",
-#     "level0_stop_writes_trigger",
-#     "max_background_compactions",
-#     "max_background_flushes",
-#     "max_bytes_for_level_multiplier",
-#     "max_write_buffer_number",
-#     "min_write_buffer_number_to_merge",
-#     "write_buffer_size",
-# ]
-
 INPUT_PARAMETERS = [
-    "dbms.memory.heap.max_size",
-    "dbms.memory.pagecache.size",
-    "dbms.memory.off_heap.max_size",
-    "dbms.tx_state.memory_allocation",
-    "dbms.memory.pagecache.flush.buffer.enabled",
-    "dbms.memory.pagecache.flush.buffer.size_in_pages",
-    "dbms.jvm.additional.1",
-    "dbms.jvm.additional.2",
-    # "dbms.checkpoint.interval.time",
-    # "dbms.checkpoint.interval.tx",
+    "block_size",
+    "cache_index_and_filter_blocks",
+    "compaction_readahead_size",
+    "compression_type",
+    "level0_file_num_compaction_trigger",
+    "level0_slowdown_writes_trigger",
+    "level0_stop_writes_trigger",
+    "max_background_compactions",
+    "max_background_flushes",
+    "max_bytes_for_level_multiplier",
+    "max_write_buffer_number",
+    "min_write_buffer_number_to_merge",
+    "write_buffer_size",
 ]
+
+# INPUT_PARAMETERS = [
+#     "dbms.memory.heap.max_size",
+#     "dbms.memory.pagecache.size",
+#     "dbms.memory.off_heap.max_size",
+#     "dbms.tx_state.memory_allocation",
+#     "dbms.memory.pagecache.flush.buffer.enabled",
+#     "dbms.memory.pagecache.flush.buffer.size_in_pages",
+#     "dbms.jvm.additional.1",
+#     "dbms.jvm.additional.2",
+#     # "dbms.checkpoint.interval.time",
+#     # "dbms.checkpoint.interval.tx",
+# ]
 
 
 if __name__ == "__main__":
@@ -53,24 +53,23 @@ if __name__ == "__main__":
         "num_samples": samples,
         "optimization_iterations": optimization_iterations,
         "doe_type": "random sampling",
-        "resume": True,
+        "resume": False,
     }
-    # program.rocksdb_hypermapper(
-    #     optimizer_options=optimizer_options,
-    #     bench_type=bench_type,
-    #     read_write_percent=rwpercent,
-    #     simple_file_name=custom_output_path,
-    #     file_name=hm_output_path,
-    #     repetitions=1,
-    # )
+    program.rocksdb_hypermapper(
+        optimizer_options=optimizer_options,
+        bench_type=bench_type,
+        read_write_percent=rwpercent,
+        simple_file_name=custom_output_path,
+        file_name=hm_output_path,
+        repetitions=1,
+    )
 
     # program.neo4j_default(bench_type=bench_type)
     # program.neo4j_explore(bench_type=bench_type, runs=5)
 
-    program.neo4j_hypermapper(
-        optimizer_options=optimizer_options, bench_type=bench_type
-    )
-
+    # program.neo4j_hypermapper(
+    #     optimizer_options=optimizer_options, bench_type=bench_type
+    # )
     # run using sudo env "PATH=$PATH" python main.py OR
     # sudo ~/anaconda3/envs/tuner/bin/python main.py
 

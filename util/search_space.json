@@ -1,115 +1,30 @@
 {
-    "dbms.memory.heap.max_size": {
-        "parameter_default": 24100,
+    "block_size": {
+        "parameter_default": 4096,
         "parameter_type": "ordinal",
         "values": [
-            4100,
-            8100,
-            12100,
-            16100,
-            20100,
-            24100,
-            28100,
-            32100,
-            36100
-        ],
-        "unit": "m"
-    },
-    "dbms.memory.pagecache.size": {
-        "parameter_default": 28000,
-        "parameter_type": "ordinal",
-        "values": [
-            4000,
-            8000,
-            12000,
-            16000,
-            20000,
-            24000,
-            28000,
-            32000,
-            36000
-        ],
-        "unit": "m"
-    },
-    "dbms.memory.off_heap.max_size": {
-        "parameter_default": 2.0,
-        "parameter_type": "ordinal",
-        "values": [
-            0.5,
-            1.0,
-            1.5,
-            2.0,
-            2.5,
-            3.0,
-            3.5,
-            4.0,
-            4.5
-        ],
-        "unit": "GiB"
-    },
-    "dbms.tx_state.memory_allocation": {
-        "parameter_default": "OFF_HEAP",
-        "parameter_type": "categorical",
-        "values": [
-            "ON_HEAP",
-            "OFF_HEAP"
+            1,
+            4,
+            8,
+            16,
+            32,
+            64,
+            128,
+            256,
+            512,
+            1024,
+            2048,
+            4096,
+            8192,
+            16384,
+            32768,
+            65536,
+            131072,
+            262144,
+            524288
         ]
     },
-    "dbms.checkpoint.interval.time": {
-        "parameter_default": 15,
-        "parameter_type": "integer",
-        "values": [
-            5,
-            25
-        ],
-        "unit": "m"
-    },
-    "dbms.checkpoint.interval.tx": {
-        "parameter_default": 100000,
-        "parameter_type": "ordinal",
-        "values": [
-            10000,
-            20000,
-            30000,
-            40000,
-            50000,
-            60000,
-            70000,
-            80000,
-            90000,
-            100000,
-            110000,
-            120000,
-            130000,
-            140000,
-            150000,
-            160000,
-            170000,
-            180000,
-            190000
-        ]
-    },
-    "dbms.jvm.additional.1": {
-        "parameter_default": "-XX:+UseG1GC",
-        "parameter_type": "categorical",
-        "values": [
-            "-XX:+UseG1GC",
-            "-XX:+UseParallelGC",
-            "-XX:+UseSerialGC"
-        ]
-    },
-    "dbms.jvm.additional.2": {
-        "parameter_default": "",
-        "parameter_type": "categorical",
-        "values": [
-            "",
-            "-XX:SurvivorRatio=2",
-            "-XX:SurvivorRatio=4",
-            "-XX:SurvivorRatio=8",
-            "-XX:SurvivorRatio=12"
-        ]
-    },
-    "dbms.memory.pagecache.flush.buffer.enabled": {
+    "cache_index_and_filter_blocks": {
         "parameter_default": "false",
         "parameter_type": "categorical",
         "values": [
@@ -117,8 +32,34 @@
             "true"
         ]
     },
-    "dbms.memory.pagecache.flush.buffer.size_in_pages": {
-        "parameter_default": 16,
+    "compaction_readahead_size": {
+        "parameter_default": 0,
+        "parameter_type": "ordinal",
+        "values": [
+            0,
+            40000,
+            80000,
+            120000,
+            160000,
+            200000,
+            240000,
+            280000,
+            320000,
+            360000,
+            400000
+        ]
+    },
+    "compression_type": {
+        "parameter_default": "snappy",
+        "parameter_type": "categorical",
+        "values": [
+            "snappy",
+            "zstd",
+            "lz4"
+        ]
+    },
+    "level0_file_num_compaction_trigger": {
+        "parameter_default": 4,
         "parameter_type": "ordinal",
         "values": [
             1,
@@ -129,8 +70,138 @@
             32,
             64,
             128,
+            256
+        ]
+    },
+    "level0_slowdown_writes_trigger": {
+        "parameter_default": 20,
+        "parameter_type": "ordinal",
+        "values": [
+            0,
+            1,
+            2,
+            4,
+            8,
+            16,
+            20,
+            32,
+            64,
+            128,
             256,
-            512
+            512,
+            1024
+        ]
+    },
+    "level0_stop_writes_trigger": {
+        "parameter_default": 36,
+        "parameter_type": "ordinal",
+        "values": [
+            1,
+            2,
+            4,
+            8,
+            16,
+            32,
+            36,
+            64,
+            128,
+            256,
+            512,
+            1024
+        ]
+    },
+    "max_background_compactions": {
+        "parameter_default": -1,
+        "parameter_type": "ordinal",
+        "values": [
+            -1,
+            1,
+            2,
+            4,
+            8,
+            16,
+            32,
+            64,
+            128,
+            256
+        ]
+    },
+    "max_background_flushes": {
+        "parameter_default": -1,
+        "parameter_type": "integer",
+        "values": [
+            -1,
+            10
+        ]
+    },
+    "max_bytes_for_level_multiplier": {
+        "parameter_default": 10,
+        "parameter_type": "integer",
+        "values": [
+            5,
+            15
+        ]
+    },
+    "max_write_buffer_number": {
+        "parameter_default": 2,
+        "parameter_type": "ordinal",
+        "values": [
+            1,
+            2,
+            4,
+            8,
+            16,
+            32,
+            64,
+            128
+        ]
+    },
+    "min_write_buffer_number_to_merge": {
+        "parameter_default": 1,
+        "parameter_type": "ordinal",
+        "values": [
+            1,
+            2,
+            4,
+            8,
+            16,
+            32
+        ]
+    },
+    "write_buffer_size": {
+        "parameter_default": 67108864,
+        "parameter_type": "ordinal",
+        "values": [
+            1,
+            4,
+            8,
+            16,
+            32,
+            64,
+            128,
+            256,
+            512,
+            1024,
+            2048,
+            4096,
+            8192,
+            16384,
+            32768,
+            65536,
+            131072,
+            262144,
+            524288,
+            1048576,
+            2097152,
+            4194304,
+            8388608,
+            16777216,
+            33554432,
+            67108864,
+            134217728,
+            268435456,
+            536870912,
+            1073741824
         ]
     }
 }

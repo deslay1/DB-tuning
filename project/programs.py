@@ -251,8 +251,9 @@ def rocksdb_hypermapper(
                 optimizer_options["num_samples"],
                 optimizer_options["optimization_iterations"],
                 optimizer_options["doe_type"],
-                optimizer_options["resume"],
                 f"{file_name}_{run_ind}",
+                resume=optimizer_options["resume"],
+                database="rocksdb",
             )
         optimizer.optimize("util/optimizer_scenario.json", objective_function)
         # Get feat importance
