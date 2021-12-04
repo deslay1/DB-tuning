@@ -37,11 +37,11 @@ INPUT_PARAMETERS = [
 
 
 if __name__ == "__main__":
+    # Use D + 1 Scheme
+    samples = len(INPUT_PARAMETERS) + 1
     # Use 10D scheme
-    samples = len(INPUT_PARAMETERS) * 20
-    # samples = len(INPUT_PARAMETERS) + 1
-    optimization_iterations = 0
-    # optimization_iterations = 100
+    optimization_iterations = len(INPUT_PARAMETERS) * 30
+
     bench_type = os.getenv("BENCH_TYPE")
     rwpercent = int(os.getenv("READ_WRITE_RATIO_PERCENT", "-1"))
 
