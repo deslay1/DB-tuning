@@ -72,6 +72,7 @@ if __name__ == "__main__":
     # )
     # run using sudo env "PATH=$PATH" python main.py OR
     # sudo ~/anaconda3/envs/tuner/bin/python main.py
+    # sudo ~/anaconda3/envs/lsqb/bin/python main.py
 
     # program.rocksdb_default(
     #     bench_type=bench_type,

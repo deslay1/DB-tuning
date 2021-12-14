@@ -19,11 +19,13 @@ OUTPUT_IMAGE_FILE = f"image_output.pdf"
 ##########################################################
 #                Benchmark Configurations                #
 ##########################################################
-# CYPHER_DIR = "/home/osama/ldbc/ldbc_snb_interactive/cypher/"
-CYPHER_DIR = "/home/os5222el/ldbc/ldbc_snb_interactive/cypher/"
-DB_DIR = CYPHER_DIR + "scratch"
-CONFIGURATION_FILE = CYPHER_DIR + "scratch/conf/neo4j.conf"
+SNB_DIR = "/home/os5222el/ldbc/ldbc_snb_interactive/cypher/"
+DB_DIR = SNB_DIR + "scratch"
+SNB_CONFIGURATION_FILE = SNB_DIR + "scratch/conf/neo4j.conf"
 TEMPLATE_FILE = ROOT + "/util/neo4j_template2.conf"
+
+LSQB_DIR = "/home/os5222el/lsqb/neo/"
+LSQB_CONFIGURATION_FILE = LSQB_DIR + "conf/neo4j.conf"
 
 ##########################################################
 #                     Tuning knobs                       #

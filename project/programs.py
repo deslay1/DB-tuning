@@ -81,7 +81,7 @@ def run_benchmark(bench_type, knobs, options, runs=3, database="rocksdb"):
     if database == "rocksdb":
         bench = RocksdbBenchmark(bench_type=bench_type, options=options)
     else:
-        bench = Neo4jBenchmark()
+        bench = Neo4jBenchmark(bench_type=bench_type)
 
     # Load if we have specific configurations - otherwise default will be used.
     if knobs:
@@ -165,7 +165,7 @@ def neo4j_explore(
 
 
 def neo4j_hypermapper(
-    bench_type="rw50",
+    bench_type="snb",
     simple_file_name="simple_test",
     file_name="test",
     repetitions=1,

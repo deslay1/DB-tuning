@@ -1,6 +1,7 @@
 """
 Benchmarking class for RocksDB.
 """
+from datetime import time
 from logging import error
 import subprocess
 import sys
@@ -11,6 +12,7 @@ import json
 import project.rocksdb_config as rocksconfig
 import project.neo4j_config as neoconfig
 import numpy as np
+import pandas as pd
 
 ROOT = os.getcwd()
 
@@ -270,6 +272,9 @@ class RocksdbBenchmark:
 
 
 class Neo4jBenchmark:
+    def __init__(self, bench_type="snb", options={}):
+        self.bench_type = bench_type
+
     def load_knob_configurations(self, knobs):
 
         # Replace notations that were required for validated JSON with original dots.
@@ -281,8 +286,13 @@ class Neo4jBenchmark:
             search_space = json.load(fobj)
 
         # Write to configuration file
+        target_file = (
+            neoconfig.SNB_CONFIGURATION_FILE
+            if self.bench_type == "snb"
+            else neoconfig.LSQB_CONFIGURATION_FILE
+        )
         with open(neoconfig.TEMPLATE_FILE, "r") as template:
-            with open(neoconfig.CONFIGURATION_FILE, "w") as file:
+            with open(target_file, "w") as file:
 
                 for key, value in knobs.items():
                     if "unit" in search_space[key]:
@@ -300,36 +310,38 @@ class Neo4jBenchmark:
                     file.write(line)
 
         # temporary write configurations
-        with open(neoconfig.CYPHER_DIR + "results.txt", "a") as file:
-            for key, value in knobs.items():
-                if "unit" in search_space[key]:
-                    unit = search_space[key]["unit"]
-                    file.write(f"{key}={value}{unit}\n")
-                else:
-                    file.write(f"{key}={value}\n")
+        # with open(neoconfig.CYPHER_DIR + "results.txt", "a") as file:
+        #     for key, value in knobs.items():
+        #         if "unit" in search_space[key]:
+        #             unit = search_space[key]["unit"]
+        #             file.write(f"{key}={value}{unit}\n")
+        #         else:
+        #             file.write(f"{key}={value}\n")
 
     def run_benchmark(self, runs=1):
         # Run benchmark command and parse output, return thoughput.
-        throughput = []
-        # command = (
-        #     f". {neoconfig.CYPHER_DIR}scripts/environment-variables-default.sh; "
-        #     + f"{neoconfig.CYPHER_DIR}scripts/load-in-one-step.sh; "
-        #     + f"{neoconfig.CYPHER_DIR}driver/benchmark.sh"
-        # )
         tps_results = []
-        # command = (
-        #     'sh -c "echo 3 > /proc/sys/vm/drop_caches"; '
-        #     + f". {neoconfig.CYPHER_DIR}scripts/environment-variables-default.sh; "
-        #     + f"{neoconfig.CYPHER_DIR}scripts/snapshot-load.sh; "
-        #     + f"{neoconfig.CYPHER_DIR}driver/benchmark.sh; "
-        #     + f"{neoconfig.CYPHER_DIR}python3 parse.py; "
-        # )
+        if self.bench_type == "snb":
+            # LDBC SNB
+            throughput = self.run_snb(runs)
+            tps_results.append(throughput)
+        else:
+            # LDBC LSQB
+            throughput = self.run_lsqb(runs)
+            tps_results.append(throughput)
+
+        if len(tps_results) == runs:
+            return np.mean(np.asarray(tps_results))
+        else:
+            return 0
+
+    def run_snb(self, runs):
         command1 = (
-            f". {neoconfig.CYPHER_DIR}scripts/environment-variables-default.sh; "
-            + f"timeout -s SIGTERM --foreground 5m {neoconfig.CYPHER_DIR}scripts/snapshot-load.sh"
+            f". {neoconfig.SNB_DIR}scripts/environment-variables-default.sh; "
+            + f"timeout -s SIGTERM --foreground 5m {neoconfig.SNB_DIR}scripts/snapshot-load.sh"
         )
-        command2 = f" bash {neoconfig.CYPHER_DIR}driver/benchmark.sh"
-        # command = f" bash {neoconfig.CYPHER_DIR}program.sh; "
+        command2 = f" bash {neoconfig.SNB_DIR}driver/benchmark.sh"
+
         # try:
         for _ in range(runs):
             code = subprocess.call(command1, executable="/bin/bash", shell=True)
@@ -350,15 +362,27 @@ class Neo4jBenchmark:
             # if "op/s" in str(line):
             #     match = re.search("(([\d.]+)\s[(])", str(line))
             #     throughput = float(match.group(2))
-            with open(
-                neoconfig.CYPHER_DIR + "results/LDBC-SNB-results.json", "r"
-            ) as rf:
+            with open(neoconfig.SNB_DIR + "results/LDBC-SNB-results.json", "r") as rf:
                 results = json.load(rf)
-                tps_results.append(round(results["throughput"], 2))
+                return round(results["throughput"], 2)
         # except subprocess.SubprocessError or subprocess.CalledProcessError:
         # print("Neo4j configuration is bad, cannot start docker container.")
 
-        if len(tps_results) == runs:
-            return np.mean(np.asarray(tps_results))
-        else:
-            return 0
+    def run_lsqb(self, runs):
+        command = f"export SF=0.3 && bash {neoconfig.LSQB_DIR}init-and-load.sh && bash {neoconfig.LSQB_DIR}run.sh && bash {neoconfig.LSQB_DIR}stop.sh"
+        for _ in range(runs):
+            code = subprocess.call(
+                command, executable="/bin/bash", shell=True, timeout=320
+            )
+            if code > 1:
+                break
+            # LSQB - compute gemoetric mean latency from results file
+            df = pd.read_csv(
+                f"{neoconfig.LSQB_DIR}../results/results.csv", sep="\t", header=None
+            )
+            latencies = df.iloc[:, 4].to_numpy()
+            print(latencies)
+            geo_mean_latency = latencies.prod() ** (1.0 / len(latencies))
+            print(geo_mean_latency)
+            return geo_mean_latency
+
