@@ -1,46 +1,22 @@
-import project.programs as program
-import project.plotters as plot
 import numpy as np
 import os
+import project.programs as program
+import project.plotters as plot
 from dotenv import load_dotenv
+from parameters import get_parameters
 
 load_dotenv()
 
-INPUT_PARAMETERS = [
-    "block_size",
-    "cache_index_and_filter_blocks",
-    "compaction_readahead_size",
-    "compression_type",
-    "level0_file_num_compaction_trigger",
-    "level0_slowdown_writes_trigger",
-    "level0_stop_writes_trigger",
-    "max_background_compactions",
-    "max_background_flushes",
-    "max_bytes_for_level_multiplier",
-    "max_write_buffer_number",
-    "min_write_buffer_number_to_merge",
-    "write_buffer_size",
-]
-
-# INPUT_PARAMETERS = [
-#     "dbms.memory.heap.max_size",
-#     "dbms.memory.pagecache.size",
-#     "dbms.memory.off_heap.max_size",
-#     "dbms.tx_state.memory_allocation",
-#     "dbms.memory.pagecache.flush.buffer.enabled",
-#     "dbms.memory.pagecache.flush.buffer.size_in_pages",
-#     "dbms.jvm.additional.1",
-#     "dbms.jvm.additional.2",
-#     # "dbms.checkpoint.interval.time",
-#     # "dbms.checkpoint.interval.tx",
-# ]
-
 
 if __name__ == "__main__":
+
+    database_type = os.getenv("DATABASE_TYPE")
+    parameters = get_parameters(database_type)
+
     # Use D + 1 Scheme
-    samples = len(INPUT_PARAMETERS) + 1
+    samples = len(parameters) + 1
     # Use 10D scheme
-    optimization_iterations = len(INPUT_PARAMETERS) * 30
+    optimization_iterations = len(parameters) * 30
 
     bench_type = os.getenv("BENCH_TYPE")
     rwpercent = int(os.getenv("READ_WRITE_RATIO_PERCENT", "-1"))
@@ -49,20 +25,30 @@ if __name__ == "__main__":
     hm_output_path = os.getenv("HM_OUTPUT_PATH")
 
     optimizer_options = {
-        "db_parameters": INPUT_PARAMETERS,
+        "db_parameters": parameters,
         "num_samples": samples,
         "optimization_iterations": optimization_iterations,
         "doe_type": "random sampling",
         "resume": False,
     }
-    program.rocksdb_hypermapper(
+    # program.rocksdb_hypermapper(
+    #     optimizer_options=optimizer_options,
+    #     bench_type=bench_type,
+    #     read_write_percent=rwpercent,
+    #     simple_file_name=custom_output_path,
+    #     file_name=hm_output_path,
+    #     repetitions=1,
+    # )
+
+    program.cassandara_hypermapper(
         optimizer_options=optimizer_options,
-        bench_type=bench_type,
-        read_write_percent=rwpercent,
-        simple_file_name=custom_output_path,
+        bench_type="ycsb",
+        read_write_percent=50,
         file_name=hm_output_path,
+        simple_file_name=custom_output_path,
         repetitions=1,
     )
+    # run using sudo ~/anaconda3/envs/tuner/bin/python main.py
 
     # program.neo4j_default(bench_type=bench_type)
     # program.neo4j_explore(bench_type=bench_type, runs=5)

@@ -1,111 +1,17 @@
-from project.plotters import throughput
-from hypermapper import optimizer
-from project.benchmark import RocksdbBenchmark, Neo4jBenchmark
-from datetime import datetime
-import project.rocksdb_config as rocksconfig
-import project.neo4j_config as neoconfig
 import subprocess
 import pandas as pd
 import pdb
 import sys
 import os
-import json
+from hypermapper import optimizer
+from project.plotters import throughput
+from project.setup import run_benchmark, setup_optimizer
 
 ROOT = os.getcwd()
 
 
-def setup_optimizer(
-    db_parameters,
-    num_samples,
-    optimization_iterations,
-    doe_type,
-    file_name,
-    resume=False,
-    database="rocksdb",
-):
-    """
-    Creates a json file for the optimizer to use.
-    """
-
-    if database == "rocksdb":
-        config = rocksconfig
-    else:
-        config = neoconfig
-
-    # Update search space file
-    with open(f"{ROOT}/util/search_space.json", "w") as file:
-        json.dump(config.knobs, file, indent=4)
-
-    scenario_file = f"{ROOT}/util/optimizer_scenario.json"
-    scenario = {}
-    scenario["application_name"] = config.APPLICATION_NAME
-    scenario["optimization_objectives"] = config.OPTIMIZATION_OBJECTIVE
-    scenario["optimization_iterations"] = optimization_iterations
-    if resume:
-        scenario["resume_optimization"] = True
-        scenario["resume_optimization_data"] = f"{ROOT}/{file_name}.csv"
-    scenario["models"] = {}
-    scenario["models"]["model"] = config.MODEL
-    scenario["design_of_experiment"] = {}
-    scenario["design_of_experiment"]["doe_type"] = doe_type
-    scenario["design_of_experiment"]["number_of_samples"] = num_samples
-    scenario["input_parameters"] = {}
-    scenario["print_parameter_importance"] = True
-    scenario["output_data_file"] = f"{ROOT}/{file_name}.csv"
-    scenario["output_image"] = {
-        "output_image_pdf_file": config.OUTPUT_IMAGE_FILE,
-        "optimization_objectives_labels_image_pdf": ["Throughput (ops/sec)"],
-        # 'image_xlog': False,
-        # 'image_ylog': True,
-    }
-
-    # Load knobs into scenario file
-    with open(f"{ROOT}/util/search_space.json", "r") as fobj:
-        knobs = json.load(fobj)
-        parameter_options = ["parameter_default", "parameter_type", "values"]
-        for param in db_parameters:
-            # Need to replace dots for hypermapper to validate JSON correctly. They are then put back in the benchmark class.
-            valid_param = param.replace(".", "-")
-            scenario["input_parameters"][valid_param] = dict(
-                zip(parameter_options, [knobs[param][k] for k in parameter_options])
-            )
-
-    with open(scenario_file, "w") as sf:
-        json.dump(scenario, sf, indent=4)
-
-
-def run_benchmark(bench_type, knobs, options, runs=3, database="rocksdb"):
-    """
-    Calls the appropriate benchmark class and runs the benchmark.
-    """
-    if database == "rocksdb":
-        bench = RocksdbBenchmark(bench_type=bench_type, options=options)
-    else:
-        bench = Neo4jBenchmark(bench_type=bench_type)
-
-    # Load if we have specific configurations - otherwise default will be used.
-    if knobs:
-        knobs = dict((k, str(v)) for k, v in knobs.items())
-        bench.load_knob_configurations(knobs)
-
-    if database == "rocksdb":
-        throughput, latency = bench.run_benchmark(
-            runs=runs,
-            num_million=5,
-            fill=True,
-            options_file=False,
-            use_existing=True,
-            max_seconds=300,
-            calc_latency=True,
-        )
-    else:
-        throughput = bench.run_benchmark(runs=runs)
-
-    return throughput
-
-
 def neo4j_default(
-    bench_type="r50", runs=3,
+    bench_type="rw50", runs=3,
 ):
     options = {
         "threads": 32,
@@ -153,10 +59,6 @@ def neo4j_explore(
             "dbms.memory.heap.max_size": "12050m",
             "dbms.memory.pagecache.size": "14000m",
         },
-        # {
-        #     "dbms.memory.heap.max_size": "36150m",
-        #     "dbms.memory.pagecache.size": "36300m", # causes problems
-        # },
     ]
 
     for knobs in configs:
@@ -193,6 +95,50 @@ def neo4j_hypermapper(
                 f"{file_name}_{run_ind}",
                 resume=optimizer_options["resume"],
                 database="neo4j",
+            )
+        optimizer.optimize("util/optimizer_scenario.json", objective_function)
+        # Get feat importance
+        symbol = "feature importances: "
+        with open(f"{ROOT}/hypermapper_logfile.log") as hm_file:
+            for line in hm_file.readlines():
+                if symbol in line:
+                    feat_imps = line[
+                        line.find(symbol) + len(symbol) : line.rfind("]") + 1
+                    ]
+                    with open(f"{simple_file_name}_{run_ind}.csv", "a") as custom_file:
+                        custom_file.write("\n" + feat_imps)
+        subprocess.run("sudo rm hypermapper_logfile.log", shell=True)
+
+
+def cassandara_hypermapper(
+    bench_type="ycsb",
+    read_write_percent=50,
+    file_name="test",
+    simple_file_name="simple_test",
+    repetitions=1,
+    optimizer_options={},
+):
+    run_ind = 0
+
+    def objective_function(knobs):
+        options = {
+            "output_file": f"{simple_file_name}_{run_ind}.csv",
+            "readwritepercent": read_write_percent,
+        }
+        throughput = run_benchmark(bench_type, knobs, options, database="cassandra")
+        return -int(throughput)
+
+    for _ in range(repetitions):
+        run_ind += 1
+        if optimizer_options:
+            setup_optimizer(
+                optimizer_options["db_parameters"],
+                optimizer_options["num_samples"],
+                optimizer_options["optimization_iterations"],
+                optimizer_options["doe_type"],
+                f"{file_name}_{run_ind}",
+                resume=optimizer_options["resume"],
+                database="cassandra",
             )
         optimizer.optimize("util/optimizer_scenario.json", objective_function)
         # Get feat importance

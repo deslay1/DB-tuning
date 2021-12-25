@@ -1,18 +1,21 @@
 """
-Benchmarking class for RocksDB.
+Setup code for benchmarking with Rocksdb, Neo4j and Cassandra.
 """
-from datetime import time
-from logging import error
 import subprocess
 import sys
 import re
 import pdb
 import os
 import json
-import project.rocksdb_config as rocksconfig
-import project.neo4j_config as neoconfig
+import project.configs.rocksdb_config as rocksconfig
+import project.configs.neo4j_config as neoconfig
+import project.configs.cassandra_config as cassconfig
 import numpy as np
 import pandas as pd
+from datetime import time
+from logging import error
+from cassandra.cluster import Cluster
+from project.plotters import throughput
 
 ROOT = os.getcwd()
 
@@ -386,3 +389,113 @@ class Neo4jBenchmark:
             print(geo_mean_latency)
             return geo_mean_latency
 
+
+class CassandraBenchmark:
+    def __init__(self, bench_type="ycsb", options={}):
+        self.bench_type = bench_type
+
+    def load_knob_configurations(self, knobs):
+        # Replace notations that were required for validated JSON with original dots.
+        knobs = {k.replace("-", "."): v for k, v in knobs.items()}
+
+        # Get search space information to retrieve units
+        search_space = {}
+        with open(f"{ROOT}/util/search_space.json", "r") as fobj:
+            search_space = json.load(fobj)
+
+        self.stop_service()
+
+        # Write to configuration file
+        with open(cassconfig.CONFIGURATION_FILE_TEMPLATE, "r") as template:
+            with open(cassconfig.CONFIGURATION_FILE_TARGET, "w") as file:
+
+                for key, value in knobs.items():
+                    # some values are just empty and should not be added to target file or else we get connection problems
+                    if value != "":
+                        if "unit" in search_space[key]:
+                            unit = search_space[key]["unit"]
+                            try:
+                                float(value)
+                                file.write(f"{key}: {value}{unit}\n")
+                            except ValueError:
+                                file.write(f'{key}: "{value}{unit}"\n')
+                        else:
+                            try:
+                                float(value)
+                                file.write(f"{key}: {value}\n")
+                            except ValueError:
+                                file.write(f'{key}: "{value}"\n')
+
+                for line in template:
+                    file.write(line)
+
+        self.start_service()
+
+    def run_benchmark(self, runs=1):
+        # Run benchmark command and parse output, return thoughput.
+        tps_results = []
+        if self.bench_type == "ycsb":
+            throughput = self.run_ycsb(runs)
+            tps_results.append(throughput)
+        else:
+            pass
+
+        # In case we failed to get some result, we discard the current configuration by setting the throughput to 0.
+        if len(tps_results) == runs:
+            return np.mean(np.asarray(tps_results))
+        else:
+            return 0
+
+    def run_ycsb(self, runs):
+        # execute for max 300 seconds = 5 mins
+        command = f'{cassconfig.YCSB_PATH}/bin/ycsb run cassandra-cql -s -p maxexecutiontime=300 -p hosts="localhost" -P {cassconfig.YCSB_PATH}workloads/workloada > {cassconfig.YCSB_OUTPUT_FILE}'
+        for _ in range(runs):
+            # Delete database, and load a new instance
+            code = self.reset_database()
+            if code > 1:
+                break
+
+            code = subprocess.call(command, executable="/bin/bash", shell=True)
+            if code > 1:
+                break
+            throughput = 0
+            with open(cassconfig.YCSB_OUTPUT_FILE, "r") as output:
+                for line in output.readlines():
+                    if "OVERALL" and "Throughput" in line:
+                        throughput = line.split(",")[-1]
+                return round(float(throughput), 2)
+
+    def reset_database(self):
+        cluster = Cluster()
+        session = cluster.connect()
+        # If for some reason the keyspace doesn't exist, we should only create a new one.
+        try:
+            self.drop_keyspace(session)
+            print("DROPPED Database!")
+        except:
+            pass
+        self.create_keyspace(session)
+
+        load_command = f'{cassconfig.YCSB_PATH}bin/ycsb load cassandra-cql -s -p hosts="localhost" -P {cassconfig.YCSB_PATH}workloads/workloada > {cassconfig.YCSB_LOAD_OUTPUT_FILE}'
+        print(load_command)
+        code = subprocess.call(load_command, executable="/bin/bash", shell=True)
+        return code
+
+    def drop_keyspace(self, session):
+        session.execute("DROP KEYSPACE ycsb")
+
+    def create_keyspace(self, session):
+        session.execute(
+            "create keyspace ycsb WITH REPLICATION = {'class' : 'SimpleStrategy', 'replication_factor': 3 }"
+        )
+        session.execute("USE YCSB")
+        session.execute(
+            "create table usertable (y_id varchar primary key, field0 varchar, field1 varchar, field2 varchar, field3 varchar, field4 varchar, field5 varchar, field6 varchar, field7 varchar, field8 varchar, field9 varchar)"
+        )
+
+    def stop_service(self):
+        os.system("sudo systemctl stop cassandra")
+
+    def start_service(self):
+        os.system("sudo systemctl start cassandra")
+        os.system("sleep 15s")

@@ -4,6 +4,7 @@ rocksdb-tuning/out
 can-be-useful/
 util/optimizer_scenario.json
 cave-test/
+cassandra_1.csv
 
 ############# PYTHON GITIGNORE #############
 
