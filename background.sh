@@ -1,6 +1,6 @@
 #!/bin/bash
-source $HOME/ubuntu/anaconda3/etc/profile.d/conda.sh
-conda activate tuner
+# source $HOME/anaconda3/etc/profile.d/conda.sh
+source /home/ubuntu/anaconda3/bin/activate tuner
 python main.py
 
-# Run in background using: nohup ./background.sh > /dev/null 2>&1&
+# Run in background using: sudo nohup ./background.sh > /dev/null 2>&1&

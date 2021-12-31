@@ -28,7 +28,7 @@ NEO4J_PARAMETERS = [
 ]
 
 CASSANDRA_PARAMETERS = [
-    "compaction_method",
+    # "compaction_method", # causes problems, see output of command `cassandra` after using this
     "concurrent_compactors",
     "concurrent_writes",
     "file_cache_size_in_mb",

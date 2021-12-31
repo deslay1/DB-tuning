@@ -435,8 +435,11 @@ class CassandraBenchmark:
         # Run benchmark command and parse output, return thoughput.
         tps_results = []
         if self.bench_type == "ycsb":
-            throughput = self.run_ycsb(runs)
-            tps_results.append(throughput)
+            for _ in range(runs):
+                throughput = self.run_ycsb()
+                if throughput == -1:
+                    break
+                tps_results.append(throughput)
         else:
             pass
 
@@ -446,49 +449,68 @@ class CassandraBenchmark:
         else:
             return 0
 
-    def run_ycsb(self, runs):
+    def run_ycsb(self):
         # execute for max 300 seconds = 5 mins
         command = f'{cassconfig.YCSB_PATH}/bin/ycsb run cassandra-cql -s -p maxexecutiontime=300 -p hosts="localhost" -P {cassconfig.YCSB_PATH}workloads/workloada > {cassconfig.YCSB_OUTPUT_FILE}'
-        for _ in range(runs):
-            # Delete database, and load a new instance
-            code = self.reset_database()
-            if code > 1:
-                break
+        print(f"Running benchmark command: {command}")
+        # Delete database, and load a new instance
+        code = self.restore_database()
+        if code > 1:
+            return -1
+        print("Database restored!")
+        code = subprocess.call(command, executable="/bin/bash", shell=True)
+        if code > 1:
+            return -1
+        print("Retrieving results...")
+        throughput = 0
+        with open(cassconfig.YCSB_OUTPUT_FILE, "r") as output:
+            for line in output.readlines():
+                if "OVERALL" and "Throughput" in line:
+                    throughput = line.split(",")[-1]
+            return round(float(throughput), 2)
 
-            code = subprocess.call(command, executable="/bin/bash", shell=True)
-            if code > 1:
-                break
-            throughput = 0
-            with open(cassconfig.YCSB_OUTPUT_FILE, "r") as output:
-                for line in output.readlines():
-                    if "OVERALL" and "Throughput" in line:
-                        throughput = line.split(",")[-1]
-                return round(float(throughput), 2)
+    def restore_database(self):
+        # Method 1: Drop and reload data using CQLSH and YCSB command
+        # cluster = Cluster()
+        # session = cluster.connect()
+        # self.drop_table(session)
+        # self.create_table(session)
 
-    def reset_database(self):
-        cluster = Cluster()
-        session = cluster.connect()
-        # If for some reason the keyspace doesn't exist, we should only create a new one.
-        try:
-            self.drop_keyspace(session)
-            print("DROPPED Database!")
-        except:
-            pass
-        self.create_keyspace(session)
+        # load_command = f'{cassconfig.YCSB_PATH}bin/ycsb load cassandra-cql -s -p hosts="localhost" -P {cassconfig.YCSB_PATH}workloads/workloada > {cassconfig.YCSB_LOAD_OUTPUT_FILE}'
+        # print(load_command)
+        # code = subprocess.call(load_command, executable="/bin/bash", shell=True)
 
-        load_command = f'{cassconfig.YCSB_PATH}bin/ycsb load cassandra-cql -s -p hosts="localhost" -P {cassconfig.YCSB_PATH}workloads/workloada > {cassconfig.YCSB_LOAD_OUTPUT_FILE}'
-        print(load_command)
-        code = subprocess.call(load_command, executable="/bin/bash", shell=True)
+        # Method 2: Copy over from backup, apparently not good
+        print("Restoring database...")
+        # restore_command = (
+        #     f"rsync -av {cassconfig.BACKUP_DIR} {cassconfig.DB_DIR}; "
+        #     + f"rsync -av {cassconfig.BACKUP_COMMITLOGS_DIR} {cassconfig.DB_COMMITLOGS_DIR}; "
+        #     + f"sudo chown -R cassandra:cassandra {cassconfig.DB_DIR}; "
+        #     + f"sudo chown -R cassandra:cassandra {cassconfig.DB_COMMITLOGS_DIR}; "
+        #     + "sudo systemctl restart cassandra"
+        # )
+
+        # Method 3: Restore from a snapshot taken using nodetool, probably best way to do this!
+        restore_command = (
+            f"find {cassconfig.DB_DIR}ycsb/{cassconfig.SNAPSHOT_TABLE}/ -maxdepth 1 -type f -delete ;"
+            + f"rsync -av {cassconfig.DB_DIR}ycsb/{cassconfig.SNAPSHOT_TABLE}/snapshots/backup_ycsb/ {cassconfig.DB_DIR}ycsb/{cassconfig.SNAPSHOT_TABLE} ; "
+            # + f"rsync -av {cassconfig.DB_DIR}ycsb/usertable-ff8ad100691511eca8f297f9b2c3c63f/snapshots/backup_ycsb/ {cassconfig.DB_DIR}ycsb/usertable-ff8ad100691511eca8f297f9b2c3c63f --delete --exclude {cassconfig.DB_DIR}ycsb/usertable-ff8ad100691511eca8f297f9b2c3c63f/snapshots ; "
+            + f"nodetool -h localhost refresh ycsb usertable; "
+            # + "sudo systemctl restart cassandra"
+        )
+        print(restore_command)
+        code = subprocess.call(restore_command, executable="/bin/bash", shell=True)
         return code
 
-    def drop_keyspace(self, session):
-        session.execute("DROP KEYSPACE ycsb")
+    def drop_table(self, session):
+        session.execute("USE ycsb")
+        session.execute("DROP TABLE usertable")
 
-    def create_keyspace(self, session):
-        session.execute(
-            "create keyspace ycsb WITH REPLICATION = {'class' : 'SimpleStrategy', 'replication_factor': 3 }"
-        )
-        session.execute("USE YCSB")
+    def create_table(self, session):
+        # session.execute(
+        #     "create keyspace ycsb WITH REPLICATION = {'class' : 'SimpleStrategy', 'replication_factor': 3 }"
+        # )
+        session.execute("USE ycsb")
         session.execute(
             "create table usertable (y_id varchar primary key, field0 varchar, field1 varchar, field2 varchar, field3 varchar, field4 varchar, field5 varchar, field6 varchar, field7 varchar, field8 varchar, field9 varchar)"
         )

@@ -33,5 +33,13 @@
             1024,
             2048
         ]
+    },
+    "replication_factor": {
+        "parameter_default": 1,
+        "parameter_type": "integer",
+        "values": [
+            1,
+            11
+        ]
     }
 }
