@@ -1,0 +1,156 @@
+{
+    "ablation": {
+        "imp": {
+            "-source-": 0,
+            "-target-": 0,
+            "block_size": 0.008590076896667785,
+            "compaction_readahead_size": 0.05031292081345401,
+            "level0_file_num_compaction_trigger": 0.544105139687342,
+            "level0_stop_writes_trigger": 0.030726291739683727,
+            "max_background_compactions": 0.003251311523444085,
+            "max_background_flushes": -0.0044385556044944955,
+            "max_bytes_for_level_multiplier": 0.0,
+            "max_write_buffer_number": 0.02877530007568938,
+            "write_buffer_size": 0.3386775148682135
+        },
+        "order": [
+            "-source-",
+            "write_buffer_size",
+            "level0_file_num_compaction_trigger",
+            "compaction_readahead_size",
+            "block_size",
+            "max_write_buffer_number",
+            "level0_stop_writes_trigger",
+            "max_bytes_for_level_multiplier",
+            "max_background_flushes",
+            "max_background_compactions",
+            "-target-"
+        ],
+        "perf": {
+            "-source-": -99144.80166666667,
+            "-target-": -138371.90214285714,
+            "block_size": -136084.39936507936,
+            "compaction_readahead_size": -135747.43555555557,
+            "level0_file_num_compaction_trigger": -133773.8055555556,
+            "level0_stop_writes_trigger": -138418.47428571427,
+            "max_background_compactions": -138371.90214285714,
+            "max_background_flushes": -138244.3626190476,
+            "max_bytes_for_level_multiplier": -138418.47428571427,
+            "max_write_buffer_number": -137213.17095238095,
+            "write_buffer_size": -112430.13857142857
+        },
+        "var": {
+            "-source-": 362317363.47959584,
+            "-target-": 5269763.0602059215,
+            "block_size": 3550319.8751950925,
+            "compaction_readahead_size": 1947591.6069629665,
+            "level0_file_num_compaction_trigger": 7244811.581728415,
+            "level0_stop_writes_trigger": 7329366.462758642,
+            "max_background_compactions": 5269763.0602059215,
+            "max_background_flushes": 6873729.950931044,
+            "max_bytes_for_level_multiplier": 7329366.462758642,
+            "max_write_buffer_number": 8976485.342714554,
+            "write_buffer_size": 38686172.44936489
+        }
+    },
+    "fanova": {
+        "imp": {
+            "['block_size', 'compaction_readahead_size']": 0.008537891435185388,
+            "['block_size', 'level0_slowdown_writes_trigger']": 0.003347317568335344,
+            "['cache_index_and_filter_blocks', 'block_size']": 0.02481137127793425,
+            "['cache_index_and_filter_blocks', 'compaction_readahead_size']": 0.00016168955573398614,
+            "['cache_index_and_filter_blocks', 'level0_slowdown_writes_trigger']": 0.0012976115453067752,
+            "['level0_slowdown_writes_trigger', 'compaction_readahead_size']": 0.0003239617236942679,
+            "['write_buffer_size', 'block_size']": 0.06666396775446407,
+            "['write_buffer_size', 'cache_index_and_filter_blocks']": 0.20039048524942088,
+            "['write_buffer_size', 'compaction_readahead_size']": 0.0037413080655014563,
+            "['write_buffer_size', 'level0_slowdown_writes_trigger']": 0.00919393518416068,
+            "block_size": 0.047232438664232164,
+            "cache_index_and_filter_blocks": 0.21050455415583502,
+            "compaction_readahead_size": 0.00868558913370851,
+            "compression_type": 0.00018711783979515696,
+            "level0_file_num_compaction_trigger": 0.00560294975242135,
+            "level0_slowdown_writes_trigger": 0.01199662032846448,
+            "level0_stop_writes_trigger": 0.00690766155269986,
+            "max_background_compactions": 0.0005340423251542698,
+            "max_background_flushes": 0.000698315621632778,
+            "max_bytes_for_level_multiplier": 0.00015318065617511687,
+            "max_write_buffer_number": 0.004883890265403972,
+            "min_write_buffer_number_to_merge": 0.0020916191121071437,
+            "write_buffer_size": 0.23521403238887634
+        },
+        "order": [
+            "write_buffer_size",
+            "cache_index_and_filter_blocks",
+            "block_size",
+            "level0_slowdown_writes_trigger",
+            "compaction_readahead_size",
+            "level0_stop_writes_trigger",
+            "level0_file_num_compaction_trigger",
+            "max_write_buffer_number",
+            "min_write_buffer_number_to_merge",
+            "max_background_flushes",
+            "max_background_compactions",
+            "compression_type",
+            "max_bytes_for_level_multiplier",
+            "['write_buffer_size', 'cache_index_and_filter_blocks']",
+            "['write_buffer_size', 'block_size']",
+            "['write_buffer_size', 'level0_slowdown_writes_trigger']",
+            "['write_buffer_size', 'compaction_readahead_size']",
+            "['cache_index_and_filter_blocks', 'block_size']",
+            "['cache_index_and_filter_blocks', 'level0_slowdown_writes_trigger']",
+            "['cache_index_and_filter_blocks', 'compaction_readahead_size']",
+            "['block_size', 'level0_slowdown_writes_trigger']",
+            "['block_size', 'compaction_readahead_size']",
+            "['level0_slowdown_writes_trigger', 'compaction_readahead_size']"
+        ]
+    },
+    "forward-selection": {
+        "imp": {
+            "None": 39827.97332646279,
+            "block_size": 21622.55238213202,
+            "cache_index_and_filter_blocks": 14733.69353868991,
+            "level0_file_num_compaction_trigger": 12856.007821149906,
+            "write_buffer_size": 25267.024580880694
+        },
+        "order": [
+            "None",
+            "write_buffer_size",
+            "block_size",
+            "cache_index_and_filter_blocks",
+            "level0_file_num_compaction_trigger"
+        ]
+    },
+    "lpi": {
+        "imp": {
+            "block_size": 0.2747159642381629,
+            "cache_index_and_filter_blocks": 0.0,
+            "compaction_readahead_size": 0.000666187933777344,
+            "compression_type": 0.008791827643985693,
+            "level0_file_num_compaction_trigger": 0.02097590869207548,
+            "level0_slowdown_writes_trigger": 0.001447162124704968,
+            "level0_stop_writes_trigger": 0.0005332227375300287,
+            "max_background_compactions": 0.0002906503769748379,
+            "max_background_flushes": 0.0001639812877656201,
+            "max_bytes_for_level_multiplier": 0.0,
+            "max_write_buffer_number": 0.00036181286880274566,
+            "min_write_buffer_number_to_merge": 0.0002901892531217266,
+            "write_buffer_size": 0.6917630928430987
+        },
+        "order": [
+            "cache_index_and_filter_blocks",
+            "max_bytes_for_level_multiplier",
+            "max_background_flushes",
+            "min_write_buffer_number_to_merge",
+            "max_background_compactions",
+            "max_write_buffer_number",
+            "level0_stop_writes_trigger",
+            "compaction_readahead_size",
+            "level0_slowdown_writes_trigger",
+            "compression_type",
+            "level0_file_num_compaction_trigger",
+            "block_size",
+            "write_buffer_size"
+        ]
+    }
+}
