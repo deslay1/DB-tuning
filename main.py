@@ -29,7 +29,7 @@ if __name__ == "__main__":
         "num_samples": samples,
         "optimization_iterations": optimization_iterations,
         "doe_type": "random sampling",
-        "resume": False,
+        "resume": True,
     }
     # program.rocksdb_hypermapper(
     #     optimizer_options=optimizer_options,

@@ -29,9 +29,16 @@ NEO4J_PARAMETERS = [
 
 CASSANDRA_PARAMETERS = [
     # "compaction_method", # causes problems, see output of command `cassandra` after using this
+    "compaction_throughput_mb_per_sec",
     "concurrent_compactors",
+    "concurrent_reads",
     "concurrent_writes",
     "file_cache_size_in_mb",
+    "memtable_heap_space_in_mb",
+    "memtable_offheap_space_in_mb",
+    "memtable_allocation_type",
+    "row_cache_size_in_mb",
+    "sstable_preemptive_open_interval_in_mb",
 ]
 
 

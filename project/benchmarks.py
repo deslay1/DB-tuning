@@ -470,18 +470,58 @@ class CassandraBenchmark:
             return round(float(throughput), 2)
 
     def restore_database(self):
+        print("Restoring database...")
         # Method 1: Drop and reload data using CQLSH and YCSB command
-        # cluster = Cluster()
-        # session = cluster.connect()
-        # self.drop_table(session)
-        # self.create_table(session)
+        connected = False
+        for _ in range(20):
+            print("Attempting to connect to cluster...")
+            try:
+                cluster = Cluster()
+                session = cluster.connect()
+                connected = True
+                print("Connected to cluster!")
+                break
+            except:
+                print("Connection failed.")
+                # os.system("cassandra -R")
+                # subprocess.run(
+                #     "sudo systemctl restart cassandra", executable="/bin/bash", shell=True,
+                # )
+                os.system("sudo chown -R cassandra:cassandra /var/lib/cassandra/data")
+                os.system("sudo chmod -R a+rwx /var/lib/cassandra/data")
 
-        # load_command = f'{cassconfig.YCSB_PATH}bin/ycsb load cassandra-cql -s -p hosts="localhost" -P {cassconfig.YCSB_PATH}workloads/workloada > {cassconfig.YCSB_LOAD_OUTPUT_FILE}'
-        # print(load_command)
-        # code = subprocess.call(load_command, executable="/bin/bash", shell=True)
+                os.system(
+                    "sudo chown -R cassandra:cassandra /var/lib/cassandra/commitlog"
+                )
+                os.system("sudo chmod -R a+rwx /var/lib/cassandra/commitlog")
+
+                os.system("sudo chown -R cassandra:cassandra /var/log/cassandra")
+                os.system("sudo chmod -R a+rwx /var/log/cassandra")
+
+                os.system("sudo systemctl stop cassandra")
+                os.system("sleep 5s")
+                os.system("sudo systemctl start cassandra")
+                os.system("sleep 5s")
+                continue
+
+        if not connected:
+            return 2
+
+        try:
+            print(f"Session: {session}")
+            self.drop_table_and_delete(session)
+            self.create_table(session)
+        except:
+            print("Restoration failed")
+            sys.exit()
+
+        cluster.shutdown()
+
+        load_command = f'{cassconfig.YCSB_PATH}bin/ycsb load cassandra-cql -s -p hosts="localhost" -P {cassconfig.YCSB_PATH}workloads/workloada > {cassconfig.YCSB_LOAD_OUTPUT_FILE}'
+        print(f"LOAD COMMAND: {load_command}")
+        code = subprocess.call(load_command, executable="/bin/bash", shell=True)
 
         # Method 2: Copy over from backup, apparently not good
-        print("Restoring database...")
         # restore_command = (
         #     f"rsync -av {cassconfig.BACKUP_DIR} {cassconfig.DB_DIR}; "
         #     + f"rsync -av {cassconfig.BACKUP_COMMITLOGS_DIR} {cassconfig.DB_COMMITLOGS_DIR}; "
@@ -490,21 +530,27 @@ class CassandraBenchmark:
         #     + "sudo systemctl restart cassandra"
         # )
 
-        # Method 3: Restore from a snapshot taken using nodetool, probably best way to do this!
-        restore_command = (
-            f"find {cassconfig.DB_DIR}ycsb/{cassconfig.SNAPSHOT_TABLE}/ -maxdepth 1 -type f -delete ;"
-            + f"rsync -av {cassconfig.DB_DIR}ycsb/{cassconfig.SNAPSHOT_TABLE}/snapshots/backup_ycsb/ {cassconfig.DB_DIR}ycsb/{cassconfig.SNAPSHOT_TABLE} ; "
-            # + f"rsync -av {cassconfig.DB_DIR}ycsb/usertable-ff8ad100691511eca8f297f9b2c3c63f/snapshots/backup_ycsb/ {cassconfig.DB_DIR}ycsb/usertable-ff8ad100691511eca8f297f9b2c3c63f --delete --exclude {cassconfig.DB_DIR}ycsb/usertable-ff8ad100691511eca8f297f9b2c3c63f/snapshots ; "
-            + f"nodetool -h localhost refresh ycsb usertable; "
-            # + "sudo systemctl restart cassandra"
-        )
-        print(restore_command)
-        code = subprocess.call(restore_command, executable="/bin/bash", shell=True)
+        # Method 3: Restore from a snapshot taken using nodetool, probably best way to do this but I get throughput problems.
+        # Seems like we don't really start a completely fresh state...
+        # restore_command = (
+        #     f"find {cassconfig.DB_DIR}ycsb/{cassconfig.SNAPSHOT_TABLE}/ -maxdepth 1 -type f -delete ;"
+        #     + f"rsync -av {cassconfig.DB_DIR}ycsb/{cassconfig.SNAPSHOT_TABLE}/snapshots/backup_ycsb/ {cassconfig.DB_DIR}ycsb/{cassconfig.SNAPSHOT_TABLE} ; "
+        #     # + f"rsync -av {cassconfig.DB_DIR}ycsb/usertable-ff8ad100691511eca8f297f9b2c3c63f/snapshots/backup_ycsb/ {cassconfig.DB_DIR}ycsb/usertable-ff8ad100691511eca8f297f9b2c3c63f --delete --exclude {cassconfig.DB_DIR}ycsb/usertable-ff8ad100691511eca8f297f9b2c3c63f/snapshots ; "
+        #     + f"nodetool -h localhost refresh ycsb usertable; "
+        #     # + "sudo systemctl restart cassandra"
+        # )
+        # print(restore_command)
+        # code = subprocess.call(restore_command, executable="/bin/bash", shell=True)
         return code
 
-    def drop_table(self, session):
-        session.execute("USE ycsb")
-        session.execute("DROP TABLE usertable")
+    def drop_table_and_delete(self, session):
+        try:
+            session.execute("USE ycsb")
+            session.execute("DROP TABLE ycsb.usertable")
+            print(f"sudo rm -r {cassconfig.DB_DIR}ycsb/*")
+            os.system(f"sudo rm -r {cassconfig.DB_DIR}ycsb/*")
+        except:
+            pass
 
     def create_table(self, session):
         # session.execute(

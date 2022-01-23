@@ -321,7 +321,7 @@ key_cache_save_period: 14400
 # headroom for OS block level cache. Do never allow your system to swap.
 #
 # Default value is 0, to disable row caching.
-row_cache_size_in_mb: 0
+# row_cache_size_in_mb: 0
 
 # Duration in seconds after which Cassandra should save the row cache.
 # Caches are saved to saved_caches_directory as specified in this configuration file.
@@ -435,7 +435,7 @@ seed_provider:
 # On the other hand, since writes are almost never IO bound, the ideal
 # number of "concurrent_writes" is dependent on the number of cores in
 # your system; (8 * number_of_cores) is a good rule of thumb.
-concurrent_reads: 32
+# concurrent_reads: 32
 # concurrent_writes: 32
 concurrent_counter_writes: 32
 
@@ -496,7 +496,7 @@ concurrent_materialized_view_writes: 32
 #
 # offheap_objects
 #    off heap objects
-memtable_allocation_type: heap_buffers
+# memtable_allocation_type: heap_buffers
 
 # Limits the maximum Merkle tree depth to avoid consuming too much
 # memory during repairs.
@@ -672,7 +672,7 @@ native_transport_port: 9042
 # native_transport_max_concurrent_connections_per_ip: -1
 
 # Whether to start the thrift rpc server.
-start_rpc: false
+start_rpc: true
 
 # The address or interface to bind the Thrift RPC service and native transport
 # server to.
@@ -829,13 +829,13 @@ column_index_cache_size_in_kb: 2
 # 16 to 32 times the rate you are inserting data is more than sufficient.
 # Setting this to 0 disables throttling. Note that this account for all types
 # of compaction, including validation compaction.
-compaction_throughput_mb_per_sec: 16
+# compaction_throughput_mb_per_sec: 16
 
 # When compacting, the replacement sstable(s) can be opened before they
 # are completely written, and used in place of the prior sstables for
 # any range that has been written. This helps to smoothly transfer reads
 # between the sstables, reducing page cache churn and keeping hot rows hot
-sstable_preemptive_open_interval_in_mb: 50
+# sstable_preemptive_open_interval_in_mb: 50
 
 # Throttles all outbound streaming file transfers on this node to the
 # given total throughput in Mbps. This is necessary because Cassandra does

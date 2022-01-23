@@ -125,7 +125,9 @@ def cassandara_hypermapper(
             "output_file": f"{simple_file_name}_{run_ind}.csv",
             "readwritepercent": read_write_percent,
         }
-        throughput = run_benchmark(bench_type, knobs, options, database="cassandra")
+        throughput = run_benchmark(
+            bench_type, knobs, options, database="cassandra", runs=1
+        )
         return -int(throughput)
 
     for _ in range(repetitions):
