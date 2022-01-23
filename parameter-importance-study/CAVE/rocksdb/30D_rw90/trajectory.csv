@@ -1,0 +1,15 @@
+block_size,cache_index_and_filter_blocks,compaction_readahead_size,compression_type,level0_file_num_compaction_trigger,level0_slowdown_writes_trigger,level0_stop_writes_trigger,max_background_compactions,max_background_flushes,max_bytes_for_level_multiplier,max_write_buffer_number,min_write_buffer_number_to_merge,write_buffer_size,cost,cpu_time,wallclock_time,evaluations
+4096,False,0,snappy,4,20,36,-1,-1,10,2,1,67108864,-135705,0.1,0.1,0
+64,False,360000,snappy,4,256,128,-1,0,5,1,4,134217728,-148778,0.1,0.1,0
+8,False,80000,snappy,2,256,2,-1,7,12,32,4,67108864,-161690,0.1,0.1,0
+128,False,200000,snappy,1,1024,1,-1,7,6,128,32,1073741824,-254058,0.1,0.1,0
+128,False,200000,snappy,1,64,1,-1,7,6,64,32,1073741824,-259223,0.1,0.1,0
+128,False,240000,snappy,1,2,1,8,6,7,64,32,1073741824,-262175,0.1,0.1,0
+128,False,160000,snappy,1,1,2,2,9,10,32,32,1073741824,-263059,0.1,0.1,0
+128,False,160000,snappy,1,1,2,2,10,10,32,32,1073741824,-265145,0.1,0.1,0
+1024,False,240000,snappy,1,0,2,4,6,11,32,8,1073741824,-267839,0.1,0.1,0
+256,False,0,lz4,1,0,2,2,6,11,32,2,1073741824,-268839,0.1,0.1,0
+512,False,160000,snappy,1,1,2,2,10,10,4,32,1073741824,-269465,0.1,0.1,0
+512,False,160000,snappy,1,1,2,-1,10,13,4,8,1073741824,-272366,0.1,0.1,0
+1,False,160000,lz4,1,2,1,16,0,15,32,1,1073741824,-272990,0.1,0.1,0
+1024,False,240000,snappy,1,1,2,-1,2,15,1,32,1073741824,-275417,0.1,0.1,0

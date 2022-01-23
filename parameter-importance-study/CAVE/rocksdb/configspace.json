@@ -148,14 +148,14 @@
       "type": "uniform_int",
       "log": false,
       "lower": -1,
-      "upper": 11,
+      "upper": 10,
       "default": -1
     },
     {
       "name": "max_bytes_for_level_multiplier",
       "type": "uniform_int",
       "log": false,
-      "lower": 0,
+      "lower": 5,
       "upper": 15,
       "default": 10
     },

@@ -1,2 +1,0 @@
-paramfile = ./configspace.json
-run_obj = quality
