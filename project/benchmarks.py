@@ -447,11 +447,11 @@ class CassandraBenchmark:
         if len(tps_results) == runs:
             return np.mean(np.asarray(tps_results))
         else:
-            return 0
+            return sys.exit()
 
     def run_ycsb(self):
         # execute for max 300 seconds = 5 mins
-        command = f'{cassconfig.YCSB_PATH}/bin/ycsb run cassandra-cql -s -p maxexecutiontime=300 -p hosts="localhost" -P {cassconfig.YCSB_PATH}workloads/workloada > {cassconfig.YCSB_OUTPUT_FILE}'
+        command = f'{cassconfig.YCSB_PATH}/bin/ycsb run cassandra-cql -s -p maxexecutiontime=600 -p hosts="localhost" -P {cassconfig.YCSB_PATH}workloads/workloada > {cassconfig.YCSB_OUTPUT_FILE}'
         print(f"Running benchmark command: {command}")
         # Delete database, and load a new instance
         code = self.restore_database()
