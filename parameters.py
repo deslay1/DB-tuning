@@ -1,16 +1,24 @@
+# ROCKSDB_PARAMETERS = [
+#     "block_size",
+#     "cache_index_and_filter_blocks",
+#     "compaction_readahead_size",
+#     "compression_type",
+#     "level0_file_num_compaction_trigger",
+#     "level0_slowdown_writes_trigger",
+#     "level0_stop_writes_trigger",
+#     "max_background_compactions",
+#     "max_background_flushes",
+#     "max_bytes_for_level_multiplier",
+#     "max_write_buffer_number",
+#     "min_write_buffer_number_to_merge",
+#     "write_buffer_size",
+# ]
+
 ROCKSDB_PARAMETERS = [
     "block_size",
     "cache_index_and_filter_blocks",
-    "compaction_readahead_size",
-    "compression_type",
     "level0_file_num_compaction_trigger",
-    "level0_slowdown_writes_trigger",
-    "level0_stop_writes_trigger",
     "max_background_compactions",
-    "max_background_flushes",
-    "max_bytes_for_level_multiplier",
-    "max_write_buffer_number",
-    "min_write_buffer_number_to_merge",
     "write_buffer_size",
 ]
 
