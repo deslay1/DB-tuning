@@ -1,120 +1,159 @@
 {
-    "compaction_method": {
-        "parameter_default": "",
-        "parameter_type": "categorical",
-        "values": [
-            "",
-            "Leveled",
-            "SizeTiered"
-        ]
-    },
-    "compaction_throughput_mb_per_sec": {
-        "parameter_default": 16,
+    "block_size": {
+        "parameter_default": 4096,
         "parameter_type": "ordinal",
         "values": [
+            1,
+            4,
+            8,
             16,
             32,
-            64
-        ]
-    },
-    "concurrent_compactors": {
-        "parameter_default": 4,
-        "parameter_type": "integer",
-        "values": [
-            2,
-            16
-        ]
-    },
-    "concurrent_reads": {
-        "parameter_default": 32,
-        "parameter_type": "integer",
-        "values": [
-            8,
-            64
-        ]
-    },
-    "concurrent_writes": {
-        "parameter_default": 32,
-        "parameter_type": "integer",
-        "values": [
-            8,
-            64
-        ]
-    },
-    "file_cache_size_in_mb": {
-        "parameter_default": 512,
-        "parameter_type": "ordinal",
-        "values": [
+            64,
+            128,
             256,
             512,
             1024,
-            2048
-        ]
-    },
-    "memtable_heap_space_in_mb": {
-        "parameter_default": 2048,
-        "parameter_type": "ordinal",
-        "values": [
-            1024,
-            1365,
-            1706,
             2048,
-            2389,
-            2730,
-            3072,
-            3413,
-            3754,
-            4096
+            4096,
+            8192,
+            16384,
+            32768,
+            65536,
+            131072,
+            262144,
+            524288
         ]
     },
-    "memtable_offheap_space_in_mb": {
-        "parameter_default": 2048,
-        "parameter_type": "ordinal",
-        "values": [
-            1024,
-            1365,
-            1706,
-            2048,
-            2389,
-            2730,
-            3072,
-            3413,
-            3754,
-            4096
-        ]
-    },
-    "memtable_allocation_type": {
-        "parameter_default": "heap_buffers",
+    "cache_index_and_filter_blocks": {
+        "parameter_default": "false",
         "parameter_type": "categorical",
         "values": [
-            "heap_buffers",
-            "offheap_buffers",
-            "offheap_objects"
+            "false",
+            "true"
         ]
     },
-    "row_cache_size_in_mb": {
+    "compaction_readahead_size": {
         "parameter_default": 0,
-        "parameter_type": "integer",
-        "values": [
-            0,
-            16
-        ]
-    },
-    "sstable_preemptive_open_interval_in_mb": {
-        "parameter_default": 50,
         "parameter_type": "ordinal",
         "values": [
-            0,
-            10,
-            20,
-            30,
-            40,
-            50,
-            60,
-            70,
-            80,
-            90,
-            100
+            0
+        ]
+    },
+    "compression_type": {
+        "parameter_default": "snappy",
+        "parameter_type": "categorical",
+        "values": [
+            "snappy"
+        ]
+    },
+    "level0_file_num_compaction_trigger": {
+        "parameter_default": 4,
+        "parameter_type": "ordinal",
+        "values": [
+            1,
+            2,
+            4,
+            8,
+            16,
+            32,
+            64,
+            128,
+            256
+        ]
+    },
+    "level0_slowdown_writes_trigger": {
+        "parameter_default": 20,
+        "parameter_type": "ordinal",
+        "values": [
+            20
+        ]
+    },
+    "level0_stop_writes_trigger": {
+        "parameter_default": 36,
+        "parameter_type": "ordinal",
+        "values": [
+            36
+        ]
+    },
+    "max_background_compactions": {
+        "parameter_default": -1,
+        "parameter_type": "ordinal",
+        "values": [
+            -1,
+            1,
+            2,
+            4,
+            8,
+            16,
+            32,
+            64,
+            128,
+            256
+        ]
+    },
+    "max_background_flushes": {
+        "parameter_default": -1,
+        "parameter_type": "integer",
+        "values": [
+            -1,
+            10
+        ]
+    },
+    "max_bytes_for_level_multiplier": {
+        "parameter_default": 10,
+        "parameter_type": "ordinal",
+        "values": [
+            10
+        ]
+    },
+    "max_write_buffer_number": {
+        "parameter_default": 2,
+        "parameter_type": "ordinal",
+        "values": [
+            2
+        ]
+    },
+    "min_write_buffer_number_to_merge": {
+        "parameter_default": 1,
+        "parameter_type": "ordinal",
+        "values": [
+            1
+        ]
+    },
+    "write_buffer_size": {
+        "parameter_default": 67108864,
+        "parameter_type": "ordinal",
+        "values": [
+            1,
+            4,
+            8,
+            16,
+            32,
+            64,
+            128,
+            256,
+            512,
+            1024,
+            2048,
+            4096,
+            8192,
+            16384,
+            32768,
+            65536,
+            131072,
+            262144,
+            524288,
+            1048576,
+            2097152,
+            4194304,
+            8388608,
+            16777216,
+            33554432,
+            67108864,
+            134217728,
+            268435456,
+            536870912,
+            1073741824
         ]
     }
 }

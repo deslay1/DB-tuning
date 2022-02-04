@@ -14,9 +14,11 @@ if __name__ == "__main__":
     parameters = get_parameters(database_type)
 
     # Use D + 1 Scheme
-    samples = len(parameters) + 1
+    # samples = len(parameters) + 1
+    samples = 6 + 1
     # Use 10D scheme
-    optimization_iterations = len(parameters) * 30
+    # optimization_iterations = len(parameters) * 30
+    optimization_iterations = 30 * 6
 
     bench_type = os.getenv("BENCH_TYPE")
     rwpercent = int(os.getenv("READ_WRITE_RATIO_PERCENT", "-1"))
@@ -37,7 +39,7 @@ if __name__ == "__main__":
         read_write_percent=rwpercent,
         simple_file_name=custom_output_path,
         file_name=hm_output_path,
-        repetitions=2,
+        repetitions=3,
     )
 
     # program.cassandara_hypermapper(
