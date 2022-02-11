@@ -112,8 +112,10 @@ knobs["max_background_compactions"]["values"] = sorted(
 # Knob ref: from 1 to 10
 knobs["max_background_flushes"] = {}
 knobs["max_background_flushes"]["parameter_default"] = -1  # old: 1
-knobs["max_background_flushes"]["parameter_type"] = "integer"
-knobs["max_background_flushes"]["values"] = [-1, 10]
+# knobs["max_background_flushes"]["parameter_type"] = "integer"
+# knobs["max_background_flushes"]["values"] = [-1, 10]
+knobs["max_background_flushes"]["parameter_type"] = "ordinal"
+knobs["max_background_flushes"]["values"] = [-1]
 
 # Knob ref: from 5 to 15
 knobs["max_bytes_for_level_multiplier"] = {}

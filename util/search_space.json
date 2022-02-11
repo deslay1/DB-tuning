@@ -93,10 +93,9 @@
     },
     "max_background_flushes": {
         "parameter_default": -1,
-        "parameter_type": "integer",
+        "parameter_type": "ordinal",
         "values": [
-            -1,
-            10
+            -1
         ]
     },
     "max_bytes_for_level_multiplier": {

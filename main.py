@@ -15,10 +15,10 @@ if __name__ == "__main__":
 
     # Use D + 1 Scheme
     # samples = len(parameters) + 1
-    samples = 6 + 1
+    samples = 5 + 1
     # Use 10D scheme
     # optimization_iterations = len(parameters) * 30
-    optimization_iterations = 30 * 6
+    optimization_iterations = 30 * 5
 
     bench_type = os.getenv("BENCH_TYPE")
     rwpercent = int(os.getenv("READ_WRITE_RATIO_PERCENT", "-1"))
