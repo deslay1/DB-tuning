@@ -4,7 +4,6 @@ import pdb
 import sys
 import os
 from hypermapper import optimizer
-from project.plotters import throughput
 from project.setup import run_benchmark, setup_optimizer
 
 ROOT = os.getcwd()

@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import os
 import pdb
 
-plt.style.use("fivethirtyeight")
+plt.style.use("ggplot")
 
 
 def feature_importance(imps, parameters, output_importance_path, base_label="test"):
@@ -126,16 +126,14 @@ def latencies():
     plt.show()
 
 
-def throughput():
-    optimization_cycle = 2
-    output_ops_path = "snic-test/test_50_50.png"
-
-    workload_files = [f"snic-test/RUN_1_{i}.csv" for i in range(1, 11)]
+def throughput_from_custom(
+    input_files=[], output_image_path="throughput", format="eps"
+):
 
     # Parse TPS from csv files
     y = []
     means_with_errors = []
-    for file in workload_files:
+    for file in input_files:
         df = pd.read_csv(file, header=None, names=["Throughput", "Latency"])
         tps = df.iloc[:, 0].values
         # Update with only best so far
@@ -148,6 +146,7 @@ def throughput():
         y.append(tps)
 
     # add mean with error bars
+    pdb.set_trace()
     res = []
     means = np.mean(y, axis=0)
     maxs = np.max(y, axis=0)
@@ -155,14 +154,11 @@ def throughput():
     res.append(means)
     res.append(maxs)
     res.append(mins)
-    pdb.set_trace()
 
     #################### PLOT THROUGHPUTS ####################
     iterations = len(y[0])
     x = np.linspace(0, iterations, num=iterations)
     colors = ["firebrick", "forestgreen", "royalblue", "lightgray"]
-    labels = ["10/90", "50/50", "90/10"]
-    # legend_locs = [7, 1, 7]
     fig, ax1 = plt.subplots()
 
     # plot additional as gray lines, and contrast the mean line with a strong color
@@ -183,45 +179,44 @@ def throughput():
     ax1.set_title("SNIC test with RRWR - 50/50")
     # Legend for hidden plot for latency so we get one legend
     # ax1.plot(np.nan, '-r', color=colors[2], label='Read latency')
-    fig.savefig(f"{output_ops_path}", bbox_inches="tight")
+    fig.savefig(f"{output_image_path}.{format}", bbox_inches="tight", format=format)
     # ax1.close()
     ax1.cla()
 
 
-def throughput_multiple():
-    optimization_cycle = 2
-    output_ops_path = f"optimizer-output/{optimization_cycle}_throughput"
+def throughput_multiple(input_files=[], output_image_path="throughput", format="eps"):
+    prefix = f"output/final/reduced_fixed_rw"
     files = [
-        f"optimizer-output/{optimization_cycle}_" + file
+        prefix + file
         for file in [
-            "optimizer_5_10-90.csv",
-            "optimizer_5_50-50.csv",
-            "optimizer_5_90-10.csv",
+            # "10_1.csv",
+            "50_1.csv",
+            # "90_1.csv",
         ]
     ]
 
-    latency_cycle = 1
-    latency_files = [
-        f"optimizer-output/latencies_pruned_{latency_cycle}_" + file
-        for file in ["10-90.md", "50-50.md", "90-10.md"]
-    ]
+    # latency_cycle = 1
+    # latency_files = [
+    #     f"optimizer-output/latencies_pruned_{latency_cycle}_" + file
+    #     for file in ["10-90.md", "50-50.md", "90-10.md"]
+    # ]
 
-    additional = True
+    additional = False
     additional = {
         2: [
-            f"optimizer-output/{optimization_cycle}_" + file
+            prefix + file
             for file in [
-                "optimizer_6_10-90.csv",
-                "optimizer_6_50-50.csv",
-                "optimizer_7_90-10.csv",
+                # "10_2.csv",
+                "50_2.csv",
+                # "90_2.csv",
             ]
         ],
         3: [
-            f"optimizer-output/{optimization_cycle}_" + file
+            prefix + file
             for file in [
-                "optimizer_7_10-90.csv",
-                "optimizer_7_50-50.csv",
-                "optimizer_7_90-10.csv",
+                # "10_3.csv",
+                "50_3.csv",
+                # "90_3.csv",
             ]
         ],
     }
@@ -335,7 +330,9 @@ def throughput_multiple():
         # ax2.set_ylabel(r'Read latency ($\mu$s)')
         # ax2.legend()
         fig.savefig(
-            f"{output_ops_path}_{workload_ind+1}_db_tune.pdf", bbox_inches="tight"
+            f"{output_image_path}_{workload_ind+1}.{format}",
+            bbox_inches="tight",
+            format=format,
         )
         # ax1.close()
         ax1.cla()

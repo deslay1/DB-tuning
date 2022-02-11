@@ -15,7 +15,6 @@ import pandas as pd
 from datetime import time
 from logging import error
 from cassandra.cluster import Cluster
-from project.plotters import throughput
 
 ROOT = os.getcwd()
 
