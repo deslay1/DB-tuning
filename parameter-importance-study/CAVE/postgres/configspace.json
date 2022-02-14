@@ -1,0 +1,293 @@
+{
+  "hyperparameters": [
+    {
+      "name": "shared_buffers",
+      "type": "categorical",
+      "choices": [
+        "640",
+        "768",
+        "896",
+        "1024",
+        "1280",
+        "1536",
+        "1792",
+        "2048",
+        "2560",
+        "3072",
+        "3584",
+        "4096",
+        "4608",
+        "5120",
+        "5632",
+        "6144",
+        "6656",
+        "7168",
+        "7680",
+        "8192"
+      ],
+      "default": "4096",
+      "probabilities": null
+    },
+    {
+      "name": "work_mem",
+      "type": "categorical",
+      "choices": [
+        "4096",
+        "5120",
+        "6144",
+        "6990",
+        "7168",
+        "8192",
+        "9216",
+        "10240",
+        "11264",
+        "12288",
+        "13312",
+        "14336",
+        "15360",
+        "17408",
+        "19456",
+        "21504",
+        "23552",
+        "25600",
+        "27648",
+        "29696",
+        "30720",
+        "35840",
+        "40960",
+        "46080",
+        "51200"
+      ],
+      "default": "6990",
+      "probabilities": null
+    },
+    {
+      "name": "random_page_cost",
+      "type": "categorical",
+      "choices": [
+        "0.1",
+        "0.5",
+        "1",
+        "1.1",
+        "1.5",
+        "2",
+        "2.5",
+        "3",
+        "3.5",
+        "4",
+        "4.5",
+        "5",
+        "5.5",
+        "6",
+        "6.5",
+        "7",
+        "7.5",
+        "8"
+      ],
+      "default": "1.1",
+      "probabilities": null
+    },
+    {
+      "name": "effective_io_concurrency",
+      "type": "categorical",
+      "choices": [
+        "1",
+        "100",
+        "200",
+        "300",
+        "400"
+      ],
+      "default": "200",
+      "probabilities": null
+    },
+    {
+      "name": "max_wal_size",
+      "type": "categorical",
+      "choices": [
+        "4",
+        "8",
+        "16",
+        "20",
+        "24",
+        "32",
+        "64"
+      ],
+      "default": "8",
+      "probabilities": null
+    },
+    {
+      "name": "max_parallel_workers_per_gather",
+      "type": "categorical",
+      "choices": [
+        "1",
+        "2",
+        "4",
+        "8",
+        "16"
+      ],
+      "default": "2",
+      "probabilities": null
+    },
+    {
+      "name": "max_parallel_workers",
+      "type": "categorical",
+      "choices": [
+        "4",
+        "8"
+      ],
+      "default": "4",
+      "probabilities": null
+    },
+    {
+      "name": "max_worker_processes",
+      "type": "categorical",
+      "choices": [
+        "4",
+        "10"
+      ],
+      "default": "4",
+      "probabilities": null
+    },
+    {
+      "name": "checkpoint_timeout",
+      "type": "categorical",
+      "choices": [
+        "5",
+        "10"
+      ],
+      "default": "5",
+      "probabilities": null
+    },
+    {
+      "name": "checkpoint_completion_target",
+      "type": "categorical",
+      "choices": [
+        "0.9"
+      ],
+      "default": "0.9",
+      "probabilities": null
+    },
+    {
+      "name": "effective_cache_size",
+      "type": "categorical",
+      "choices": [
+        "524288",
+        "1048576",
+        "1572864",
+        "2016383",
+        "3145728",
+        "4194304",
+        "6291456",
+        "8388608"
+      ],
+      "default": "2016383",
+      "probabilities": null
+    },
+    {
+      "name": "temp_buffers",
+      "type": "categorical",
+      "choices": [
+        "512",
+        "1024",
+        "1536",
+        "2560",
+        "3584",
+        "4608",
+        "5632",
+        "6656",
+        "7680",
+        "8704",
+        "9728",
+        "10752",
+        "11776",
+        "12800",
+        "13824",
+        "14848",
+        "15872"
+      ],
+      "default": "1024",
+      "probabilities": null
+    },
+    {
+      "name": "wal_buffers",
+      "type": "categorical",
+      "choices": [
+        "512",
+        "1536",
+        "2560",
+        "3584",
+        "4608",
+        "5632",
+        "6656",
+        "7680",
+        "8192",
+        "8704",
+        "9728",
+        "10752",
+        "11776",
+        "12800",
+        "13824",
+        "14848",
+        "15872"
+      ],
+      "default": "8192",
+      "probabilities": null
+    },
+    {
+      "name": "bgwriter_lru_maxpages",
+      "type": "categorical",
+      "choices": [
+        "50",
+        "100",
+        "500",
+        "1000",
+        "1500",
+        "2000"
+      ],
+      "default": "100",
+      "probabilities": null
+    },
+    {
+      "name": "bgwriter_delay",
+      "type": "categorical",
+      "choices": [
+        "150",
+        "200",
+        "250",
+        "300",
+        "500"
+      ],
+      "default": "200",
+      "probabilities": null
+    },
+    {
+      "name": "default_statistics_target",
+      "type": "categorical",
+      "choices": [
+        "75",
+        "85",
+        "95",
+        "100",
+        "115",
+        "125"
+      ],
+      "default": "100",
+      "probabilities": null
+    },
+    {
+      "name": "deadlock_timeout",
+      "type": "categorical",
+      "choices": [
+        "500",
+        "1000",
+        "3000",
+        "6000",
+        "8000"
+      ],
+      "default": "1000",
+      "probabilities": null
+    }
+  ],
+  "conditions": [],
+  "forbiddens": []
+}

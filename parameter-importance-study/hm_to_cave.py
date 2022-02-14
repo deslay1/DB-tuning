@@ -13,7 +13,7 @@ import json
 import pathlib
 from shutil import copyfile
 
-key = "rocksdb"
+key = "postgres"
 results_dir = f"CAVE/{key}/results/"
 cave_dir = f"CAVE/{key}/"
 search_space_file = f"CAVE/{key}/search_space_{key}.json"

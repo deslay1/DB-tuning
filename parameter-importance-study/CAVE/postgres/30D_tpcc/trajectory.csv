@@ -1,0 +1,6 @@
+shared_buffers,work_mem,random_page_cost,effective_io_concurrency,max_wal_size,max_parallel_workers_per_gather,max_parallel_workers,max_worker_processes,checkpoint_timeout,checkpoint_completion_target,effective_cache_size,temp_buffers,wal_buffers,bgwriter_lru_maxpages,bgwriter_delay,default_statistics_target,deadlock_timeout,cost,cpu_time,wallclock_time,evaluations
+4096,6990,1.1,200,8,2,4,4,5,0.9,2016383,1024,8192,100,200,100,1000,-350.66822817202285,0.1,0.1,0
+2048,14336,2.0,1,32,8,8,4,10,0.9,2016383,2560,512,100,150,85,500,-421.14486533191024,0.1,0.1,0
+7680,17408,8.0,300,20,2,4,10,10,0.9,2016383,2560,8192,1000,200,95,8000,-472.3794394918777,0.1,0.1,0
+7680,17408,8.0,300,20,2,4,10,10,0.9,4194304,2560,8192,1500,200,95,8000,-491.8449210039675,0.1,0.1,0
+7680,23552,8.0,100,20,2,8,4,10,0.9,4194304,7680,5632,1500,300,95,8000,-527.7563720783373,0.1,0.1,0
