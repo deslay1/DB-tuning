@@ -36,14 +36,26 @@
         "parameter_default": 0,
         "parameter_type": "ordinal",
         "values": [
-            0
+            0,
+            40000,
+            80000,
+            120000,
+            160000,
+            200000,
+            240000,
+            280000,
+            320000,
+            360000,
+            400000
         ]
     },
     "compression_type": {
         "parameter_default": "snappy",
         "parameter_type": "categorical",
         "values": [
-            "snappy"
+            "snappy",
+            "zstd",
+            "lz4"
         ]
     },
     "level0_file_num_compaction_trigger": {
@@ -65,14 +77,37 @@
         "parameter_default": 20,
         "parameter_type": "ordinal",
         "values": [
-            20
+            0,
+            1,
+            2,
+            4,
+            8,
+            16,
+            20,
+            32,
+            64,
+            128,
+            256,
+            512,
+            1024
         ]
     },
     "level0_stop_writes_trigger": {
         "parameter_default": 36,
         "parameter_type": "ordinal",
         "values": [
-            36
+            1,
+            2,
+            4,
+            8,
+            16,
+            32,
+            36,
+            64,
+            128,
+            256,
+            512,
+            1024
         ]
     },
     "max_background_compactions": {
@@ -93,30 +128,44 @@
     },
     "max_background_flushes": {
         "parameter_default": -1,
-        "parameter_type": "ordinal",
+        "parameter_type": "integer",
         "values": [
-            -1
+            -1,
+            10
         ]
     },
     "max_bytes_for_level_multiplier": {
         "parameter_default": 10,
-        "parameter_type": "ordinal",
+        "parameter_type": "integer",
         "values": [
-            10
+            5,
+            15
         ]
     },
     "max_write_buffer_number": {
         "parameter_default": 2,
         "parameter_type": "ordinal",
         "values": [
-            2
+            1,
+            2,
+            4,
+            8,
+            16,
+            32,
+            64,
+            128
         ]
     },
     "min_write_buffer_number_to_merge": {
         "parameter_default": 1,
         "parameter_type": "ordinal",
         "values": [
-            1
+            1,
+            2,
+            4,
+            8,
+            16,
+            32
         ]
     },
     "write_buffer_size": {

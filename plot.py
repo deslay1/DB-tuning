@@ -16,7 +16,9 @@ if __name__ == "__main__":
     results = [f"output/final/feat_imp/reduced_fixed_rw50_{x}.csv" for x in range(1, 4)]
 
     # plot.throughput_from_custom(input_files=results)
-    plot.throughput_multiple(format="png")
+    plot.throughput_multiple(
+        format="png", output_image_path="output/final/plots/rocksdb_tps"
+    )
 
     ######################## PLOT FEATURE_IMPORTANCE ########################
 

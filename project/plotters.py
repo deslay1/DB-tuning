@@ -184,16 +184,11 @@ def throughput_from_custom(
     ax1.cla()
 
 
-def throughput_multiple(input_files=[], output_image_path="throughput", format="eps"):
+def throughput_multiple(
+    input_files=[], output_image_path="output/final/plots/throughput", format="eps"
+):
     prefix = f"output/final/reduced_fixed_rw"
-    files = [
-        prefix + file
-        for file in [
-            # "10_1.csv",
-            "50_1.csv",
-            # "90_1.csv",
-        ]
-    ]
+    files = [prefix + file for file in ["10_1.csv", "50_1.csv", "90_1.csv",]]
 
     # latency_cycle = 1
     # latency_files = [
@@ -203,22 +198,8 @@ def throughput_multiple(input_files=[], output_image_path="throughput", format="
 
     additional = False
     additional = {
-        2: [
-            prefix + file
-            for file in [
-                # "10_2.csv",
-                "50_2.csv",
-                # "90_2.csv",
-            ]
-        ],
-        3: [
-            prefix + file
-            for file in [
-                # "10_3.csv",
-                "50_3.csv",
-                # "90_3.csv",
-            ]
-        ],
+        2: [prefix + file for file in ["10_2.csv", "50_2.csv", "90_2.csv",]],
+        3: [prefix + file for file in ["10_3.csv", "50_3.csv", "90_3.csv",]],
     }
 
     # Parse TPS from csv files
@@ -285,16 +266,18 @@ def throughput_multiple(input_files=[], output_image_path="throughput", format="
         y_store.append(y)
 
     #################### PLOT THROUGHPUTS ####################
-    iterations = len(y_store[0][0])
-    x = np.linspace(0, iterations, num=iterations)
     colors = ["firebrick", "forestgreen", "royalblue", "lightgray"]
-    labels = ["10/90", "50/50", "90/10"]
-    legend_locs = [7, 1, 7]
+    labels = ["1:9", "1:1", "9:1"]
+    legend_locs = [7, 7, 7]
     fig, ax1 = plt.subplots()
     # ax2 = ax1.twinx()
 
     for workload_ind, workload_y in enumerate(y_store):
-        workload_y = [y_i for y_i in workload_y]
+        # pdb.set_trace()
+        # workload_y = [y_i for y_i in workload_y]
+
+        iterations = len(y_store[workload_ind][0])
+        x = np.linspace(0, iterations, num=iterations)
 
         # plot additional as gray lines, and contrast the mean line with a strong color
         # for i in range(len(workload_y)-1):
@@ -320,7 +303,8 @@ def throughput_multiple(input_files=[], output_image_path="throughput", format="
         )
         ax1.set_ylabel("Throughput (ops/s)")
         ax1.set_xlabel("Optimizer iteration")
-        ax1.set_title(fr"RRWR - {labels[workload_ind]} at $\alpha = 2\%$")
+        # ax1.set_title(fr"r:w - {labels[workload_ind]} at $\alpha = 2\%$")
+        ax1.set_title(f"Best yet for r:w - {labels[workload_ind]}")
         # Legend for hidden plot for latency so we get one legend
         # ax1.plot(np.nan, '-r', color=colors[2], label='Read latency')
         ax1.legend(loc=legend_locs[workload_ind])
