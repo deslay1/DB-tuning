@@ -446,7 +446,7 @@ class CassandraBenchmark:
         if len(tps_results) == runs:
             return np.mean(np.asarray(tps_results))
         else:
-            return sys.exit()
+            sys.exit()
 
     def run_ycsb(self):
         # execute for max 300 seconds = 5 mins
@@ -455,11 +455,11 @@ class CassandraBenchmark:
         # Delete database, and load a new instance
         code = self.restore_database()
         if code > 1:
-            return -1
+            sys.exit()
         print("Database restored!")
         code = subprocess.call(command, executable="/bin/bash", shell=True)
         if code > 1:
-            return -1
+            sys.exit()
         print("Retrieving results...")
         throughput = 0
         with open(cassconfig.YCSB_OUTPUT_FILE, "r") as output:
