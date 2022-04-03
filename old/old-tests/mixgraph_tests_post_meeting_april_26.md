@@ -1,3 +1,0 @@
-
-
-Benchmark with knobs: {}  

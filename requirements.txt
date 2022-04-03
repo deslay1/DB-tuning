@@ -1,4 +1,0 @@
-hypermapper
-python-dotenv
-git+https://github.com/deslay1/CAVE.git#egg=cave
-
